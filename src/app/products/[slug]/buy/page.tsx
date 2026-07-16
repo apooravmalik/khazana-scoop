@@ -22,9 +22,9 @@ export default async function CatalogProductOrderPage({
   }
 
   return (
-    <main className="min-h-screen pb-12">
+    <main className="min-h-screen bg-[#fdf8f4] pb-12">
       <StorefrontHeader currentPath="/products" />
-      <section className="shell pt-8">
+      <section>
         <CatalogProductOrderClient product={product} />
       </section>
       <StorefrontFooter />

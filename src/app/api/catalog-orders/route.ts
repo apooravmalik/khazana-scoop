@@ -128,6 +128,7 @@ export async function POST(request: Request): Promise<NextResponse> {
           net_profit: netProfit,
           delivery_status: "pending",
           payment_status: "unpaid",
+          order_source: "website",
           ordered_at: orderedAt,
           delivery_date: null,
         },
