@@ -31,6 +31,7 @@ type CategoryRow = {
   name: string;
   slug: string;
   active?: boolean | null;
+  sort_order?: number | string | null;
 };
 
 type CollectionRow = {
@@ -188,6 +189,14 @@ async function fetchCollectionRows(): Promise<CollectionRow[]> {
 
     return legacyRows.map((row) => ({ ...row, description: null }));
   }
+}
+
+async function fetchCategoryRows(): Promise<CategoryRow[]> {
+  return fetchTable<CategoryRow>("categories", {
+    select: "id,name,slug,active,sort_order",
+    active: "eq.true",
+    order: "sort_order.asc,name.asc,id.asc",
+  });
 }
 
 function mapCategory(row: CategoryRow): CatalogCategory {
@@ -363,23 +372,40 @@ function buildCollectionFacets(
   collections: CatalogCollection[],
   products: StorefrontCatalogProduct[],
 ): StorefrontCatalogFacet[] {
-  return collections
-    .map((collection) => {
-      const matchingProducts = products.filter((product) =>
-        product.collections.some((item) => item.id === collection.id),
-      );
+  return collections.map((collection) => {
+    const matchingProducts = products.filter((product) =>
+      product.collections.some((item) => item.id === collection.id),
+    );
 
-      return {
-        id: collection.id,
-        name: collection.name,
-        slug: collection.slug,
-        image: matchingProducts[0]?.image || "/mystery-scoop-hero.png",
-        href: `/products?collection=${encodeURIComponent(collection.slug)}`,
-        productCount: matchingProducts.length,
-        description: collection.description,
-      } satisfies StorefrontCatalogFacet;
-    })
-    .filter((collection) => collection.productCount > 0);
+    return {
+      id: collection.id,
+      name: collection.name,
+      slug: collection.slug,
+      image: matchingProducts[0]?.image || "/mystery-scoop-hero.png",
+      href: `/products?collection=${encodeURIComponent(collection.slug)}`,
+      productCount: matchingProducts.length,
+      description: collection.description,
+    } satisfies StorefrontCatalogFacet;
+  });
+}
+
+function buildCategoryFacets(
+  categories: CategoryRow[],
+  products: StorefrontCatalogProduct[],
+): StorefrontCatalogFacet[] {
+  return categories.map((category) => {
+    const categoryId = Number(category.id);
+    const matchingProducts = products.filter((product) => product.category?.id === categoryId);
+
+    return {
+      id: categoryId,
+      name: category.name,
+      slug: category.slug,
+      image: matchingProducts[0]?.image || "/mystery-scoop-hero.png",
+      href: `/products?category=${encodeURIComponent(category.slug)}`,
+      productCount: matchingProducts.length,
+    } satisfies StorefrontCatalogFacet;
+  });
 }
 
 function buildCollectionSections(
@@ -532,16 +558,20 @@ export function filterStorefrontCatalogProducts(
 
 export async function getStorefrontCatalogHomeData(): Promise<StorefrontCatalogHomeData> {
   const products = await getStorefrontCatalogProducts();
-  const categories = buildFacetMap(products, "category");
+  let categories = buildFacetMap(products, "category");
   let collections = buildFacetMap(products, "collection");
 
   if (hasCatalogConfig()) {
     try {
-      const collectionRows = await fetchCollectionRows();
+      const [categoryRows, collectionRows] = await Promise.all([
+        fetchCategoryRows(),
+        fetchCollectionRows(),
+      ]);
 
+      categories = buildCategoryFacets(categoryRows, products);
       collections = buildCollectionFacets(collectionRows.map(mapCollection), products);
     } catch {
-      // Fall back to the product-derived collection list when the collection query fails.
+      // Fall back to product-derived facets when a catalog metadata query fails.
     }
   }
 
