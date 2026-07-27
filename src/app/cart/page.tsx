@@ -1,14 +1,19 @@
-import { CartCheckoutClient } from "@/components/cart-checkout-client";
+import { CatalogCartClient } from "@/components/catalog-cart-client";
 import { PageChrome } from "@/components/page-chrome";
-import { addOns, scoopTiers } from "@/lib/data";
+import { getStorefrontCatalogProducts } from "@/lib/catalog";
 
-export default function CartPage(): React.ReactElement {
+export const dynamic = "force-dynamic";
+
+export default async function CartPage(): Promise<React.ReactElement> {
+  const products = await getStorefrontCatalogProducts();
+
   return (
     <PageChrome
+      currentPath="/products"
       title="Shopping cart"
-      subtitle="Review your scoop size and add-ons before moving into secure checkout."
+      subtitle="Review the catalog items you have added before continuing into guest Razorpay checkout."
     >
-      <CartCheckoutClient addOns={addOns} mode="cart" tiers={scoopTiers} />
+      <CatalogCartClient mode="cart" products={products} />
     </PageChrome>
   );
 }

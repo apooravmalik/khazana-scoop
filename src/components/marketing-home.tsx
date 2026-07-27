@@ -97,30 +97,32 @@ export function MarketingHome({ homeData }: MarketingHomeProps): React.ReactElem
         </section>
       ) : null}
 
-      <section className="py-12 px-4 md:px-8">
-        <h2 className="text-center font-baloo text-3xl md:text-4xl font-bold mb-8 text-[#1e293b]">
-          Shop by Category
-        </h2>
-        <div className="flex overflow-x-auto no-scrollbar gap-4 md:gap-8 justify-start lg:justify-center px-4 pb-4">
-          {categoryCards.map((category) => (
-            <Link
-              href={category.href}
-              key={category.slug}
-              className="flex min-w-[108px] flex-col items-center gap-3 md:min-w-[124px] group"
-            >
-              <div className="relative h-24 w-24 overflow-hidden rounded-full border-2 border-transparent transition-colors group-hover:border-[#C5B3D3] md:h-32 md:w-32">
-                <Image src={category.image} alt={category.name} fill className="object-cover transition-transform duration-500 group-hover:scale-110" />
-              </div>
-              <div className="text-center">
-                <span className="font-poppins text-sm md:text-base font-semibold whitespace-nowrap transition-colors group-hover:text-[#C5B3D3]">
-                  {category.name}
-                </span>
-                <p className="mt-1 text-xs font-medium text-[#1e293b]/55">{category.productCount} items</p>
-              </div>
-            </Link>
-          ))}
-        </div>
-      </section>
+      {categoryCards.length > 0 ? (
+        <section className="py-12 px-4 md:px-8">
+          <h2 className="text-center font-baloo text-3xl md:text-4xl font-bold mb-8 text-[#1e293b]">
+            Shop by Category
+          </h2>
+          <div className="flex overflow-x-auto no-scrollbar gap-4 md:gap-8 justify-start lg:justify-center px-4 pb-4">
+            {categoryCards.map((category) => (
+              <Link
+                href={category.href}
+                key={category.slug}
+                className="flex min-w-[108px] flex-col items-center gap-3 md:min-w-[124px] group"
+              >
+                <div className="relative h-24 w-24 overflow-hidden rounded-full border-2 border-transparent transition-colors group-hover:border-[#C5B3D3] md:h-32 md:w-32">
+                  <Image src={category.image} alt={category.name} fill className="object-cover transition-transform duration-500 group-hover:scale-110" />
+                </div>
+                <div className="text-center">
+                  <span className="font-poppins text-sm md:text-base font-semibold whitespace-nowrap transition-colors group-hover:text-[#C5B3D3]">
+                    {category.name}
+                  </span>
+                  <p className="mt-1 text-xs font-medium text-[#1e293b]/55">{category.productCount} items</p>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </section>
+      ) : null}
 
       <section className="py-8 px-4 md:px-8 max-w-[1600px] mx-auto">
         <div className="grid gap-4 md:grid-cols-2 md:gap-6">

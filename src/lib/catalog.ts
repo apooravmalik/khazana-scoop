@@ -1,4 +1,4 @@
-import { getProductBySlug } from "@/lib/products";
+import { featuredProducts, getProductBySlug } from "@/lib/products";
 import type {
   CatalogCategory,
   CatalogCollection,
@@ -137,8 +137,9 @@ function mapFallbackProduct(slug: string): StorefrontCatalogProduct | null {
 }
 
 function mapFallbackProducts(): StorefrontCatalogProduct[] {
-  // Fallback when Supabase config is missing – return an empty list.
-  return [];
+  return featuredProducts
+    .map((product) => mapFallbackProduct(product.slug))
+    .filter((product): product is StorefrontCatalogProduct => product !== null);
 }
 
 async function fetchTable<T>(table: string, query: Record<string, string>): Promise<T[]> {

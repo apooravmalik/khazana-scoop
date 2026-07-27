@@ -147,6 +147,30 @@ model Payment {
   order                   Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
 }
 
+model CatalogCheckout {
+  id                String   @id @default(cuid())
+  supabaseOrderId   Int?     @unique
+  customerName      String
+  customerEmail     String
+  customerPhone     String
+  customerAddress   String
+  cartSnapshot      Json
+  subtotalPaise     Int
+  shippingPaise     Int      @default(0)
+  totalPaise        Int
+  currency          String   @default("INR")
+  razorpayOrderId   String?  @unique
+  razorpayPaymentId String?
+  razorpaySignature String?
+  paymentStatus     String   @default("created")
+  providerPayload   Json?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@index([customerEmail])
+  @@index([paymentStatus])
+}
+
 model Shipping {
   id             String   @id @default(cuid())
   orderId        String   @unique

@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { CircleUserRound, MapPin, Search, ShoppingBag } from "lucide-react";
+import { useCatalogCart } from "@/hooks/use-catalog-cart";
 
 const footerColumns = [
   {
@@ -50,6 +51,8 @@ export function StorefrontHeader({
 }: {
   currentPath?: string;
 }): React.ReactElement {
+  const { itemCount } = useCatalogCart();
+
   return (
     <>
       <div className="bg-[#F5CBCB] text-[#1e293b] py-2 flex justify-center items-center gap-2 md:gap-4 text-xs font-poppins font-semibold tracking-wide">
@@ -92,6 +95,11 @@ export function StorefrontHeader({
           </Link>
           <Link href="/cart" aria-label="Open cart" className="hover:text-[#C5B3D3] transition-colors relative">
             <ShoppingBag size={22} strokeWidth={2.5} />
+            {itemCount > 0 ? (
+              <span className="absolute -right-2 -top-2 inline-flex min-h-5 min-w-5 items-center justify-center rounded-full bg-[#0fb7b2] px-1 text-[10px] font-black text-white">
+                {itemCount}
+              </span>
+            ) : null}
           </Link>
         </div>
       </header>
