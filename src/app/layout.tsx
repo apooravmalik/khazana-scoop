@@ -3,8 +3,8 @@ import { SmoothScrollController } from "@/components/smooth-scroll-controller";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Mystery Scoop",
-  description: "Pick a scoop, add a lucky twist, and watch your mystery assortment come to life.",
+  title: "Khazana Scoop",
+  description: "Shop Khazana Scoop for mystery scoops, curated add-ons, hampers, and playful gifting moments.",
 };
 
 export default function RootLayout({

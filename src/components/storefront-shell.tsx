@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { CircleUserRound, MapPin, Search, ShoppingBag } from "lucide-react";
 import { useCatalogCart } from "@/hooks/use-catalog-cart";
@@ -8,7 +9,9 @@ const footerColumns = [
   {
     title: "Shop",
     links: [
-      { label: "Mystery scoops", href: "/mystery-scoops" },
+      { label: "Mystery Scoop", href: "/mystery-scoop" },
+      { label: "Build your scoop", href: "/build-your-own-scoop" },
+      { label: "Hampers", href: "/hampers" },
       { label: "Products", href: "/products" },
       { label: "Lucky capsules", href: "/products/lucky-capsules" },
       { label: "Charm mixes", href: "/products/charm-mixes" },
@@ -34,14 +37,27 @@ const footerColumns = [
   },
 ];
 
-export function StorefrontLogo(): React.ReactElement {
+export function StorefrontLogo({
+  priority = false,
+  widthClassName = "w-[220px] sm:w-[260px] lg:w-[320px]",
+}: {
+  priority?: boolean;
+  widthClassName?: string;
+} = {}): React.ReactElement {
   return (
     <Link
       aria-label="Khazana Scoop home"
-      className="inline-flex items-center font-baloo text-3xl font-bold tracking-tight text-[#C5B3D3] hover:text-[#1e293b] transition-colors"
+      className={`inline-flex items-center ${widthClassName} transition-transform duration-200 hover:scale-[1.01]`}
       href="/"
     >
-      KHAZANA SCOOP
+      <Image
+        alt="Khazana Scoop"
+        className="h-auto w-full"
+        height={166}
+        priority={priority}
+        src="/brand/khazana-scoop-logo.png"
+        width={1216}
+      />
     </Link>
   );
 }
@@ -52,6 +68,17 @@ export function StorefrontHeader({
   currentPath?: string;
 }): React.ReactElement {
   const { itemCount } = useCatalogCart();
+  const navItems = [
+    { href: "/", label: "HOME", matchPaths: ["/"] },
+    { href: "/products", label: "PRODUCTS", matchPaths: ["/products"] },
+    {
+      href: "/mystery-scoops",
+      label: "SCOOP BUILDER",
+      matchPaths: ["/mystery-scoops", "/mystery-scoop", "/build-your-own-scoop"],
+    },
+    { href: "/hampers", label: "HAMPERS", matchPaths: ["/hampers"] },
+    { href: "/about", label: "ABOUT US", matchPaths: ["/about"] },
+  ];
 
   return (
     <>
@@ -62,31 +89,27 @@ export function StorefrontHeader({
         <span>•</span>
         <span>5-6 days delivery</span>
       </div>
-      <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-[#FFE2E2] py-4 px-4 md:px-8 flex items-center justify-between">
-        <div className="flex-1 lg:hidden">
-          <button className="p-2 text-[#1e293b]">
+      <header className="sticky top-0 z-50 flex items-center justify-between border-b border-[#FFE2E2] bg-white/95 px-4 py-4 backdrop-blur-sm md:px-8">
+        <div className="flex min-w-0 items-center gap-3 lg:flex-[0_0_auto] lg:gap-5">
+          <button className="p-2 text-[#1e293b] lg:hidden">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
           </button>
+          <StorefrontLogo priority widthClassName="w-[180px] sm:w-[220px] lg:w-[250px] xl:w-[290px]" />
         </div>
-        
-        <nav className="hidden lg:flex flex-1 items-center gap-8 font-baloo text-lg font-medium text-[#1e293b]">
-          {[
-            { label: 'HOME', href: '/' },
-            { label: 'PRODUCTS', href: '/products' },
-            { label: 'MYSTERY SCOOPS', href: '/mystery-scoops' },
-            { label: 'ABOUT US', href: '/about' },
-          ].map((item) => (
-            <Link key={item.href} href={item.href} className={`transition-colors hover:text-[#C5B3D3] ${currentPath === item.href ? 'text-[#C5B3D3]' : ''}`}>
+
+        <nav className="hidden min-w-0 flex-1 items-center justify-start gap-5 px-8 font-baloo text-base font-medium text-[#1e293b] lg:flex xl:gap-7 xl:px-10 xl:text-lg">
+          {navItems.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              className={`whitespace-nowrap transition-colors hover:text-[#C5B3D3] ${item.matchPaths.includes(currentPath ?? "") ? "text-[#C5B3D3]" : ""}`}
+            >
               {item.label}
             </Link>
           ))}
         </nav>
 
-        <div className="flex-1 flex justify-center lg:flex-none">
-          <StorefrontLogo />
-        </div>
-
-        <div className="flex-1 flex justify-end items-center gap-4 lg:gap-6 text-[#1e293b]">
+        <div className="flex items-center justify-end gap-4 text-[#1e293b] lg:flex-[0_0_auto] lg:gap-6">
           <Link href="/products" aria-label="Search products" className="hover:text-[#C5B3D3] transition-colors">
             <Search size={22} strokeWidth={2.5} />
           </Link>
@@ -113,7 +136,7 @@ export function StorefrontFooter(): React.ReactElement {
       <div className="shell py-12 px-4 md:px-8 max-w-[1600px] mx-auto">
         <div className="grid gap-8 rounded-[34px] border border-[#FFE2E2] bg-white px-6 py-8 shadow-sm lg:grid-cols-[1.1fr_1.4fr] lg:px-10">
           <div className="space-y-5">
-            <StorefrontLogo />
+            <StorefrontLogo widthClassName="w-[220px] sm:w-[250px] lg:w-[300px]" />
             <div className="space-y-3 font-poppins text-sm leading-7 text-[#1e293b]/70">
               <p>
                 A collectible-first scoop shop with clear tracking, playful reveals, and customer-friendly add-ons.

@@ -7,12 +7,8 @@ import {
   ArrowUpRight,
   CheckCircle2,
   Minus,
-  PackageCheck,
   Plus,
-  ShieldCheck,
   Sparkles,
-  Star,
-  Truck,
 } from "lucide-react";
 import { useCatalogCart } from "@/hooks/use-catalog-cart";
 import type { StorefrontCatalogProduct } from "@/lib/catalog-types";
@@ -55,33 +51,33 @@ export function CatalogProductOrderClient({
   }
 
   return (
-    <section className="mx-auto max-w-7xl px-4 py-8 sm:px-8 lg:py-12">
-      <div className="grid gap-10 lg:grid-cols-[46%_54%] lg:gap-14">
-        <div>
-          <div className="relative overflow-hidden rounded-[22px] border border-[#ECE9E2] bg-white shadow-sm">
+    <section className="mx-auto max-w-[1120px] px-5 py-8 sm:px-8 lg:py-12">
+      <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(420px,1fr)] lg:gap-[54px]">
+        <div className="relative">
+          <div className="relative overflow-hidden rounded-[28px] border border-[#eee5dd] bg-white">
             <Image
-              src={selectedImage}
               alt={product.name}
-              fill
               className="object-cover object-center"
-              sizes="(min-width: 1024px) 46vw, 100vw"
+              fill
               priority
+              sizes="(min-width: 1024px) 50vw, 100vw"
+              src={selectedImage}
             />
-            <div className="aspect-[1.02/1]" />
-            <span className="absolute right-5 top-5 rounded-full bg-white/90 px-3 py-1 text-[11px] font-black uppercase tracking-[0.12em] text-[#2F5B4B] shadow-sm">
+            <div className="aspect-[1/1] min-h-[380px] lg:min-h-[540px]" />
+            <span className="absolute right-[18px] top-[18px] rounded-full border border-[#dce8e5] bg-white/95 px-[14px] py-[9px] text-[12px] font-extrabold uppercase tracking-[0.08em] text-[#1f5752]">
               In stock
             </span>
           </div>
 
           {galleryImages.length > 1 ? (
-            <div className="mt-5 flex gap-4 overflow-x-auto pb-2">
+            <div className="mt-5 flex gap-3 overflow-x-auto pb-2">
               {galleryImages.map((imageUrl, index) => (
                 <button
                   aria-label={`Show product image ${index + 1}`}
-                  className={`relative h-20 w-20 shrink-0 overflow-hidden rounded-xl border-2 bg-white transition ${
+                  className={`relative h-20 w-20 shrink-0 overflow-hidden rounded-[14px] border-2 bg-white transition ${
                     selectedImage === imageUrl
-                      ? "border-[#315748]"
-                      : "border-[#ECE9E2] hover:border-[#9ccac1]"
+                      ? "border-[#18b8b2]"
+                      : "border-[#eadfce] hover:border-[#18b8b2]"
                   }`}
                   key={imageUrl}
                   onClick={() => setSelectedImage(imageUrl)}
@@ -101,135 +97,104 @@ export function CatalogProductOrderClient({
         </div>
 
         <div className="pt-2">
-          <div className="flex items-start justify-between gap-4">
-            <div>
-              <p className="text-xs font-bold uppercase tracking-[0.28em] text-[#5E8A76]">
-                {product.eyebrow || "Khazana Scoop"}
-              </p>
-              <h1
-                className="mt-3 text-4xl font-black leading-tight text-[#2F5B4B] sm:text-5xl"
-                style={{ fontFamily: "var(--font-display)" }}
-              >
-                {product.name}
-              </h1>
-            </div>
-
-            <div className="flex items-center gap-1 rounded-full bg-[#fff9e8] px-3 py-1 text-sm font-black text-[#2F5B4B]">
-              <Star className="fill-[#f7c948] text-[#f7c948]" size={16} />
-              5.0
-            </div>
-          </div>
-
-          <div className="mt-4 flex flex-wrap items-center gap-1.5">
-            {Array.from({ length: 5 }).map((_, index) => (
-              <Star
-                className="fill-[#f7c948] text-[#f7c948]"
-                key={index}
-                size={18}
-              />
-            ))}
-            <span className="ml-2 text-sm font-semibold text-[#8d9995]">
-              4.9 customer rating
-            </span>
-          </div>
-
-          <p className="mt-5 max-w-2xl text-sm font-semibold leading-7 text-[#708680]">
+          <p className="text-[12px] font-extrabold uppercase tracking-[0.14em] text-[#18b8b2]">
+            {product.eyebrow || "Khazana Scoop"}
+          </p>
+          <h1 className="mt-3 text-[38px] font-bold leading-[1.08] tracking-[-0.04em] text-[#1f5752] sm:text-[48px]">
+            {product.name}
+          </h1>
+          <p className="mt-[14px] text-[15px] leading-[1.7] text-[#8c9997]">
             {product.description || product.summary}
           </p>
 
-          <div className="mt-6 space-y-3">
+          <ul className="mt-5 grid gap-3">
             {productFeatures.map((feature) => (
-              <div className="flex items-center gap-3 text-sm font-semibold text-[#516760]" key={feature}>
-                <Sparkles className="text-[#f28aa2]" size={17} />
+              <li className="flex items-start gap-[11px] text-[15px] leading-[1.45] text-[#496b67]" key={feature}>
+                <Sparkles className="mt-0.5 text-[#ff7196]" size={18} />
                 <span>{feature}</span>
-              </div>
+              </li>
             ))}
-          </div>
+          </ul>
 
-          <div className="my-7 h-px bg-[#dfd4bd]" />
+          <div className="my-7 h-px bg-[#eadfce]" />
 
-          <div className="flex flex-wrap items-center gap-3">
-            <h2 className="text-3xl font-black text-[#2F5B4B]">
-              {product.priceLabel}
-            </h2>
+          <div className="mb-5 flex flex-wrap items-baseline gap-3">
+            <span className="text-[27px] font-extrabold text-[#1f5752]">{product.priceLabel}</span>
             {product.originalPriceLabel ? (
-              <span className="text-sm font-bold text-[#a0aaa6] line-through">
-                {product.originalPriceLabel}
-              </span>
+              <span className="text-sm text-[#a0a7a6] line-through">{product.originalPriceLabel}</span>
             ) : null}
-            <span className="text-xs font-bold text-[#a0aaa6]">Inclusive of all taxes</span>
+            <span className="text-[13px] text-[#a0a7a6]">Inclusive of all taxes</span>
           </div>
 
-          <div className="mt-4 inline-flex items-center gap-2 rounded-full bg-green-100 px-4 py-2 text-sm font-bold text-green-700">
+          <div className="inline-flex items-center gap-2 rounded-full bg-[#dcf8e9] px-[13px] py-[9px] text-[13px] font-bold text-[#188d57]">
             <CheckCircle2 size={16} />
             {product.stockQuantity} Available
           </div>
 
-          <div className="mt-6 flex flex-col gap-4 sm:flex-row sm:items-center">
-            <div className="inline-flex h-12 w-fit items-center overflow-hidden rounded-full border-2 border-[#0fb7b2] bg-white">
+          <div className="mt-6 grid gap-[14px] sm:grid-cols-[145px_1fr] sm:items-stretch">
+            <div className="grid min-h-[48px] grid-cols-[44px_1fr_44px] items-center rounded-full border-2 border-[#14b8b4] bg-white p-[3px]">
               <button
                 aria-label="Decrease quantity"
-                className="grid h-full w-14 place-items-center bg-[#0fb7b2] text-white transition hover:bg-[#0ca6a1] disabled:cursor-not-allowed disabled:opacity-50"
+                className="grid h-[38px] w-[38px] place-items-center rounded-full bg-[#14b8b4] text-white transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-50"
                 disabled={quantity <= 1}
                 onClick={() => updateQuantity(quantity - 1)}
                 type="button"
               >
-                <Minus size={20} strokeWidth={3} />
+                <Minus size={20} strokeWidth={2.7} />
               </button>
-              <div className="grid h-full min-w-16 place-items-center text-lg font-black text-[#2F5B4B]">
-                {quantity}
-              </div>
+              <div className="text-center text-base font-extrabold text-[#1f5752]">{quantity}</div>
               <button
                 aria-label="Increase quantity"
-                className="grid h-full w-14 place-items-center bg-[#0fb7b2] text-white transition hover:bg-[#0ca6a1] disabled:cursor-not-allowed disabled:opacity-50"
+                className="grid h-[38px] w-[38px] place-items-center rounded-full bg-[#14b8b4] text-white transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-50"
                 disabled={quantity >= maxQuantity}
                 onClick={() => updateQuantity(quantity + 1)}
                 type="button"
               >
-                <Plus size={20} strokeWidth={3} />
+                <Plus size={20} strokeWidth={2.7} />
               </button>
             </div>
 
             <button
-              className="h-12 flex-1 rounded-full border border-[#0fb7b2] bg-white px-8 text-sm font-black uppercase tracking-wide text-[#0fb7b2] transition hover:bg-[#effefd]"
+              className="min-h-[48px] rounded-full bg-[#14b8b4] px-8 text-[14px] font-extrabold tracking-[0.02em] text-white transition hover:brightness-95"
               onClick={handleAddToCart}
               type="button"
             >
               Add to cart
             </button>
-
-            <button
-              className="h-12 flex-1 rounded-full bg-[#0fb7b2] px-8 text-sm font-black uppercase tracking-wide text-white transition hover:bg-[#0ca6a1]"
-              onClick={handleBuyNow}
-              type="button"
-            >
-              Buy now
-            </button>
           </div>
 
           {message ? (
-            <p className="mt-4 rounded-[20px] bg-[#eefbf8] px-4 py-3 text-sm font-bold text-[#1b867f]">
+            <p className="mt-4 rounded-[18px] bg-[#eefbf8] px-4 py-3 text-sm font-bold text-[#1b867f]">
               {message}
             </p>
           ) : null}
 
-          <div className="mt-5 flex flex-wrap gap-6 text-sm font-semibold text-[#6d7d78]">
+          <button
+            className="mt-4 inline-flex items-center gap-2 text-sm font-extrabold uppercase tracking-[0.08em] text-[#14b8b4]"
+            onClick={handleBuyNow}
+            type="button"
+          >
+            Buy now
+            <ArrowUpRight size={16} />
+          </button>
+
+          <div className="mt-5 flex flex-wrap gap-x-7 gap-y-4 text-[13px] text-[#52716e]">
             <span className="inline-flex items-center gap-2">
-              <Truck className="text-[#d7b841]" size={17} />
-              Superfast Delivery
+              <span className="text-base font-black text-[#e9b319]">✓</span>
+              Superfast delivery
             </span>
             <span className="inline-flex items-center gap-2">
-              <PackageCheck className="text-[#d7b841]" size={17} />
-              5-6 Days
+              <span className="text-base font-black text-[#e9b319]">✓</span>
+              Easy returns support
             </span>
             <span className="inline-flex items-center gap-2">
-              <ShieldCheck className="text-[#d7b841]" size={17} />
+              <span className="text-base font-black text-[#e9b319]">✓</span>
               Guest checkout available
             </span>
           </div>
 
           <div className="mt-7 rounded-[24px] border border-[#d8ece7] bg-[#f5fffd] p-5">
-            <p className="text-sm font-black uppercase tracking-[0.12em] text-[#2F5B4B]">
+            <p className="text-sm font-black uppercase tracking-[0.12em] text-[#1f5752]">
               Payment and guest checkout
             </p>
             <p className="mt-3 text-sm leading-7 text-[#627771]">
