@@ -1,11 +1,11 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, Sparkles } from "lucide-react";
-import { PageChrome } from "@/components/page-chrome";
+import { StorefrontFooter, StorefrontHeader } from "@/components/storefront-shell";
 import {
   filterStorefrontCatalogProducts,
   getStorefrontCatalogHomeData,
 } from "@/lib/catalog";
+import type { StorefrontCatalogProduct } from "@/lib/catalog-types";
 
 export const dynamic = "force-dynamic";
 
@@ -13,21 +13,40 @@ type ProductsPageProps = {
   searchParams?: Promise<{
     category?: string;
     collection?: string;
+    sort?: string;
   }>;
 };
+
+function productTag(product: StorefrontCatalogProduct): string {
+  return product.category?.name || product.collections[0]?.name || product.eyebrow || "Khazana Scoop";
+}
 
 export default async function ProductsPage({
   searchParams,
 }: ProductsPageProps): Promise<React.ReactElement> {
   const filters = (await searchParams) ?? {};
   const homeData = await getStorefrontCatalogHomeData();
-  const products = filterStorefrontCatalogProducts(homeData.products, {
+  const filteredProducts = filterStorefrontCatalogProducts(homeData.products, {
     categorySlug: filters.category,
     collectionSlug: filters.collection,
   });
-  const heroProduct = products[0];
-  const secondaryProducts = products.slice(1, 3);
-  const catalogProducts = products.slice(3);
+  const sort = filters.sort ?? "featured";
+  const products = [...filteredProducts].sort((left, right) => {
+    if (sort === "price-asc") {
+      return (left.effectivePrice ?? Number.MAX_SAFE_INTEGER) - (right.effectivePrice ?? Number.MAX_SAFE_INTEGER);
+    }
+
+    if (sort === "price-desc") {
+      return (right.effectivePrice ?? 0) - (left.effectivePrice ?? 0);
+    }
+
+    if (sort === "name-asc") {
+      return left.name.localeCompare(right.name);
+    }
+
+    return 0;
+  });
+
   const activeFilterLabel = filters.collection
     ? homeData.collections.find((collection) => collection.slug === filters.collection)?.name
     : filters.category
@@ -35,195 +54,119 @@ export default async function ProductsPage({
       : null;
 
   return (
-    <PageChrome
-      currentPath="/products"
-      title="Products"
-      subtitle={
-        activeFilterLabel
-          ? `Browsing the live ${activeFilterLabel} selection synced from the dashboard.`
-          : "Browse mystery scoops, lucky capsules, charm mixes, crystals, and stationery packs."
-      }
-    >
-      <div className="grid gap-6">
-        <section className="rounded-[28px] border border-[#ece3d9] bg-white px-5 py-5 shadow-[0_18px_40px_rgba(118,140,134,0.1)] sm:px-6">
-          <div className="flex flex-wrap gap-3">
-            <Link
-              className={`storefront-mini-pill ${!filters.category && !filters.collection ? "bg-[#C5B3D3] text-white" : ""}`}
-              href="/products"
-            >
-              All products
-            </Link>
-            {homeData.categories.slice(0, 6).map((category) => (
-              <Link
-                className={`storefront-mini-pill ${filters.category === category.slug ? "bg-[#C5B3D3] text-white" : ""}`}
-                href={category.href}
-                key={category.slug}
-              >
-                {category.name}
-              </Link>
-            ))}
-            {homeData.collections.slice(0, 4).map((collection) => (
-              <Link
-                className={`storefront-mini-pill ${filters.collection === collection.slug ? "bg-[#18a59e] text-white" : ""}`}
-                href={collection.href}
-                key={collection.slug}
-              >
-                {collection.name}
-              </Link>
-            ))}
-          </div>
-        </section>
+    <main className="min-h-screen bg-[#fffdf9]">
+      <StorefrontHeader currentPath="/products" />
 
-        {heroProduct ? (
-          <section className="storefront-subtle-panel overflow-hidden px-6 py-7 sm:px-8">
-            <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
-              <div>
-                <p className="text-sm font-black uppercase tracking-[0.18em] text-[#6c817b]">{heroProduct.eyebrow}</p>
-                <h2
-                  className="mt-3 max-w-[10ch] text-5xl font-black leading-[0.94] tracking-[-0.05em] text-[#31514b] sm:text-6xl"
-                  style={{ fontFamily: "var(--font-display)" }}
-                >
-                  {heroProduct.name}
-                </h2>
-                <p className="mt-5 max-w-2xl text-base leading-8 text-[#627872]">{heroProduct.description}</p>
-                <div className="mt-6 flex flex-wrap gap-3">
-                  {heroProduct.highlights.map((highlight) => (
-                    <span className="storefront-mini-pill" key={highlight}>
-                      {highlight}
-                    </span>
-                  ))}
-                </div>
-                <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-                  <Link className="button-primary focus-ring" href={heroProduct.route}>
-                    Shop this drop <Sparkles size={17} />
-                  </Link>
-                  <Link className="button-secondary focus-ring" href="/mystery-scoops">
-                    Build your scoop <ArrowRight size={17} />
-                  </Link>
-                </div>
-              </div>
-
-              <div className="relative min-h-[320px] overflow-hidden rounded-[30px] border border-white/70 bg-white/70 shadow-[0_24px_58px_rgba(118,140,134,0.12)]">
-                <Image
-                  alt={heroProduct.name}
-                  className="object-cover"
-                  fill
-                  priority
-                  sizes="(min-width: 1024px) 40vw, 100vw"
-                  src={heroProduct.image}
-                />
-              </div>
-            </div>
-          </section>
-        ) : null}
-
-        {secondaryProducts.length > 0 ? (
-          <section className="grid gap-6 lg:grid-cols-2">
-          {secondaryProducts.map((product, index) => (
-            <Link
-              className={`app-card grid gap-5 overflow-hidden p-5 transition hover:-translate-y-1 sm:p-6 ${
-                index % 2 === 0 ? "lg:grid-cols-[0.95fr_1.05fr]" : "lg:grid-cols-[1.05fr_0.95fr]"
-              }`}
-              href={product.route}
-              key={product.slug}
-            >
-              <div className={`space-y-4 ${index % 2 === 1 ? "lg:order-2" : ""}`}>
-                <span className="storefront-status-badge bg-[#f5faf9] text-[#62807a] border-[#dbe9e4]">{product.eyebrow}</span>
-                <div>
-                  <h2 className="text-4xl font-black tracking-[-0.05em] text-[#33534d]" style={{ fontFamily: "var(--font-display)" }}>
-                    {product.name}
-                  </h2>
-                  <p className="mt-3 text-sm leading-7 text-[#667b75]">{product.summary}</p>
-                </div>
-                <div className="grid gap-2">
-                  {product.highlights.map((highlight) => (
-                    <p className="text-sm font-bold text-[#36534d]" key={highlight}>
-                      {highlight}
-                    </p>
-                  ))}
-                </div>
-                <div className="flex items-center justify-between gap-3 pt-2">
-                  <div className="flex flex-col gap-1">
-                    <strong className="text-sm uppercase tracking-[0.1em] text-[#18a59e]">{product.priceLabel}</strong>
-                    {product.originalPriceLabel ? (
-                      <span className="text-xs text-[#8b9b97] line-through">{product.originalPriceLabel}</span>
-                    ) : null}
-                  </div>
-                  <span className="inline-flex items-center gap-2 text-sm font-black uppercase tracking-[0.1em] text-[#35534d]">
-                    Open <ArrowRight size={16} />
-                  </span>
-                </div>
-              </div>
-
-              <div className={`relative min-h-[260px] overflow-hidden rounded-[26px] bg-[#fff4ee] ${index % 2 === 1 ? "lg:order-1" : ""}`}>
-                <Image
-                  alt={product.name}
-                  className="object-cover"
-                  fill
-                  sizes="(min-width: 1024px) 24vw, 100vw"
-                  src={product.image}
-                />
-              </div>
-            </Link>
-          ))}
-          </section>
-        ) : null}
-
-        <section className="rounded-[32px] border border-[#ece3d9] bg-white px-6 py-8 shadow-[0_24px_58px_rgba(118,140,134,0.12)] sm:px-8">
-          <div className="flex flex-col gap-3 border-b border-[#efe7de] pb-6 sm:flex-row sm:items-end sm:justify-between">
-            <div>
-              <p className="text-sm font-black uppercase tracking-[0.18em] text-[#6c817b]">Browse the full shelf</p>
-              <h2
-                className="mt-3 text-4xl font-black tracking-[-0.05em] text-[#31514b] sm:text-5xl"
-                style={{ fontFamily: "var(--font-display)" }}
-              >
-                Small surprises by mood
-              </h2>
-            </div>
-            <p className="max-w-xl text-sm leading-7 text-[#667b75]">
-              Every pack in the lineup stays rooted in the same collectible spirit, just with a different focus on bonus reveals, charm themes, crystals, or desk treats.
+      <div className="mx-auto w-[min(1440px,calc(100%-48px))] px-6 py-[34px] sm:px-8">
+        <section className="flex min-h-[104px] items-center justify-center rounded-[28px] bg-[#fff8ec] px-6 py-6 text-center">
+          <div>
+            <h1 className="text-[32px] font-extrabold tracking-[-0.03em] text-[#245c57] sm:text-[44px]">Products</h1>
+            <p className="mt-2 text-sm leading-6 text-[#7f918e]">
+              {activeFilterLabel
+                ? `Browsing the live ${activeFilterLabel} catalog synced from Supabase.`
+                : "Browse the full Khazana Scoop range with the updated products grid layout."}
             </p>
           </div>
+        </section>
 
-          {catalogProducts.length > 0 ? (
-            <div className="mt-8 grid gap-5 lg:grid-cols-3">
-              {catalogProducts.map((product) => (
-              <Link className="rounded-[28px] border border-[#ebe2d8] bg-[#fffdfa] p-5 transition hover:-translate-y-1 hover:border-[#bde5df]" href={product.route} key={product.slug}>
-                <div className="relative h-56 overflow-hidden rounded-[24px] bg-[#fdf3eb]">
-                  <Image
-                    alt={product.name}
-                    className="object-cover"
-                    fill
-                    sizes="(min-width: 1024px) 27vw, 100vw"
-                    src={product.image}
-                  />
+        <section className="mt-[30px] overflow-x-auto overflow-y-hidden pb-2">
+          <div className="flex min-w-max gap-6 px-2 pb-3 md:justify-center">
+            <Link
+              className="group w-[104px] text-center"
+              href={`/products${sort !== "featured" ? `?sort=${encodeURIComponent(sort)}` : ""}`}
+            >
+              <div className={`mx-auto mb-2 grid h-[88px] w-[88px] place-items-center overflow-hidden rounded-[18px] border-2 bg-[#ffe8dc] transition ${!filters.category && !filters.collection ? "border-[#19b8b2] shadow-[0_8px_22px_rgba(38,78,72,0.08)]" : "border-transparent group-hover:border-[#19b8b2]"}`}>
+                <span className="text-[30px]">🛍️</span>
+              </div>
+              <span className="block min-h-[34px] text-[12px] font-bold uppercase leading-[1.35] text-[#244f4b]">All Products</span>
+            </Link>
+
+            {homeData.categories.slice(0, 5).map((category) => {
+              const href = `/products?category=${encodeURIComponent(category.slug)}${sort !== "featured" ? `&sort=${encodeURIComponent(sort)}` : ""}`;
+              const active = filters.category === category.slug;
+
+              return (
+                <Link className="group w-[104px] text-center" href={href} key={category.slug}>
+                  <div className={`relative mx-auto mb-2 h-[88px] w-[88px] overflow-hidden rounded-[18px] border-2 transition ${active ? "border-[#19b8b2] shadow-[0_8px_22px_rgba(38,78,72,0.08)]" : "border-transparent group-hover:border-[#19b8b2]"}`}>
+                    <Image alt={category.name} className="object-cover" fill sizes="88px" src={category.image} />
+                  </div>
+                  <span className="block min-h-[34px] text-[12px] font-bold uppercase leading-[1.35] text-[#244f4b]">
+                    {category.name}
+                  </span>
+                </Link>
+              );
+            })}
+          </div>
+        </section>
+
+        <section className="mb-6 mt-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <p className="text-[15px] font-bold text-[#244f4b]">
+              {products.length} product{products.length === 1 ? "" : "s"} available
+            </p>
+            {activeFilterLabel ? (
+              <p className="mt-1 text-sm text-[#7f918e]">Showing: {activeFilterLabel}</p>
+            ) : null}
+          </div>
+
+          <form action="/products" className="flex items-center gap-3 text-[15px] text-[#244f4b]" method="get">
+            {filters.category ? <input name="category" type="hidden" value={filters.category} /> : null}
+            {filters.collection ? <input name="collection" type="hidden" value={filters.collection} /> : null}
+            <label className="font-bold" htmlFor="sort">
+              Sort
+            </label>
+            <select
+              className="rounded-full border border-[#eee5dc] bg-white px-4 py-2 outline-none"
+              defaultValue={sort}
+              id="sort"
+              name="sort"
+            >
+              <option value="featured">Featured</option>
+              <option value="price-asc">Price: Low to High</option>
+              <option value="price-desc">Price: High to Low</option>
+              <option value="name-asc">Name: A to Z</option>
+            </select>
+            <button className="rounded-full bg-[#19b8b2] px-4 py-2 text-sm font-bold text-white" type="submit">
+              Apply
+            </button>
+          </form>
+        </section>
+
+        {products.length > 0 ? (
+          <section className="grid gap-[26px] sm:grid-cols-2 xl:grid-cols-4">
+            {products.map((product) => (
+              <Link
+                className="overflow-hidden rounded-[24px] border border-[#eee5dc] bg-white shadow-[0_3px_12px_rgba(30,73,68,0.04)] transition hover:-translate-y-1 hover:shadow-[0_8px_22px_rgba(38,78,72,0.08)]"
+                href={product.route}
+                key={product.slug}
+              >
+                <div className="relative aspect-square overflow-hidden bg-[#faf8f7]">
+                  <Image alt={product.name} className="object-cover" fill sizes="(min-width: 1280px) 23vw, (min-width: 640px) 45vw, 100vw" src={product.image} />
                 </div>
-                <div className="mt-5">
-                  <p className="text-xs font-black uppercase tracking-[0.18em] text-[#18a59e]">{product.eyebrow}</p>
-                  <h3 className="mt-3 text-3xl font-black tracking-[-0.04em] text-[#35534d]">{product.name}</h3>
-                  <p className="mt-3 text-sm leading-7 text-[#667b75]">{product.summary}</p>
-                  <div className="mt-5 flex items-center justify-between gap-3">
-                    <div className="flex flex-col gap-1">
-                      <strong className="text-sm uppercase tracking-[0.1em] text-[#35534d]">{product.priceLabel}</strong>
-                      {product.originalPriceLabel ? (
-                        <span className="text-xs text-[#8b9b97] line-through">{product.originalPriceLabel}</span>
-                      ) : null}
-                    </div>
-                    <span className="inline-flex items-center gap-2 text-sm font-black uppercase tracking-[0.1em] text-[#35534d]">
-                      Explore <ArrowRight size={16} />
-                    </span>
+                <div className="p-[18px]">
+                  <span className="mb-2 block text-[11px] font-extrabold uppercase tracking-[0.08em] text-[#19b8b2]">
+                    {productTag(product)}
+                  </span>
+                  <h2 className="text-lg font-bold leading-[1.3] text-[#245c57]">{product.name}</h2>
+                  <div className="mt-4 flex items-center justify-between gap-3">
+                    <span className="text-[17px] font-extrabold text-[#245c57]">{product.priceLabel}</span>
+                    <span className="text-[12px] font-extrabold uppercase text-[#19b8b2]">View Product</span>
                   </div>
                 </div>
               </Link>
-              ))}
-            </div>
-          ) : (
-            <div className="mt-8 rounded-[28px] border border-dashed border-[#d7e8e3] bg-[#f9fffe] px-5 py-10 text-center text-sm leading-7 text-[#667b75]">
-              No products matched that filter yet. Try another category or collection from the live catalog.
-            </div>
-          )}
-        </section>
+            ))}
+          </section>
+        ) : (
+          <section className="rounded-[24px] border border-dashed border-[#ddd2c8] bg-white px-6 py-12 text-center">
+            <h2 className="text-2xl font-extrabold tracking-[-0.03em] text-[#245c57]">No products matched this filter</h2>
+            <p className="mt-3 text-sm leading-7 text-[#7f918e]">
+              Try switching categories or clearing the active filter to see the full live catalog again.
+            </p>
+          </section>
+        )}
       </div>
-    </PageChrome>
+
+      <StorefrontFooter />
+    </main>
   );
 }

@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { CircleUserRound, MapPin, Search, ShoppingBag } from "lucide-react";
 import { useCatalogCart } from "@/hooks/use-catalog-cart";
@@ -8,7 +9,9 @@ const footerColumns = [
   {
     title: "Shop",
     links: [
-      { label: "Mystery scoops", href: "/mystery-scoops" },
+      { label: "Mystery Scoop", href: "/mystery-scoop" },
+      { label: "Build your scoop", href: "/build-your-own-scoop" },
+      { label: "Hampers", href: "/hampers" },
       { label: "Products", href: "/products" },
       { label: "Lucky capsules", href: "/products/lucky-capsules" },
       { label: "Charm mixes", href: "/products/charm-mixes" },
@@ -34,14 +37,27 @@ const footerColumns = [
   },
 ];
 
-export function StorefrontLogo(): React.ReactElement {
+export function StorefrontLogo({
+  priority = false,
+  widthClassName = "w-[220px] sm:w-[260px] lg:w-[320px]",
+}: {
+  priority?: boolean;
+  widthClassName?: string;
+} = {}): React.ReactElement {
   return (
     <Link
       aria-label="Khazana Scoop home"
-      className="inline-flex items-center font-baloo text-3xl font-bold tracking-tight text-[#C5B3D3] hover:text-[#1e293b] transition-colors"
+      className={`inline-flex items-center ${widthClassName} transition-transform duration-200 hover:scale-[1.01]`}
       href="/"
     >
-      KHAZANA SCOOP
+      <Image
+        alt="Khazana Scoop"
+        className="h-auto w-full"
+        height={166}
+        priority={priority}
+        src="/brand/khazana-scoop-logo.png"
+        width={1216}
+      />
     </Link>
   );
 }
@@ -52,6 +68,17 @@ export function StorefrontHeader({
   currentPath?: string;
 }): React.ReactElement {
   const { itemCount } = useCatalogCart();
+  const navItems = [
+    { href: "/", label: "HOME", matchPaths: ["/"] },
+    { href: "/products", label: "PRODUCTS", matchPaths: ["/products"] },
+    {
+      href: "/mystery-scoops",
+      label: "SCOOP BUILDER",
+      matchPaths: ["/mystery-scoops", "/mystery-scoop", "/build-your-own-scoop"],
+    },
+    { href: "/hampers", label: "HAMPERS", matchPaths: ["/hampers"] },
+    { href: "/about", label: "ABOUT US", matchPaths: ["/about"] },
+  ];
 
   return (
     <>
@@ -69,21 +96,20 @@ export function StorefrontHeader({
           </button>
         </div>
         
-        <nav className="hidden lg:flex flex-1 items-center gap-8 font-baloo text-lg font-medium text-[#1e293b]">
-          {[
-            { label: 'HOME', href: '/' },
-            { label: 'PRODUCTS', href: '/products' },
-            { label: 'MYSTERY SCOOPS', href: '/mystery-scoops' },
-            { label: 'ABOUT US', href: '/about' },
-          ].map((item) => (
-            <Link key={item.href} href={item.href} className={`transition-colors hover:text-[#C5B3D3] ${currentPath === item.href ? 'text-[#C5B3D3]' : ''}`}>
+        <nav className="hidden lg:flex flex-1 items-center gap-5 font-baloo text-base font-medium text-[#1e293b] xl:gap-7 xl:text-lg">
+          {navItems.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              className={`whitespace-nowrap transition-colors hover:text-[#C5B3D3] ${item.matchPaths.includes(currentPath ?? "") ? "text-[#C5B3D3]" : ""}`}
+            >
               {item.label}
             </Link>
           ))}
         </nav>
 
         <div className="flex-1 flex justify-center lg:flex-none">
-          <StorefrontLogo />
+          <StorefrontLogo priority widthClassName="w-[180px] sm:w-[220px] lg:w-[260px] xl:w-[300px]" />
         </div>
 
         <div className="flex-1 flex justify-end items-center gap-4 lg:gap-6 text-[#1e293b]">
@@ -113,7 +139,7 @@ export function StorefrontFooter(): React.ReactElement {
       <div className="shell py-12 px-4 md:px-8 max-w-[1600px] mx-auto">
         <div className="grid gap-8 rounded-[34px] border border-[#FFE2E2] bg-white px-6 py-8 shadow-sm lg:grid-cols-[1.1fr_1.4fr] lg:px-10">
           <div className="space-y-5">
-            <StorefrontLogo />
+            <StorefrontLogo widthClassName="w-[220px] sm:w-[250px] lg:w-[300px]" />
             <div className="space-y-3 font-poppins text-sm leading-7 text-[#1e293b]/70">
               <p>
                 A collectible-first scoop shop with clear tracking, playful reveals, and customer-friendly add-ons.
