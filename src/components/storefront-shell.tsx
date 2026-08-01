@@ -89,14 +89,15 @@ export function StorefrontHeader({
         <span>•</span>
         <span>5-6 days delivery</span>
       </div>
-      <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-[#FFE2E2] py-4 px-4 md:px-8 flex items-center justify-between">
-        <div className="flex-1 lg:hidden">
-          <button className="p-2 text-[#1e293b]">
+      <header className="sticky top-0 z-50 flex items-center justify-between border-b border-[#FFE2E2] bg-white/95 px-4 py-4 backdrop-blur-sm md:px-8">
+        <div className="flex min-w-0 items-center gap-3 lg:flex-[0_0_auto] lg:gap-5">
+          <button className="p-2 text-[#1e293b] lg:hidden">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
           </button>
+          <StorefrontLogo priority widthClassName="w-[180px] sm:w-[220px] lg:w-[250px] xl:w-[290px]" />
         </div>
-        
-        <nav className="hidden lg:flex flex-1 items-center gap-5 font-baloo text-base font-medium text-[#1e293b] xl:gap-7 xl:text-lg">
+
+        <nav className="hidden min-w-0 flex-1 items-center justify-start gap-5 px-8 font-baloo text-base font-medium text-[#1e293b] lg:flex xl:gap-7 xl:px-10 xl:text-lg">
           {navItems.map((item) => (
             <Link
               key={item.href}
@@ -108,11 +109,7 @@ export function StorefrontHeader({
           ))}
         </nav>
 
-        <div className="flex-1 flex justify-center lg:flex-none">
-          <StorefrontLogo priority widthClassName="w-[180px] sm:w-[220px] lg:w-[260px] xl:w-[300px]" />
-        </div>
-
-        <div className="flex-1 flex justify-end items-center gap-4 lg:gap-6 text-[#1e293b]">
+        <div className="flex items-center justify-end gap-4 text-[#1e293b] lg:flex-[0_0_auto] lg:gap-6">
           <Link href="/products" aria-label="Search products" className="hover:text-[#C5B3D3] transition-colors">
             <Search size={22} strokeWidth={2.5} />
           </Link>
