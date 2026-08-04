@@ -22,6 +22,7 @@ type ProductRow = {
   available_colours: string[] | null;
   stock_quantity: number | string | null;
   active: boolean | null;
+  website_visible: boolean | null;
   category: string | null;
   category_id: number | string | null;
 };
@@ -406,8 +407,9 @@ export async function getStorefrontCatalogProducts(): Promise<StorefrontCatalogP
     const [products, categories, collections, links, images, discounts] = await Promise.all([
       fetchTable<ProductRow>("products", {
         select:
-          "id,name,view_name,slug,description,base_price,selling_price,primary_image_url,available_colours,stock_quantity,active,category_id",
+          "id,name,view_name,slug,description,base_price,selling_price,primary_image_url,available_colours,stock_quantity,active,website_visible,category_id",
         active: "eq.true",
+        website_visible: "eq.true",
         order: "sort_order.asc,name.asc,id.asc",
       }),
       fetchTable<CategoryRow>("categories", {
@@ -496,7 +498,7 @@ export async function getStorefrontCatalogProducts(): Promise<StorefrontCatalogP
         } satisfies StorefrontCatalogProduct;
       });
 
-    return mappedProducts.length > 0 ? mappedProducts : mapFallbackProducts();
+    return mappedProducts;
   } catch {
     return mapFallbackProducts();
   }
@@ -506,6 +508,11 @@ export async function getStorefrontCatalogProductBySlug(
   slug: string,
 ): Promise<StorefrontCatalogProduct | null> {
   const products = await getStorefrontCatalogProducts();
+
+  if (hasCatalogConfig()) {
+    return products.find((product) => product.slug === slug) ?? null;
+  }
+
   return products.find((product) => product.slug === slug) ?? mapFallbackProduct(slug);
 }
 

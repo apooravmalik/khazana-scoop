@@ -13,6 +13,8 @@ type ProductsPageProps = {
   searchParams?: Promise<{
     category?: string;
     collection?: string;
+    price?: string;
+    q?: string;
     sort?: string;
   }>;
 };
@@ -21,16 +23,95 @@ function productTag(product: StorefrontCatalogProduct): string {
   return product.category?.name || product.collections[0]?.name || product.eyebrow || "Khazana Scoop";
 }
 
+function matchesSearch(product: StorefrontCatalogProduct, query: string): boolean {
+  if (!query) {
+    return true;
+  }
+
+  const haystack = [
+    product.name,
+    product.summary,
+    product.description,
+    product.eyebrow,
+    product.category?.name ?? "",
+    ...product.collections.map((collection) => collection.name),
+  ]
+    .join(" ")
+    .toLowerCase();
+
+  return haystack.includes(query);
+}
+
+function matchesPriceBand(product: StorefrontCatalogProduct, priceBand: string): boolean {
+  if (!priceBand) {
+    return true;
+  }
+
+  const price = product.effectivePrice;
+  if (price === null) {
+    return false;
+  }
+
+  if (priceBand === "under-100") {
+    return price < 100;
+  }
+
+  if (priceBand === "100-500") {
+    return price >= 100 && price <= 500;
+  }
+
+  if (priceBand === "500-plus") {
+    return price > 500;
+  }
+
+  return true;
+}
+
+function buildProductsHref(filters: {
+  category?: string;
+  collection?: string;
+  price?: string;
+  q?: string;
+  sort?: string;
+}): string {
+  const search = new URLSearchParams();
+
+  if (filters.category) {
+    search.set("category", filters.category);
+  }
+
+  if (filters.collection) {
+    search.set("collection", filters.collection);
+  }
+
+  if (filters.price) {
+    search.set("price", filters.price);
+  }
+
+  if (filters.q) {
+    search.set("q", filters.q);
+  }
+
+  if (filters.sort && filters.sort !== "popularity") {
+    search.set("sort", filters.sort);
+  }
+
+  const query = search.toString();
+  return query ? `/products?${query}` : "/products";
+}
+
 export default async function ProductsPage({
   searchParams,
 }: ProductsPageProps): Promise<React.ReactElement> {
   const filters = (await searchParams) ?? {};
+  const searchQuery = filters.q?.trim().toLowerCase() ?? "";
+  const priceFilter = filters.price?.trim() ?? "";
   const homeData = await getStorefrontCatalogHomeData();
   const filteredProducts = filterStorefrontCatalogProducts(homeData.products, {
     categorySlug: filters.category,
     collectionSlug: filters.collection,
-  });
-  const sort = filters.sort ?? "featured";
+  }).filter((product) => matchesSearch(product, searchQuery) && matchesPriceBand(product, priceFilter));
+  const sort = filters.sort ?? "popularity";
   const products = [...filteredProducts].sort((left, right) => {
     if (sort === "price-asc") {
       return (left.effectivePrice ?? Number.MAX_SAFE_INTEGER) - (right.effectivePrice ?? Number.MAX_SAFE_INTEGER);
@@ -40,8 +121,8 @@ export default async function ProductsPage({
       return (right.effectivePrice ?? 0) - (left.effectivePrice ?? 0);
     }
 
-    if (sort === "name-asc") {
-      return left.name.localeCompare(right.name);
+    if (sort === "newest") {
+      return right.id - left.id;
     }
 
     return 0;
@@ -52,6 +133,15 @@ export default async function ProductsPage({
     : filters.category
       ? homeData.categories.find((category) => category.slug === filters.category)?.name
       : null;
+  const activePriceLabel =
+    priceFilter === "under-100"
+      ? "Under ₹100"
+      : priceFilter === "100-500"
+        ? "₹100 to ₹500"
+        : priceFilter === "500-plus"
+          ? "Above ₹500"
+          : null;
+  const hasActiveFilters = Boolean(filters.category || filters.collection || searchQuery || priceFilter || sort !== "popularity");
 
   return (
     <main className="min-h-screen bg-[#fffdf9]">
@@ -73,7 +163,11 @@ export default async function ProductsPage({
           <div className="flex min-w-max gap-6 px-2 pb-3 md:justify-center">
             <Link
               className="group w-[104px] text-center"
-              href={`/products${sort !== "featured" ? `?sort=${encodeURIComponent(sort)}` : ""}`}
+              href={buildProductsHref({
+                price: priceFilter || undefined,
+                q: filters.q,
+                sort,
+              })}
             >
               <div className={`mx-auto mb-2 grid h-[88px] w-[88px] place-items-center overflow-hidden rounded-[18px] border-2 bg-[#ffe8dc] transition ${!filters.category && !filters.collection ? "border-[#19b8b2] shadow-[0_8px_22px_rgba(38,78,72,0.08)]" : "border-transparent group-hover:border-[#19b8b2]"}`}>
                 <span className="text-[30px]">🛍️</span>
@@ -82,7 +176,12 @@ export default async function ProductsPage({
             </Link>
 
             {homeData.categories.slice(0, 5).map((category) => {
-              const href = `/products?category=${encodeURIComponent(category.slug)}${sort !== "featured" ? `&sort=${encodeURIComponent(sort)}` : ""}`;
+              const href = buildProductsHref({
+                category: category.slug,
+                price: priceFilter || undefined,
+                q: filters.q,
+                sort,
+              });
               const active = filters.category === category.slug;
 
               return (
@@ -99,37 +198,112 @@ export default async function ProductsPage({
           </div>
         </section>
 
-        <section className="mb-6 mt-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <section className="mt-6 rounded-[26px] border border-[#eee5dc] bg-white px-4 py-4 shadow-[0_6px_18px_rgba(30,73,68,0.05)] sm:px-5">
+          <form action="/products" className="grid gap-3 lg:grid-cols-[minmax(0,1.5fr)_repeat(3,minmax(0,0.8fr))_auto]" method="get">
+            {filters.collection ? <input name="collection" type="hidden" value={filters.collection} /> : null}
+
+            <label className="flex flex-col gap-2">
+              <span className="text-[12px] font-extrabold uppercase tracking-[0.08em] text-[#244f4b]">Search</span>
+              <input
+                className="w-full rounded-full border border-[#eee5dc] bg-[#fffdfa] px-4 py-3 text-sm text-[#244f4b] outline-none transition focus:border-[#19b8b2]"
+                defaultValue={filters.q ?? ""}
+                name="q"
+                placeholder="Search products, categories, or collections"
+                type="search"
+              />
+            </label>
+
+            <label className="flex flex-col gap-2">
+              <span className="text-[12px] font-extrabold uppercase tracking-[0.08em] text-[#244f4b]">Category</span>
+              <select
+                className="w-full rounded-full border border-[#eee5dc] bg-[#fffdfa] px-4 py-3 text-sm text-[#244f4b] outline-none transition focus:border-[#19b8b2]"
+                defaultValue={filters.category ?? ""}
+                name="category"
+              >
+                <option value="">All categories</option>
+                {homeData.categories.map((category) => (
+                  <option key={category.slug} value={category.slug}>
+                    {category.name}
+                  </option>
+                ))}
+              </select>
+            </label>
+
+            <label className="flex flex-col gap-2">
+              <span className="text-[12px] font-extrabold uppercase tracking-[0.08em] text-[#244f4b]">Price</span>
+              <select
+                className="w-full rounded-full border border-[#eee5dc] bg-[#fffdfa] px-4 py-3 text-sm text-[#244f4b] outline-none transition focus:border-[#19b8b2]"
+                defaultValue={priceFilter}
+                name="price"
+              >
+                <option value="">All prices</option>
+                <option value="under-100">Under ₹100</option>
+                <option value="100-500">₹100 to ₹500</option>
+                <option value="500-plus">Above ₹500</option>
+              </select>
+            </label>
+
+            <label className="flex flex-col gap-2">
+              <span className="text-[12px] font-extrabold uppercase tracking-[0.08em] text-[#244f4b]">Sort</span>
+              <select
+                className="w-full rounded-full border border-[#eee5dc] bg-[#fffdfa] px-4 py-3 text-sm text-[#244f4b] outline-none transition focus:border-[#19b8b2]"
+                defaultValue={sort}
+                id="sort"
+                name="sort"
+              >
+                <option value="popularity">Popularity</option>
+                <option value="newest">Newest</option>
+                <option value="price-asc">Price: Low to High</option>
+                <option value="price-desc">Price: High to Low</option>
+              </select>
+            </label>
+
+            <div className="flex items-end gap-3 lg:justify-end">
+              <button className="rounded-full bg-[#19b8b2] px-5 py-3 text-sm font-bold text-white transition hover:bg-[#169f9a]" type="submit">
+                Apply
+              </button>
+              {hasActiveFilters ? (
+                <Link
+                  className="rounded-full border border-[#eee5dc] px-5 py-3 text-sm font-bold text-[#244f4b] transition hover:border-[#19b8b2] hover:text-[#19b8b2]"
+                  href="/products"
+                >
+                  Clear
+                </Link>
+              ) : null}
+            </div>
+          </form>
+        </section>
+
+        <section className="mb-6 mt-6 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
           <div>
             <p className="text-[15px] font-bold text-[#244f4b]">
               {products.length} product{products.length === 1 ? "" : "s"} available
             </p>
-            {activeFilterLabel ? (
-              <p className="mt-1 text-sm text-[#7f918e]">Showing: {activeFilterLabel}</p>
+            {(activeFilterLabel || activePriceLabel || searchQuery) ? (
+              <p className="mt-1 text-sm leading-6 text-[#7f918e]">
+                {[
+                  activeFilterLabel ? `Category: ${activeFilterLabel}` : null,
+                  activePriceLabel ? `Price: ${activePriceLabel}` : null,
+                  searchQuery ? `Search: "${filters.q?.trim()}"` : null,
+                ]
+                  .filter(Boolean)
+                  .join(" • ")}
+              </p>
             ) : null}
           </div>
 
-          <form action="/products" className="flex items-center gap-3 text-[15px] text-[#244f4b]" method="get">
-            {filters.category ? <input name="category" type="hidden" value={filters.category} /> : null}
-            {filters.collection ? <input name="collection" type="hidden" value={filters.collection} /> : null}
-            <label className="font-bold" htmlFor="sort">
-              Sort
-            </label>
-            <select
-              className="rounded-full border border-[#eee5dc] bg-white px-4 py-2 outline-none"
-              defaultValue={sort}
-              id="sort"
-              name="sort"
-            >
-              <option value="featured">Featured</option>
-              <option value="price-asc">Price: Low to High</option>
-              <option value="price-desc">Price: High to Low</option>
-              <option value="name-asc">Name: A to Z</option>
-            </select>
-            <button className="rounded-full bg-[#19b8b2] px-4 py-2 text-sm font-bold text-white" type="submit">
-              Apply
-            </button>
-          </form>
+          <div className="text-sm text-[#7f918e]">
+            Sorted by{" "}
+            <span className="font-bold text-[#244f4b]">
+              {sort === "newest"
+                ? "Newest"
+                : sort === "price-asc"
+                  ? "Price: Low to High"
+                  : sort === "price-desc"
+                    ? "Price: High to Low"
+                    : "Popularity"}
+            </span>
+          </div>
         </section>
 
         {products.length > 0 ? (

@@ -76,7 +76,6 @@ export function StorefrontHeader({
       label: "SCOOP BUILDER",
       matchPaths: ["/mystery-scoops", "/mystery-scoop", "/build-your-own-scoop"],
     },
-    { href: "/hampers", label: "HAMPERS", matchPaths: ["/hampers"] },
     { href: "/about", label: "ABOUT US", matchPaths: ["/about"] },
   ];
 
@@ -94,10 +93,10 @@ export function StorefrontHeader({
           <button className="p-2 text-[#1e293b] lg:hidden">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
           </button>
-          <StorefrontLogo priority widthClassName="w-[180px] sm:w-[220px] lg:w-[250px] xl:w-[290px]" />
+          <StorefrontLogo priority widthClassName="w-[198px] sm:w-[242px] lg:w-[275px] xl:w-[319px]" />
         </div>
 
-        <nav className="hidden min-w-0 flex-1 items-center justify-start gap-5 px-8 font-baloo text-base font-medium text-[#1e293b] lg:flex xl:gap-7 xl:px-10 xl:text-lg">
+        <nav className="hidden min-w-0 flex-1 items-center justify-start gap-5 px-8 font-baloo text-sm font-medium text-[#1e293b] lg:flex xl:gap-7 xl:px-10 xl:text-base">
           {navItems.map((item) => (
             <Link
               key={item.href}
