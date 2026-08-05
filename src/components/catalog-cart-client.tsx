@@ -6,6 +6,7 @@ import Script from "next/script";
 import { CheckCircle2, Minus, Plus, ShieldCheck, ShoppingBag, Trash2 } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useCatalogCart } from "@/hooks/use-catalog-cart";
+import { calculateCatalogShippingPaise } from "@/lib/catalog-pricing";
 import type { StorefrontCatalogProduct } from "@/lib/catalog-types";
 
 type CatalogCartClientProps = {
@@ -95,7 +96,7 @@ export function CatalogCartClient({
     () => cartProducts.reduce((total, item) => total + item.lineTotalPaise, 0),
     [cartProducts],
   );
-  const shippingPaise = 0;
+  const shippingPaise = calculateCatalogShippingPaise(subtotalPaise);
   const totalPaise = subtotalPaise + shippingPaise;
 
   async function startRazorpayCheckout(event: React.FormEvent<HTMLFormElement>): Promise<void> {
@@ -321,6 +322,11 @@ export function CatalogCartClient({
               <span>Shipping</span>
               <strong>{shippingPaise === 0 ? "Free" : formatPaise(shippingPaise)}</strong>
             </div>
+            {subtotalPaise > 0 && shippingPaise > 0 ? (
+              <p className="text-xs leading-5 text-[#71827f]">
+                Add {formatPaise(50_000 - subtotalPaise)} more for free shipping.
+              </p>
+            ) : null}
             <div className="flex justify-between gap-4 text-lg font-black text-[#34524c]">
               <span>Total</span>
               <strong>{formatPaise(totalPaise)}</strong>
