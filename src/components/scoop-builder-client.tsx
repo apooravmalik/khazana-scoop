@@ -290,7 +290,7 @@ export function ScoopBuilderClient({
       )}
 
       <p className="mt-3 text-center text-[11px] leading-5 text-[#71827f]">
-        Free shipping across India. Dispatch in 1-2 days; delivery in approximately 5-6 days.
+        ₹80 shipping below ₹500; free shipping from ₹500. Dispatch in 1-2 days; delivery in approximately 5-6 days.
       </p>
 
       {message ? (

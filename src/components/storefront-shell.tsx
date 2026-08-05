@@ -82,7 +82,7 @@ export function StorefrontHeader({
   return (
     <>
       <div className="bg-[#F5CBCB] text-[#1e293b] py-2 flex justify-center items-center gap-2 md:gap-4 text-xs font-poppins font-semibold tracking-wide">
-        <span>Free Shipping</span>
+        <span>Free shipping ₹500+</span>
         <span>•</span>
         <span>PAN India</span>
         <span>•</span>

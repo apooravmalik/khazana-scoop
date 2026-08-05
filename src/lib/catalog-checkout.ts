@@ -2,6 +2,7 @@ import crypto from "node:crypto";
 import { ServiceError } from "@/lib/production-store";
 import { getStorefrontCatalogProducts } from "@/lib/catalog";
 import type { CatalogCartItem } from "@/lib/catalog-cart";
+import { calculateCatalogShippingPaise } from "@/lib/catalog-pricing";
 import type { StorefrontCatalogProduct } from "@/lib/catalog-types";
 
 type SupabaseCatalogProductRow = {
@@ -37,8 +38,6 @@ export type CatalogCheckoutSummary = {
 type InsertedSupabaseOrder = {
   id: number;
 };
-
-const defaultShippingPaise = 0;
 
 function getSupabaseRestConfig(): { key: string; url: string } {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL?.replace(/\/$/, "");
@@ -147,12 +146,13 @@ export function summarizeCatalogCheckout(
   items: ValidatedCatalogCheckoutItem[],
 ): CatalogCheckoutSummary {
   const subtotalPaise = sum(items, (item) => item.lineTotalPaise);
+  const shippingPaise = calculateCatalogShippingPaise(subtotalPaise);
 
   return {
     items,
     subtotalPaise,
-    shippingPaise: defaultShippingPaise,
-    totalPaise: subtotalPaise + defaultShippingPaise,
+    shippingPaise,
+    totalPaise: subtotalPaise + shippingPaise,
   };
 }
 

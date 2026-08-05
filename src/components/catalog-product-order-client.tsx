@@ -5,13 +5,14 @@ import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import {
   ArrowUpRight,
-  CheckCircle2,
+  ChevronDown,
   Minus,
   Plus,
   Sparkles,
 } from "lucide-react";
 import { useCatalogCart } from "@/hooks/use-catalog-cart";
 import type { StorefrontCatalogProduct } from "@/lib/catalog-types";
+import { buildProductInformationSections } from "@/lib/product-information";
 
 type CatalogProductOrderClientProps = {
   product: StorefrontCatalogProduct;
@@ -31,10 +32,10 @@ export function CatalogProductOrderClient({
     () => Array.from(new Set([product.image, ...product.gallery.map((image) => image.url)])).slice(0, 6),
     [product.gallery, product.image],
   );
-  const productFeatures =
-    product.highlights.length > 0
-      ? product.highlights.slice(0, 3)
-      : ["Easy to carry", "Ready to ship", "Mystery collectible"];
+  const productFeatures = product.highlights
+    .filter((feature) => !feature.toLowerCase().startsWith("category:"))
+    .slice(0, 3);
+  const informationSections = buildProductInformationSections(product);
 
   function updateQuantity(nextQuantity: number): void {
     setQuantity(Math.max(1, Math.min(maxQuantity, nextQuantity)));
@@ -107,14 +108,16 @@ export function CatalogProductOrderClient({
             {product.description || product.summary}
           </p>
 
-          <ul className="mt-5 grid gap-3">
-            {productFeatures.map((feature) => (
-              <li className="flex items-start gap-[11px] text-[15px] leading-[1.45] text-[#496b67]" key={feature}>
-                <Sparkles className="mt-0.5 text-[#ff7196]" size={18} />
-                <span>{feature}</span>
-              </li>
-            ))}
-          </ul>
+          {productFeatures.length > 0 ? (
+            <ul className="mt-5 grid gap-3">
+              {productFeatures.map((feature) => (
+                <li className="flex items-start gap-[11px] text-[15px] leading-[1.45] text-[#496b67]" key={feature}>
+                  <Sparkles className="mt-0.5 text-[#ff7196]" size={18} />
+                  <span>{feature}</span>
+                </li>
+              ))}
+            </ul>
+          ) : null}
 
           <div className="my-7 h-px bg-[#eadfce]" />
 
@@ -126,12 +129,7 @@ export function CatalogProductOrderClient({
             <span className="text-[13px] text-[#a0a7a6]">Inclusive of all taxes</span>
           </div>
 
-          <div className="inline-flex items-center gap-2 rounded-full bg-[#dcf8e9] px-[13px] py-[9px] text-[13px] font-bold text-[#188d57]">
-            <CheckCircle2 size={16} />
-            {product.stockQuantity} Available
-          </div>
-
-          <div className="mt-6 grid gap-[14px] sm:grid-cols-[145px_1fr] sm:items-stretch">
+          <div className="mt-5 grid gap-[14px] sm:grid-cols-[145px_1fr] sm:items-stretch">
             <div className="grid min-h-[48px] grid-cols-[44px_1fr_44px] items-center rounded-full border-2 border-[#14b8b4] bg-white p-[3px]">
               <button
                 aria-label="Decrease quantity"
@@ -187,27 +185,39 @@ export function CatalogProductOrderClient({
               <span className="text-base font-black text-[#e9b319]">✓</span>
               Easy returns support
             </span>
-            <span className="inline-flex items-center gap-2">
-              <span className="text-base font-black text-[#e9b319]">✓</span>
-              Guest checkout available
-            </span>
           </div>
 
-          <div className="mt-7 rounded-[24px] border border-[#d8ece7] bg-[#f5fffd] p-5">
-            <p className="text-sm font-black uppercase tracking-[0.12em] text-[#1f5752]">
-              Payment and guest checkout
-            </p>
-            <p className="mt-3 text-sm leading-7 text-[#627771]">
-              Shoppers can now add catalog products to cart, go through Razorpay without registering, and still have their name, email, phone number, address, and payment reference stored with the order.
-            </p>
-            <button
-              className="mt-4 inline-flex items-center gap-2 text-sm font-black uppercase tracking-[0.1em] text-[#0fb7b2]"
-              onClick={() => router.push("/checkout")}
-              type="button"
-            >
-              Go to checkout
-              <ArrowUpRight size={16} />
-            </button>
+          <div className="mt-7 overflow-hidden rounded-[22px] border border-[#d8e4e1] bg-white/70">
+            {informationSections.map((section) => (
+              <details
+                className="group border-b border-[#d8e4e1] last:border-b-0"
+                key={section.id}
+              >
+                <summary className="flex cursor-pointer list-none items-center justify-between gap-4 px-5 py-4 text-sm font-extrabold uppercase tracking-[0.08em] text-[#315d58] transition hover:bg-[#f5fffd] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#14b8b4] [&::-webkit-details-marker]:hidden">
+                  {section.title}
+                  <ChevronDown
+                    aria-hidden="true"
+                    className="shrink-0 transition-transform duration-200 group-open:rotate-180"
+                    size={18}
+                  />
+                </summary>
+                <div className="space-y-3 px-5 pb-5 pr-10 text-sm leading-7 text-[#627771]">
+                  {section.paragraphs.map((paragraph) => (
+                    <p key={paragraph}>{paragraph}</p>
+                  ))}
+                  {section.items.length > 0 ? (
+                    <ul className="grid gap-2 pt-1">
+                      {section.items.map((item) => (
+                        <li className="flex items-start gap-2" key={item}>
+                          <span className="mt-[11px] h-1.5 w-1.5 shrink-0 rounded-full bg-[#ff7196]" />
+                          <span>{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : null}
+                </div>
+              </details>
+            ))}
           </div>
         </div>
       </div>
