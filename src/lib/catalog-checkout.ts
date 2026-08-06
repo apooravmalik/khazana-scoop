@@ -13,6 +13,27 @@ type SupabaseCatalogProductRow = {
   unit_cost: number;
 };
 
+export type CatalogCheckoutSessionRow = {
+  id: string;
+  supabase_order_id: number | null;
+  customer_name: string;
+  customer_email: string;
+  customer_phone: string;
+  customer_address: string;
+  cart_snapshot: unknown;
+  subtotal_paise: number;
+  shipping_paise: number;
+  total_paise: number;
+  currency: string;
+  razorpay_order_id: string | null;
+  razorpay_payment_id: string | null;
+  razorpay_signature: string | null;
+  payment_status: string;
+  provider_payload: unknown;
+  created_at: string;
+  updated_at: string;
+};
+
 export type CatalogCheckoutContact = {
   customerAddress: string;
   customerEmail: string;
@@ -188,6 +209,85 @@ async function insertSupabaseOrder(payload: Record<string, unknown>): Promise<In
 
 async function deleteWhere(table: string, filter: string): Promise<void> {
   await restRequest<unknown>(`${table}?${filter}`, { method: "DELETE" });
+}
+
+export async function createCatalogCheckoutSession(payload: {
+  cartSnapshot: unknown;
+  currency: string;
+  customerAddress: string;
+  customerEmail: string;
+  customerName: string;
+  customerPhone: string;
+  paymentStatus: string;
+  razorpayOrderId: string | null;
+  shippingPaise: number;
+  subtotalPaise: number;
+  supabaseOrderId: number | null;
+  totalPaise: number;
+}): Promise<CatalogCheckoutSessionRow> {
+  const rows = await restRequest<CatalogCheckoutSessionRow[]>("catalog_checkout_sessions", {
+    method: "POST",
+    body: JSON.stringify([
+      {
+        cart_snapshot: payload.cartSnapshot,
+        currency: payload.currency,
+        customer_address: payload.customerAddress,
+        customer_email: payload.customerEmail,
+        customer_name: payload.customerName,
+        customer_phone: payload.customerPhone,
+        payment_status: payload.paymentStatus,
+        razorpay_order_id: payload.razorpayOrderId,
+        shipping_paise: payload.shippingPaise,
+        subtotal_paise: payload.subtotalPaise,
+        supabase_order_id: payload.supabaseOrderId,
+        total_paise: payload.totalPaise,
+      },
+    ]),
+  });
+
+  if (!rows[0]) {
+    throw new ServiceError("The checkout session could not be created.", 500);
+  }
+
+  return rows[0];
+}
+
+export async function getCatalogCheckoutSession(checkoutId: string): Promise<CatalogCheckoutSessionRow | null> {
+  try {
+    const rows = await restRequest<CatalogCheckoutSessionRow[]>(
+      `catalog_checkout_sessions?select=*&id=eq.${checkoutId}&limit=1`,
+      { method: "GET" },
+    );
+
+    return rows[0] ?? null;
+  } catch (error) {
+    if (
+      error instanceof ServiceError &&
+      error.message.includes("invalid input syntax for type uuid")
+    ) {
+      return null;
+    }
+
+    throw error;
+  }
+}
+
+export async function updateCatalogCheckoutSession(
+  checkoutId: string,
+  payload: Record<string, unknown>,
+): Promise<CatalogCheckoutSessionRow | null> {
+  const rows = await restRequest<CatalogCheckoutSessionRow[]>(
+    `catalog_checkout_sessions?id=eq.${checkoutId}`,
+    {
+      method: "PATCH",
+      body: JSON.stringify({
+        ...payload,
+        updated_at: new Date().toISOString(),
+      }),
+    },
+  );
+
+  return rows[0] ?? null;
 }
 
 export async function createSupabaseCatalogOrder(

@@ -16,6 +16,12 @@ type MarketingHomeProps = {
   homeData: StorefrontCatalogHomeData;
 };
 
+const mysterySquiggle =
+  "url(\"data:image/svg+xml,%3Csvg width='60' height='12' viewBox='0 0 60 12' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 6C5 1 9 1 13 6s8 5 12 0 8-5 12 0 8 5 12 0 8-5 10-1' fill='none' stroke='%23f49ab0' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E\")";
+
+const buildSquiggle =
+  "url(\"data:image/svg+xml,%3Csvg width='60' height='12' viewBox='0 0 60 12' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 6C5 1 9 1 13 6s8 5 12 0 8-5 12 0 8 5 12 0 8-5 10-1' fill='none' stroke='%23b58be8' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E\")";
+
 export function MarketingHome({ homeData }: MarketingHomeProps): React.ReactElement {
   const heroProduct = homeData.products[0] ?? null;
   const featuredCards = homeData.products.slice(1, 3);
@@ -112,90 +118,135 @@ export function MarketingHome({ homeData }: MarketingHomeProps): React.ReactElem
         </section>
       ) : null}
 
-      <section className="scoop-choice" aria-labelledby="scoop-choice-heading">
-        <div className="scoop-choice__inner">
-          <header className="scoop-choice__header">
-            <div className="scoop-choice__title-wrap">
-              <span className="scoop-choice__sparkle" aria-hidden="true">✦</span>
-              <h2 id="scoop-choice-heading">Choose your scoop</h2>
-              <span className="scoop-choice__sparkle" aria-hidden="true">✦</span>
+      <section aria-labelledby="scoop-choice-heading" className="bg-[#fcfaf7] px-4 py-14 md:px-8">
+        <div className="mx-auto max-w-[1160px]">
+          <header className="mx-auto mb-8 max-w-[760px] text-center md:mb-10">
+            <div className="inline-flex items-center justify-center gap-2.5 sm:gap-4">
+              <span aria-hidden="true" className="text-[20px] text-[#f69ab0] sm:text-[26px]">✦</span>
+              <h2
+                className="font-baloo text-[2.2rem] leading-[0.95] tracking-[-0.05em] text-[#173f3b] sm:text-[3rem] lg:text-[3.8rem]"
+                id="scoop-choice-heading"
+              >
+                Choose your scoop
+              </h2>
+              <span aria-hidden="true" className="text-[20px] text-[#b48bea] sm:text-[26px]">✦</span>
             </div>
-            <p className="scoop-choice__intro">
+            <p className="mt-4 text-[15px] leading-7 text-[#71827f] sm:text-[17px] sm:leading-8">
               Choose a surprise-filled scoop or build a box your way. Both options are easy to order
               and made for gifting, collecting, and cute little treats.
             </p>
           </header>
 
-          <div className="scoop-choice__grid">
-            <article className="scoop-card scoop-card--mystery">
-              <div className="scoop-card__content">
-                <p className="scoop-card__label">Surprise me</p>
-                <h3>Mystery<br />Scoop</h3>
-                <span className="scoop-card__squiggle" aria-hidden="true" />
-                <p className="scoop-card__description">
-                  Choose a size, share any three preferences, and let our team create a surprise mix
-                  especially for you.
-                </p>
-                <ul className="scoop-card__features" aria-label="Mystery Scoop benefits">
-                  {[
-                    "Any 3 preferences",
-                    "Personalised reel option",
-                    "Quick dispatch",
-                  ].map((benefit) => (
-                    <li key={benefit}>
-                      <span className="scoop-card__check" aria-hidden="true">✓</span>
-                      {benefit}
-                    </li>
-                  ))}
-                </ul>
-                <Link className="scoop-card__button" href="/mystery-scoop">
-                  Explore Mystery Scoop <ArrowRight aria-hidden="true" />
-                </Link>
-              </div>
-              <div className="scoop-card__media">
-                <Image
-                  alt="Pink Khazana Scoop mystery box filled with cute accessories and self-care products"
-                  className="scoop-card__image"
-                  fill
-                  sizes="(max-width: 720px) 100vw, (max-width: 1180px) 55vw, 28vw"
-                  src={heroProduct?.image ?? "/mystery-scoop-hero.png"}
-                />
+          <div className="grid gap-5 xl:grid-cols-2 xl:gap-7">
+            <article className="overflow-hidden rounded-[30px] border border-[#f1d3da] bg-gradient-to-br from-[#fff8f8] to-[#fff2f4] shadow-[0_18px_50px_rgba(38,54,50,0.08)]">
+              <div className="grid xl:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
+                <div className="flex flex-col p-6 sm:p-8 xl:p-10">
+                  <p className="mb-5 inline-flex self-start rounded-full border border-[#df526f] bg-white/70 px-4 py-2 text-[11px] font-extrabold uppercase tracking-[0.16em] text-[#df526f]">
+                    Surprise me
+                  </p>
+                  <h3 className="font-baloo text-[2.2rem] leading-[0.92] tracking-[-0.05em] text-[#173f3b] sm:text-[2.7rem]">
+                    Mystery
+                    <br />
+                    Scoop
+                  </h3>
+                  <div
+                    className="my-5 h-[10px] w-[54px] bg-contain bg-no-repeat"
+                    style={{ backgroundImage: mysterySquiggle }}
+                  />
+                  <p className="text-[15px] leading-7 text-[#71827f] sm:text-[16px]">
+                    Choose a size, share any three preferences, and let our team create a surprise mix
+                    especially for you.
+                  </p>
+                  <ul aria-label="Mystery Scoop benefits" className="my-6 grid gap-3">
+                    {[
+                      "Any 3 preferences",
+                      "Personalised reel option",
+                      "Quick dispatch",
+                    ].map((benefit) => (
+                      <li className="flex items-center gap-3 text-[15px] font-bold text-[#173f3b]" key={benefit}>
+                        <span
+                          aria-hidden="true"
+                          className="grid h-6 w-6 flex-none place-items-center rounded-full bg-[#f7a4b7] text-[13px] font-extrabold text-white"
+                        >
+                          ✓
+                        </span>
+                        {benefit}
+                      </li>
+                    ))}
+                  </ul>
+                  <Link
+                    className="mt-auto inline-flex min-h-[52px] w-full items-center justify-center gap-3 rounded-full bg-[#173f3b] px-5 text-center text-[15px] font-extrabold text-white transition hover:bg-[#0d5148] sm:w-fit sm:px-6"
+                    href="/mystery-scoop"
+                  >
+                    Explore Mystery Scoop <ArrowRight aria-hidden="true" size={18} />
+                  </Link>
+                </div>
+                <div className="relative min-h-[280px] overflow-hidden xl:min-h-full">
+                  <Image
+                    alt="Pink Khazana Scoop mystery box filled with cute accessories and self-care products"
+                    className="object-cover transition duration-500 xl:hover:scale-[1.03]"
+                    fill
+                    sizes="(min-width: 1280px) 28vw, (min-width: 768px) 50vw, 100vw"
+                    src={heroProduct?.image ?? "/mystery-scoop-hero.png"}
+                  />
+                  <div className="pointer-events-none absolute inset-x-0 top-0 h-[24%] bg-gradient-to-b from-[#fff2f4] to-transparent xl:inset-y-0 xl:left-0 xl:right-auto xl:h-auto xl:w-[26%] xl:bg-gradient-to-r" />
+                </div>
               </div>
             </article>
 
-            <article className="scoop-card scoop-card--build">
-              <div className="scoop-card__content">
-                <p className="scoop-card__label">Choose everything</p>
-                <h3>Build Your<br />Own Box</h3>
-                <span className="scoop-card__squiggle" aria-hidden="true" />
-                <p className="scoop-card__description">
-                  Pick your favourites from our collection and build a box that feels completely and
-                  uniquely yours.
-                </p>
-                <ul className="scoop-card__features" aria-label="Build Your Own Box benefits">
-                  {[
-                    "Size-based item limits",
-                    "Gift note support",
-                    "Personalised reel option",
-                  ].map((benefit) => (
-                    <li key={benefit}>
-                      <span className="scoop-card__check" aria-hidden="true">✓</span>
-                      {benefit}
-                    </li>
-                  ))}
-                </ul>
-                <Link className="scoop-card__button" href="/build-your-own-scoop">
-                  Build My Box <ArrowRight aria-hidden="true" />
-                </Link>
-              </div>
-              <div className="scoop-card__media">
-                <Image
-                  alt="Lilac Khazana Scoop build-your-own gift box filled with hand-picked products"
-                  className="scoop-card__image"
-                  fill
-                  sizes="(max-width: 720px) 100vw, (max-width: 1180px) 55vw, 28vw"
-                  src={featuredCards[0]?.image ?? heroProduct?.image ?? "/mystery-scoop-hero.png"}
-                />
+            <article className="overflow-hidden rounded-[30px] border border-[#ded4f3] bg-gradient-to-br from-[#faf7ff] to-[#f5f0ff] shadow-[0_18px_50px_rgba(38,54,50,0.08)]">
+              <div className="grid xl:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
+                <div className="flex flex-col p-6 sm:p-8 xl:p-10">
+                  <p className="mb-5 inline-flex self-start rounded-full border border-[#8b63d2] bg-white/70 px-4 py-2 text-[11px] font-extrabold uppercase tracking-[0.16em] text-[#8b63d2]">
+                    Choose everything
+                  </p>
+                  <h3 className="font-baloo text-[2.2rem] leading-[0.92] tracking-[-0.05em] text-[#173f3b] sm:text-[2.7rem]">
+                    Build Your
+                    <br />
+                    Own Box
+                  </h3>
+                  <div
+                    className="my-5 h-[10px] w-[54px] bg-contain bg-no-repeat"
+                    style={{ backgroundImage: buildSquiggle }}
+                  />
+                  <p className="text-[15px] leading-7 text-[#71827f] sm:text-[16px]">
+                    Pick your favourites from our collection and build a box that feels completely and
+                    uniquely yours.
+                  </p>
+                  <ul aria-label="Build Your Own Box benefits" className="my-6 grid gap-3">
+                    {[
+                      "Size-based item limits",
+                      "Gift note support",
+                      "Personalised reel option",
+                    ].map((benefit) => (
+                      <li className="flex items-center gap-3 text-[15px] font-bold text-[#173f3b]" key={benefit}>
+                        <span
+                          aria-hidden="true"
+                          className="grid h-6 w-6 flex-none place-items-center rounded-full bg-[#b894ec] text-[13px] font-extrabold text-white"
+                        >
+                          ✓
+                        </span>
+                        {benefit}
+                      </li>
+                    ))}
+                  </ul>
+                  <Link
+                    className="mt-auto inline-flex min-h-[52px] w-full items-center justify-center gap-3 rounded-full bg-[#173f3b] px-5 text-center text-[15px] font-extrabold text-white transition hover:bg-[#0d5148] sm:w-fit sm:px-6"
+                    href="/build-your-own-scoop"
+                  >
+                    Build My Box <ArrowRight aria-hidden="true" size={18} />
+                  </Link>
+                </div>
+                <div className="relative min-h-[280px] overflow-hidden xl:min-h-full">
+                  <Image
+                    alt="Lilac Khazana Scoop build-your-own gift box filled with hand-picked products"
+                    className="object-cover transition duration-500 xl:hover:scale-[1.03]"
+                    fill
+                    sizes="(min-width: 1280px) 28vw, (min-width: 768px) 50vw, 100vw"
+                    src={featuredCards[0]?.image ?? heroProduct?.image ?? "/mystery-scoop-hero.png"}
+                  />
+                  <div className="pointer-events-none absolute inset-x-0 top-0 h-[24%] bg-gradient-to-b from-[#f5f0ff] to-transparent xl:inset-y-0 xl:left-0 xl:right-auto xl:h-auto xl:w-[26%] xl:bg-gradient-to-r" />
+                </div>
               </div>
             </article>
           </div>

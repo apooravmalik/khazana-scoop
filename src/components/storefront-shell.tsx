@@ -2,7 +2,8 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { CircleUserRound, MapPin, Search, ShoppingBag } from "lucide-react";
+import { useEffect, useState } from "react";
+import { CircleUserRound, MapPin, Search, ShoppingBag, X } from "lucide-react";
 import { useCatalogCart } from "@/hooks/use-catalog-cart";
 
 const footerColumns = [
@@ -68,6 +69,7 @@ export function StorefrontHeader({
   currentPath?: string;
 }): React.ReactElement {
   const { itemCount } = useCatalogCart();
+  const [menuOpen, setMenuOpen] = useState(false);
   const navItems = [
     { href: "/", label: "HOME", matchPaths: ["/"] },
     { href: "/products", label: "PRODUCTS", matchPaths: ["/products"] },
@@ -76,8 +78,13 @@ export function StorefrontHeader({
       label: "SCOOP BUILDER",
       matchPaths: ["/mystery-scoops", "/mystery-scoop", "/build-your-own-scoop"],
     },
+    { href: "/hampers", label: "HAMPERS", matchPaths: ["/hampers"] },
     { href: "/about", label: "ABOUT US", matchPaths: ["/about"] },
   ];
+
+  useEffect(() => {
+    setMenuOpen(false);
+  }, [currentPath]);
 
   return (
     <>
@@ -90,8 +97,21 @@ export function StorefrontHeader({
       </div>
       <header className="sticky top-0 z-50 flex items-center justify-between border-b border-[#FFE2E2] bg-white/95 px-3 py-3 backdrop-blur-sm sm:px-4 md:px-8">
         <div className="flex min-w-0 items-center gap-2 sm:gap-3 lg:flex-[0_0_auto] lg:gap-5">
-          <button className="p-2 text-[#1e293b] lg:hidden" type="button" aria-label="Open menu">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+          <button
+            aria-expanded={menuOpen}
+            aria-label={menuOpen ? "Close menu" : "Open menu"}
+            aria-controls="storefront-mobile-menu"
+            className="rounded-full border border-[#FFE2E2] p-2 text-[#1e293b] transition-colors hover:bg-[#FBEFEF] lg:hidden"
+            onClick={() => setMenuOpen((open) => !open)}
+            type="button"
+          >
+            {menuOpen ? (
+              <X size={22} strokeWidth={2.4} />
+            ) : (
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M3 12h18M3 6h18M3 18h18" />
+              </svg>
+            )}
           </button>
           <StorefrontLogo priority widthClassName="w-[150px] sm:w-[198px] md:w-[242px] lg:w-[275px] xl:w-[319px]" />
         </div>
@@ -125,6 +145,54 @@ export function StorefrontHeader({
           </Link>
         </div>
       </header>
+      {menuOpen ? (
+        <div className="sticky top-[73px] z-40 lg:hidden">
+          <button
+            aria-label="Close mobile menu overlay"
+            className="fixed inset-0 bg-[#1e293b]/20"
+            onClick={() => setMenuOpen(false)}
+            type="button"
+          />
+          <div
+            className="relative mx-3 mt-3 overflow-hidden rounded-[28px] border border-[#FFE2E2] bg-white shadow-[0_24px_60px_rgba(30,41,59,0.16)]"
+            id="storefront-mobile-menu"
+          >
+            <nav aria-label="Mobile navigation" className="grid gap-2 p-3">
+              {navItems.map((item) => {
+                const isActive = item.matchPaths.includes(currentPath ?? "");
+                return (
+                  <Link
+                    key={item.href}
+                    className={`rounded-[20px] px-4 py-3 font-baloo text-lg tracking-[-0.03em] transition-colors ${
+                      isActive ? "bg-[#F5CBCB] text-[#1e293b]" : "bg-[#FBEFEF] text-[#1e293b] hover:bg-[#F5CBCB]"
+                    }`}
+                    href={item.href}
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    {item.label}
+                  </Link>
+                );
+              })}
+            </nav>
+            <div className="grid grid-cols-2 gap-3 border-t border-[#FFE2E2] bg-[#FFF9F6] p-3">
+              <Link
+                className="rounded-[18px] border border-[#FFE2E2] bg-white px-4 py-3 text-center font-poppins text-sm font-semibold text-[#1e293b] transition-colors hover:bg-[#FBEFEF]"
+                href="/account"
+                onClick={() => setMenuOpen(false)}
+              >
+                Account
+              </Link>
+              <Link
+                className="rounded-[18px] border border-[#FFE2E2] bg-white px-4 py-3 text-center font-poppins text-sm font-semibold text-[#1e293b] transition-colors hover:bg-[#FBEFEF]"
+                href="/cart"
+                onClick={() => setMenuOpen(false)}
+              >
+                Cart{itemCount > 0 ? ` (${itemCount})` : ""}
+              </Link>
+            </div>
+          </div>
+        </div>
+      ) : null}
     </>
   );
 }

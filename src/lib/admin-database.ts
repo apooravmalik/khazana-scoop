@@ -282,7 +282,7 @@ function getDemoTableRows(key: AdminTableKey): Record<string, unknown>[] {
 
 async function getTableCount(key: AdminTableKey): Promise<number> {
   const prisma = getPrisma();
-  const rows = await prisma.$queryRawUnsafe<CountRow[]>(`select count(*) as count from ${getQuotedTableName(key)}`);
+  const rows = (await prisma.$queryRawUnsafe(`select count(*) as count from ${getQuotedTableName(key)}`)) as CountRow[];
   const value = rows[0]?.count ?? 0;
 
   return Number(value);
@@ -290,9 +290,9 @@ async function getTableCount(key: AdminTableKey): Promise<number> {
 
 async function getTableRows(key: AdminTableKey): Promise<Record<string, unknown>[]> {
   const prisma = getPrisma();
-  return prisma.$queryRawUnsafe<Record<string, unknown>[]>(
+  return (await prisma.$queryRawUnsafe(
     `select * from ${getQuotedTableName(key)} order by ${getOrderColumn(key)} desc limit 25`,
-  );
+  )) as Record<string, unknown>[];
 }
 
 function getQuotedTableName(key: AdminTableKey): string {

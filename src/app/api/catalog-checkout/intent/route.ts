@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import {
+  createCatalogCheckoutSession,
   createRazorpayOrder,
   createSupabaseCatalogOrder,
   summarizeCatalogCheckout,
@@ -8,7 +9,6 @@ import {
   type CatalogCheckoutContact,
 } from "@/lib/catalog-checkout";
 import { jsonError } from "@/lib/api-utils";
-import { getPrisma } from "@/lib/clients";
 import { requireDatabase } from "@/lib/production-store";
 
 const catalogCheckoutIntentSchema = z.object({
@@ -53,27 +53,25 @@ export async function POST(request: Request): Promise<NextResponse> {
       supabaseOrderId,
     });
 
-    const checkout = await getPrisma().catalogCheckout.create({
-      data: {
-        supabaseOrderId,
-        customerName: contact.customerName,
-        customerEmail: contact.customerEmail,
-        customerPhone: contact.customerPhone,
-        customerAddress: contact.customerAddress,
-        cartSnapshot: validatedItems.map((item) => ({
-          name: item.product.name,
-          pricePaise: item.effectivePricePaise,
-          productId: item.product.id,
-          quantity: item.quantity,
-          slug: item.product.slug,
-        })),
-        subtotalPaise: summary.subtotalPaise,
-        shippingPaise: summary.shippingPaise,
-        totalPaise: summary.totalPaise,
-        currency: razorpayOrder.currency,
-        paymentStatus: "created",
-        razorpayOrderId: razorpayOrder.id,
-      },
+    const checkout = await createCatalogCheckoutSession({
+      cartSnapshot: validatedItems.map((item) => ({
+        name: item.product.name,
+        pricePaise: item.effectivePricePaise,
+        productId: item.product.id,
+        quantity: item.quantity,
+        slug: item.product.slug,
+      })),
+      currency: razorpayOrder.currency,
+      customerAddress: contact.customerAddress,
+      customerEmail: contact.customerEmail,
+      customerName: contact.customerName,
+      customerPhone: contact.customerPhone,
+      paymentStatus: "created",
+      razorpayOrderId: razorpayOrder.id,
+      shippingPaise: summary.shippingPaise,
+      subtotalPaise: summary.subtotalPaise,
+      supabaseOrderId,
+      totalPaise: summary.totalPaise,
     });
 
     return NextResponse.json({
