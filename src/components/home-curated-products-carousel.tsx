@@ -49,7 +49,7 @@ export function HomeCuratedProductsCarousel({
       >
         {products.map((product) => (
           <Link
-            className="block w-[250px] shrink-0 rounded-[22px] border border-[#eadfd8] bg-white p-4 transition hover:-translate-y-1"
+            className="block w-[214px] shrink-0 rounded-[22px] border border-[#eadfd8] bg-white p-4 transition hover:-translate-y-1 sm:w-[250px]"
             data-curated-card
             href={product.route}
             key={product.slug}
@@ -59,14 +59,14 @@ export function HomeCuratedProductsCarousel({
                 alt={product.name}
                 className="object-cover"
                 fill
-                sizes="250px"
+                sizes="(min-width: 640px) 250px, 214px"
                 src={product.image}
               />
             </div>
             <span className="mt-4 block text-[11px] font-extrabold uppercase tracking-[0.08em] text-[#19b8b2]">
               {getPrimaryTag(product)}
             </span>
-            <h3 className="mt-2 text-lg font-bold leading-[1.3] text-[#245c57]">{product.name}</h3>
+            <h3 className="mt-2 text-[15px] font-bold leading-[1.3] text-[#245c57] sm:text-lg">{product.name}</h3>
             <div className="mt-4 flex items-center justify-between gap-3">
               <span className="text-sm font-extrabold text-[#245c57]">{product.priceLabel}</span>
               <span className="text-[12px] font-extrabold uppercase text-[#19b8b2]">View</span>

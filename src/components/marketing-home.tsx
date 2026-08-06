@@ -37,14 +37,14 @@ export function MarketingHome({ homeData }: MarketingHomeProps): React.ReactElem
         <section className="px-4 pt-4 md:px-8">
           <div className="relative mx-auto max-w-[1440px] overflow-hidden rounded-[36px] border border-[#eddcd3] bg-[#fff8f2]">
             <div className="grid gap-0 lg:grid-cols-[1.05fr_0.95fr]">
-              <div className="px-6 py-10 sm:px-8 lg:px-12 lg:py-14">
+              <div className="px-5 py-8 sm:px-8 sm:py-10 lg:px-12 lg:py-14">
                 <span className="inline-flex rounded-full bg-white px-4 py-2 text-[11px] font-extrabold uppercase tracking-[0.08em] text-[#245c57] shadow-sm">
                   {heroProduct.eyebrow}
                 </span>
-                <h1 className="mt-5 max-w-[10ch] text-[42px] font-black leading-[0.95] tracking-[-0.04em] text-[#173f3b] sm:text-[54px] lg:text-[68px]">
+                <h1 className="mt-5 max-w-[10ch] text-[34px] font-black leading-[0.95] tracking-[-0.04em] text-[#173f3b] sm:text-[54px] lg:text-[68px]">
                   {heroProduct.name}
                 </h1>
-                <p className="mt-4 max-w-[56ch] text-sm leading-7 text-[#71827f] sm:text-[15px]">
+                <p className="mt-4 max-w-[56ch] text-[13px] leading-6 text-[#71827f] sm:text-[15px] sm:leading-7">
                   {heroProduct.description || heroProduct.summary}
                 </p>
                 <div className="mt-6 flex flex-wrap gap-3">
@@ -71,7 +71,7 @@ export function MarketingHome({ homeData }: MarketingHomeProps): React.ReactElem
                 </div>
               </div>
 
-              <div className="relative min-h-[320px] bg-[#fff2ec] lg:min-h-[560px]">
+              <div className="relative min-h-[280px] bg-[#fff2ec] sm:min-h-[320px] lg:min-h-[560px]">
                 <Image
                   alt={heroProduct.name}
                   className="object-cover"
@@ -212,7 +212,7 @@ export function MarketingHome({ homeData }: MarketingHomeProps): React.ReactElem
               </Link>
             </div>
 
-            <div className="grid gap-[18px] md:grid-cols-2 xl:grid-cols-4">
+            <div className="grid grid-cols-2 gap-4 md:grid-cols-2 xl:grid-cols-4">
               {hamperProducts.map((product) => (
                 <article className="min-w-0" key={product.slug}>
                   <Link className="block text-inherit no-underline" href={product.route}>
@@ -226,8 +226,10 @@ export function MarketingHome({ homeData }: MarketingHomeProps): React.ReactElem
                       <span className="block text-[10px] font-bold uppercase tracking-[0.08em] text-[#7f918e]">
                         {getPrimaryTag(product)}
                       </span>
-                      <h3 className="mt-1 text-[15px] font-bold leading-[1.35] text-[#173f3b]">{product.name}</h3>
-                      <span className="mt-1 block text-sm font-extrabold text-[#245c57]">{product.priceLabel}</span>
+                      <h3 className="mt-1 text-[13px] font-bold leading-[1.35] text-[#173f3b] sm:text-[15px]">
+                        {product.name}
+                      </h3>
+                      <span className="mt-1 block text-[13px] font-extrabold text-[#245c57] sm:text-sm">{product.priceLabel}</span>
                     </div>
                   </Link>
                 </article>
@@ -239,31 +241,31 @@ export function MarketingHome({ homeData }: MarketingHomeProps): React.ReactElem
 
       <section className="px-4 pb-16 md:px-8">
         <div className="mx-auto max-w-[1160px]">
-          <div className="mb-6 flex items-end justify-between gap-4">
+          <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
             <h2 className="text-[28px] font-extrabold tracking-[-0.03em] text-[#173f3b]">Trending Right Now</h2>
             <Link className="hidden items-center gap-1 text-sm font-bold text-[#245c57] md:inline-flex" href="/products">
               View All <ChevronRight size={16} />
             </Link>
           </div>
 
-          <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
+          <div className="grid grid-cols-2 gap-4 sm:gap-5 xl:grid-cols-4">
             {trendingProducts.map((product) => (
               <Link
-                className="overflow-hidden rounded-[24px] border border-[#eee5dc] bg-white shadow-[0_3px_12px_rgba(30,73,68,0.04)] transition hover:-translate-y-1 hover:shadow-[0_8px_22px_rgba(38,78,72,0.08)]"
+                className="min-w-0 overflow-hidden rounded-[24px] border border-[#eee5dc] bg-white shadow-[0_3px_12px_rgba(30,73,68,0.04)] transition hover:-translate-y-1 hover:shadow-[0_8px_22px_rgba(38,78,72,0.08)]"
                 href={product.route}
                 key={product.slug}
               >
                 <div className="relative aspect-square overflow-hidden bg-[#faf8f7]">
-                  <Image alt={product.name} className="object-cover" fill sizes="(min-width: 1280px) 23vw, (min-width: 640px) 45vw, 100vw" src={product.image} />
+                  <Image alt={product.name} className="object-cover" fill sizes="(min-width: 1280px) 23vw, (min-width: 640px) 45vw, 48vw" src={product.image} />
                 </div>
-                <div className="p-[18px]">
+                <div className="p-4 sm:p-[18px]">
                   <span className="mb-2 block text-[11px] font-extrabold uppercase tracking-[0.08em] text-[#19b8b2]">
                     {getPrimaryTag(product)}
                   </span>
-                  <h3 className="text-lg font-bold leading-[1.3] text-[#245c57]">{product.name}</h3>
-                  <div className="mt-4 flex items-center justify-between gap-3">
-                    <span className="text-[17px] font-extrabold text-[#245c57]">{product.priceLabel}</span>
-                    <span className="text-[12px] font-extrabold uppercase text-[#19b8b2]">View Product</span>
+                  <h3 className="text-[14px] font-bold leading-[1.3] text-[#245c57] sm:text-lg">{product.name}</h3>
+                  <div className="mt-4 flex flex-col items-start gap-1.5 sm:flex-row sm:items-center sm:justify-between sm:gap-3">
+                    <span className="text-[15px] font-extrabold text-[#245c57] sm:text-[17px]">{product.priceLabel}</span>
+                    <span className="text-[11px] font-extrabold uppercase text-[#19b8b2] sm:text-[12px]">View Product</span>
                   </div>
                 </div>
               </Link>
@@ -295,19 +297,19 @@ export function MarketingHome({ homeData }: MarketingHomeProps): React.ReactElem
                   </Link>
                 </div>
 
-                <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                <div className="mt-6 grid grid-cols-2 gap-4 lg:grid-cols-3">
                   {products.slice(0, 3).map((product) => (
                     <Link
-                      className="rounded-[22px] border border-[#eadfd8] bg-white p-4 transition hover:-translate-y-1"
+                      className="min-w-0 rounded-[22px] border border-[#eadfd8] bg-white p-3.5 transition hover:-translate-y-1 sm:p-4"
                       href={product.route}
                       key={product.slug}
                     >
-                      <div className="relative h-48 overflow-hidden rounded-[18px] bg-[#fff4ee]">
-                        <Image alt={product.name} className="object-cover" fill sizes="(min-width: 1024px) 28vw, 100vw" src={product.image} />
+                      <div className="relative h-36 overflow-hidden rounded-[18px] bg-[#fff4ee] sm:h-48">
+                        <Image alt={product.name} className="object-cover" fill sizes="(min-width: 1024px) 28vw, 48vw" src={product.image} />
                       </div>
-                      <h3 className="mt-4 text-xl font-black tracking-[-0.03em] text-[#173f3b]">{product.name}</h3>
-                      <p className="mt-2 text-sm leading-6 text-[#71827f]">{product.summary}</p>
-                      <span className="mt-4 block text-sm font-extrabold text-[#245c57]">{product.priceLabel}</span>
+                      <h3 className="mt-4 text-[15px] font-black tracking-[-0.03em] text-[#173f3b] sm:text-xl">{product.name}</h3>
+                      <p className="mt-2 text-[13px] leading-5 text-[#71827f] sm:text-sm sm:leading-6">{product.summary}</p>
+                      <span className="mt-4 block text-[13px] font-extrabold text-[#245c57] sm:text-sm">{product.priceLabel}</span>
                     </Link>
                   ))}
                 </div>

@@ -147,7 +147,7 @@ export default async function ProductsPage({
     <main className="min-h-screen bg-[#fffdf9]">
       <StorefrontHeader currentPath="/products" />
 
-      <div className="mx-auto w-[min(1440px,calc(100%-48px))] px-6 py-[34px] sm:px-8">
+      <div className="mx-auto w-[min(1440px,calc(100%-24px))] px-3 py-[26px] sm:w-[min(1440px,calc(100%-48px))] sm:px-6 sm:py-[34px]">
         <section className="flex min-h-[104px] items-center justify-center rounded-[28px] bg-[#fff8ec] px-6 py-6 text-center">
           <div>
             <h1 className="text-[32px] font-extrabold tracking-[-0.03em] text-[#245c57] sm:text-[44px]">Products</h1>
@@ -199,7 +199,7 @@ export default async function ProductsPage({
         </section>
 
         <section className="mt-6 rounded-[26px] border border-[#eee5dc] bg-white px-4 py-4 shadow-[0_6px_18px_rgba(30,73,68,0.05)] sm:px-5">
-          <form action="/products" className="grid gap-3 lg:grid-cols-[minmax(0,1.5fr)_repeat(3,minmax(0,0.8fr))_auto]" method="get">
+          <form action="/products" className="grid gap-3 sm:grid-cols-2 lg:grid-cols-[minmax(0,1.5fr)_repeat(3,minmax(0,0.8fr))_auto]" method="get">
             {filters.collection ? <input name="collection" type="hidden" value={filters.collection} /> : null}
 
             <label className="flex flex-col gap-2">
@@ -258,13 +258,13 @@ export default async function ProductsPage({
               </select>
             </label>
 
-            <div className="flex items-end gap-3 lg:justify-end">
-              <button className="rounded-full bg-[#19b8b2] px-5 py-3 text-sm font-bold text-white transition hover:bg-[#169f9a]" type="submit">
+            <div className="flex items-end gap-3 sm:col-span-2 lg:col-span-1 lg:justify-end">
+              <button className="min-h-[48px] flex-1 rounded-full bg-[#19b8b2] px-5 py-3 text-sm font-bold text-white transition hover:bg-[#169f9a] lg:flex-none" type="submit">
                 Apply
               </button>
               {hasActiveFilters ? (
                 <Link
-                  className="rounded-full border border-[#eee5dc] px-5 py-3 text-sm font-bold text-[#244f4b] transition hover:border-[#19b8b2] hover:text-[#19b8b2]"
+                  className="inline-flex min-h-[48px] flex-1 items-center justify-center rounded-full border border-[#eee5dc] px-5 py-3 text-sm font-bold text-[#244f4b] transition hover:border-[#19b8b2] hover:text-[#19b8b2] lg:flex-none"
                   href="/products"
                 >
                   Clear
@@ -307,24 +307,24 @@ export default async function ProductsPage({
         </section>
 
         {products.length > 0 ? (
-          <section className="grid gap-[26px] sm:grid-cols-2 xl:grid-cols-4">
+          <section className="grid grid-cols-2 gap-4 sm:gap-5 xl:grid-cols-4">
             {products.map((product) => (
               <Link
-                className="overflow-hidden rounded-[24px] border border-[#eee5dc] bg-white shadow-[0_3px_12px_rgba(30,73,68,0.04)] transition hover:-translate-y-1 hover:shadow-[0_8px_22px_rgba(38,78,72,0.08)]"
+                className="min-w-0 overflow-hidden rounded-[24px] border border-[#eee5dc] bg-white shadow-[0_3px_12px_rgba(30,73,68,0.04)] transition hover:-translate-y-1 hover:shadow-[0_8px_22px_rgba(38,78,72,0.08)]"
                 href={product.route}
                 key={product.slug}
               >
                 <div className="relative aspect-square overflow-hidden bg-[#faf8f7]">
-                  <Image alt={product.name} className="object-cover" fill sizes="(min-width: 1280px) 23vw, (min-width: 640px) 45vw, 100vw" src={product.image} />
+                  <Image alt={product.name} className="object-cover" fill sizes="(min-width: 1280px) 23vw, (min-width: 640px) 45vw, 48vw" src={product.image} />
                 </div>
-                <div className="p-[18px]">
+                <div className="p-4 sm:p-[18px]">
                   <span className="mb-2 block text-[11px] font-extrabold uppercase tracking-[0.08em] text-[#19b8b2]">
                     {productTag(product)}
                   </span>
-                  <h2 className="text-lg font-bold leading-[1.3] text-[#245c57]">{product.name}</h2>
-                  <div className="mt-4 flex items-center justify-between gap-3">
-                    <span className="text-[17px] font-extrabold text-[#245c57]">{product.priceLabel}</span>
-                    <span className="text-[12px] font-extrabold uppercase text-[#19b8b2]">View Product</span>
+                  <h2 className="text-[14px] font-bold leading-[1.3] text-[#245c57] sm:text-lg">{product.name}</h2>
+                  <div className="mt-4 flex flex-col items-start gap-1.5 sm:flex-row sm:items-center sm:justify-between sm:gap-3">
+                    <span className="text-[15px] font-extrabold text-[#245c57] sm:text-[17px]">{product.priceLabel}</span>
+                    <span className="text-[11px] font-extrabold uppercase text-[#19b8b2] sm:text-[12px]">View Product</span>
                   </div>
                 </div>
               </Link>

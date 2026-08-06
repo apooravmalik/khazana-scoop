@@ -39,7 +39,7 @@ const footerColumns = [
 
 export function StorefrontLogo({
   priority = false,
-  widthClassName = "w-[220px] sm:w-[260px] lg:w-[320px]",
+  widthClassName = "w-[152px] sm:w-[220px] lg:w-[320px]",
 }: {
   priority?: boolean;
   widthClassName?: string;
@@ -81,19 +81,19 @@ export function StorefrontHeader({
 
   return (
     <>
-      <div className="bg-[#F5CBCB] text-[#1e293b] py-2 flex justify-center items-center gap-2 md:gap-4 text-xs font-poppins font-semibold tracking-wide">
+      <div className="flex flex-wrap items-center justify-center gap-1.5 bg-[#F5CBCB] px-3 py-2 text-[11px] font-poppins font-semibold tracking-wide text-[#1e293b] sm:gap-2 md:gap-4 md:text-xs">
         <span>Free shipping ₹500+</span>
         <span>•</span>
         <span>PAN India</span>
         <span>•</span>
         <span>5-6 days delivery</span>
       </div>
-      <header className="sticky top-0 z-50 flex items-center justify-between border-b border-[#FFE2E2] bg-white/95 px-4 py-4 backdrop-blur-sm md:px-8">
-        <div className="flex min-w-0 items-center gap-3 lg:flex-[0_0_auto] lg:gap-5">
-          <button className="p-2 text-[#1e293b] lg:hidden">
+      <header className="sticky top-0 z-50 flex items-center justify-between border-b border-[#FFE2E2] bg-white/95 px-3 py-3 backdrop-blur-sm sm:px-4 md:px-8">
+        <div className="flex min-w-0 items-center gap-2 sm:gap-3 lg:flex-[0_0_auto] lg:gap-5">
+          <button className="p-2 text-[#1e293b] lg:hidden" type="button" aria-label="Open menu">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
           </button>
-          <StorefrontLogo priority widthClassName="w-[198px] sm:w-[242px] lg:w-[275px] xl:w-[319px]" />
+          <StorefrontLogo priority widthClassName="w-[150px] sm:w-[198px] md:w-[242px] lg:w-[275px] xl:w-[319px]" />
         </div>
 
         <nav className="hidden min-w-0 flex-1 items-center justify-start gap-5 px-8 font-baloo text-sm font-medium text-[#1e293b] lg:flex xl:gap-7 xl:px-10 xl:text-base">
@@ -108,7 +108,7 @@ export function StorefrontHeader({
           ))}
         </nav>
 
-        <div className="flex items-center justify-end gap-4 text-[#1e293b] lg:flex-[0_0_auto] lg:gap-6">
+        <div className="flex items-center justify-end gap-3 text-[#1e293b] sm:gap-4 lg:flex-[0_0_auto] lg:gap-6">
           <Link href="/products" aria-label="Search products" className="hover:text-[#C5B3D3] transition-colors">
             <Search size={22} strokeWidth={2.5} />
           </Link>
@@ -205,10 +205,10 @@ export function StorefrontPageHero({
       <StorefrontHeader currentPath={currentPath} />
       <section className="shell pt-8">
         <div className="overflow-hidden rounded-[34px] border border-[#FFE2E2] bg-[#FBEFEF] shadow-sm">
-          <div className="grid gap-8 px-6 py-10 lg:grid-cols-[1fr_0.78fr] lg:px-10 lg:py-12">
+          <div className="grid gap-6 px-5 py-8 sm:px-6 sm:py-10 lg:grid-cols-[1fr_0.78fr] lg:px-10 lg:py-12">
             <div className="space-y-5">
               <h1
-                className="max-w-[12ch] text-5xl leading-[0.95] font-baloo tracking-[-0.05em] text-[#1e293b] sm:text-6xl lg:text-7xl"
+                className="max-w-[12ch] text-[2.75rem] leading-[0.95] font-baloo tracking-[-0.05em] text-[#1e293b] sm:text-6xl lg:text-7xl"
               >
                 {title}
               </h1>

@@ -214,7 +214,7 @@ export function CatalogCartClient({
 
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_420px]">
         <section className="rounded-[32px] border border-[#ece3d9] bg-white p-6 shadow-[0_24px_58px_rgba(118,140,134,0.12)] sm:p-8">
-          <div className="flex items-end justify-between gap-4">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
             <div>
               <p className="text-sm font-black uppercase tracking-[0.18em] text-[#708680]">
                 {mode === "checkout" ? "Guest checkout" : "Shopping cart"}
@@ -248,8 +248,8 @@ export function CatalogCartClient({
                     />
                   </div>
 
-                  <div className="self-center">
-                    <Link href={item.product.route} className="text-2xl font-black tracking-[-0.04em] text-[#35534d]">
+                  <div className="min-w-0 self-center">
+                    <Link href={item.product.route} className="block text-xl font-black tracking-[-0.04em] text-[#35534d] sm:text-2xl">
                       {item.product.name}
                     </Link>
                     <p className="mt-1 text-sm text-[#6d817b]">{item.product.eyebrow}</p>

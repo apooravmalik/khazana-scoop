@@ -52,7 +52,7 @@ export function CatalogProductOrderClient({
   }
 
   return (
-    <section className="mx-auto max-w-[1120px] px-5 py-8 sm:px-8 lg:py-12">
+    <section className="mx-auto max-w-[1120px] px-4 py-8 sm:px-8 lg:py-12">
       <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(420px,1fr)] lg:gap-[54px]">
         <div className="relative">
           <div className="relative overflow-hidden rounded-[28px] border border-[#eee5dd] bg-white">
@@ -64,7 +64,7 @@ export function CatalogProductOrderClient({
               sizes="(min-width: 1024px) 50vw, 100vw"
               src={selectedImage}
             />
-            <div className="aspect-[1/1] min-h-[380px] lg:min-h-[540px]" />
+            <div className="aspect-[1/1] min-h-[320px] sm:min-h-[380px] lg:min-h-[540px]" />
             <span className="absolute right-[18px] top-[18px] rounded-full border border-[#dce8e5] bg-white/95 px-[14px] py-[9px] text-[12px] font-extrabold uppercase tracking-[0.08em] text-[#1f5752]">
               In stock
             </span>
@@ -75,7 +75,7 @@ export function CatalogProductOrderClient({
               {galleryImages.map((imageUrl, index) => (
                 <button
                   aria-label={`Show product image ${index + 1}`}
-                  className={`relative h-20 w-20 shrink-0 overflow-hidden rounded-[14px] border-2 bg-white transition ${
+                  className={`relative h-[72px] w-[72px] shrink-0 overflow-hidden rounded-[14px] border-2 bg-white transition sm:h-20 sm:w-20 ${
                     selectedImage === imageUrl
                       ? "border-[#18b8b2]"
                       : "border-[#eadfce] hover:border-[#18b8b2]"
@@ -101,7 +101,7 @@ export function CatalogProductOrderClient({
           <p className="text-[12px] font-extrabold uppercase tracking-[0.14em] text-[#18b8b2]">
             {product.eyebrow || "Khazana Scoop"}
           </p>
-          <h1 className="mt-3 text-[38px] font-bold leading-[1.08] tracking-[-0.04em] text-[#1f5752] sm:text-[48px]">
+          <h1 className="mt-3 text-[32px] font-bold leading-[1.08] tracking-[-0.04em] text-[#1f5752] sm:text-[48px]">
             {product.name}
           </h1>
           <p className="mt-[14px] text-[15px] leading-[1.7] text-[#8c9997]">

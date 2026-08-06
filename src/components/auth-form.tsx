@@ -62,7 +62,7 @@ export function AuthForm({ mode }: AuthFormProps): React.ReactElement {
             {mode === "signup" ? "Create your scoop account" : "Welcome back"}
           </p>
           <h2
-            className="mt-3 text-4xl font-black tracking-[-0.05em] text-[#32524b] sm:text-5xl"
+            className="mt-3 text-[2.2rem] font-black tracking-[-0.05em] text-[#32524b] sm:text-5xl"
             style={{ fontFamily: "var(--font-display)" }}
           >
             {mode === "signup" ? "Save every reveal in one place." : "Log in to your Mystery Scoop space."}

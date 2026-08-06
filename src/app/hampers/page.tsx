@@ -14,7 +14,7 @@ export default async function HampersPage(): Promise<React.ReactElement> {
     <main className="min-h-screen bg-[#fffdf9]">
       <StorefrontHeader currentPath="/hampers" />
 
-      <div className="mx-auto w-[min(1440px,calc(100%-48px))] px-6 py-[34px] sm:px-8">
+      <div className="mx-auto w-[min(1440px,calc(100%-24px))] px-3 py-[26px] sm:w-[min(1440px,calc(100%-48px))] sm:px-6 sm:py-[34px]">
         <section className="flex min-h-[104px] items-center justify-center rounded-[28px] bg-[#fff4ee] px-6 py-6 text-center">
           <div>
             <h1 className="text-[32px] font-extrabold tracking-[-0.03em] text-[#245c57] sm:text-[44px]">
@@ -27,10 +27,10 @@ export default async function HampersPage(): Promise<React.ReactElement> {
         </section>
 
         {hamperProducts.length > 0 ? (
-          <section className="mt-8 grid gap-[26px] sm:grid-cols-2 xl:grid-cols-4">
+          <section className="mt-8 grid grid-cols-2 gap-4 sm:gap-5 xl:grid-cols-4">
             {hamperProducts.map((product) => (
               <Link
-                className="overflow-hidden rounded-[24px] border border-[#eee5dc] bg-white shadow-[0_3px_12px_rgba(30,73,68,0.04)] transition hover:-translate-y-1 hover:shadow-[0_8px_22px_rgba(38,78,72,0.08)]"
+                className="min-w-0 overflow-hidden rounded-[24px] border border-[#eee5dc] bg-white shadow-[0_3px_12px_rgba(30,73,68,0.04)] transition hover:-translate-y-1 hover:shadow-[0_8px_22px_rgba(38,78,72,0.08)]"
                 href={product.route}
                 key={product.slug}
               >
@@ -39,22 +39,22 @@ export default async function HampersPage(): Promise<React.ReactElement> {
                     alt={product.name}
                     className="object-cover"
                     fill
-                    sizes="(min-width: 1280px) 23vw, (min-width: 640px) 45vw, 100vw"
+                    sizes="(min-width: 1280px) 23vw, (min-width: 640px) 45vw, 48vw"
                     src={product.image}
                   />
                   <span className="absolute left-3 top-3 rounded-full bg-white/95 px-3 py-1.5 text-[10px] font-extrabold uppercase tracking-[0.06em] text-[#245c57]">
                     {product.name.toLowerCase().includes("custom") ? "Customisable" : "Gift Hamper"}
                   </span>
                 </div>
-                <div className="p-[18px]">
+                <div className="p-4 sm:p-[18px]">
                   <span className="mb-2 block text-[11px] font-extrabold uppercase tracking-[0.08em] text-[#19b8b2]">
                     {getPrimaryTag(product)}
                   </span>
-                  <h2 className="text-lg font-bold leading-[1.3] text-[#245c57]">{product.name}</h2>
-                  <p className="mt-2 text-sm leading-6 text-[#71827f]">{product.summary}</p>
-                  <div className="mt-4 flex items-center justify-between gap-3">
-                    <span className="text-[17px] font-extrabold text-[#245c57]">{product.priceLabel}</span>
-                    <span className="text-[12px] font-extrabold uppercase text-[#19b8b2]">View Product</span>
+                  <h2 className="text-[14px] font-bold leading-[1.3] text-[#245c57] sm:text-lg">{product.name}</h2>
+                  <p className="mt-2 text-[13px] leading-5 text-[#71827f] sm:text-sm sm:leading-6">{product.summary}</p>
+                  <div className="mt-4 flex flex-col items-start gap-1.5 sm:flex-row sm:items-center sm:justify-between sm:gap-3">
+                    <span className="text-[15px] font-extrabold text-[#245c57] sm:text-[17px]">{product.priceLabel}</span>
+                    <span className="text-[11px] font-extrabold uppercase text-[#19b8b2] sm:text-[12px]">View Product</span>
                   </div>
                 </div>
               </Link>
