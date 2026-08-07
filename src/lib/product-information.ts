@@ -36,8 +36,8 @@ export function buildProductInformationSections(
       id: "shipping-information",
       title: "Shipping Information",
       paragraphs: [
-        "Shipping is ₹80 for orders below ₹500 and free for orders of ₹500 or more.",
-        "Orders are dispatched in 1-2 days and usually delivered within 5-6 days. Tracking details are shared after dispatch.",
+        "Free shipping on orders above ₹499. For orders of ₹499 or below, a flat ₹80 shipping charge will be added at checkout.",
+        "All orders are carefully packed to ensure your products reach you safely. Once your order has been dispatched, tracking details will be shared with you.",
       ],
       items: [],
     },
@@ -45,8 +45,9 @@ export function buildProductInformationSections(
       id: "returns-refunds",
       title: "Returns & Refunds",
       paragraphs: [
-        "For return or refund help, contact us with your order number and clear photos of the item.",
-        "Items should be unused and in their original packaging unless they arrived damaged or incorrect. Approved refunds are returned to the original payment method.",
+        "We carefully check and pack every order before dispatch. Returns or exchanges are not accepted for change of mind or personal preference.",
+        "If you receive an incorrect, damaged or defective product, please contact us as soon as possible after delivery with clear photos/videos of the product and packaging. Once the issue is verified, we will assist you with an appropriate replacement or refund, depending on the case.",
+        "Refunds, where applicable, will be processed to the original payment method.",
       ],
       items: [],
     },

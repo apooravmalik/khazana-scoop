@@ -2,8 +2,15 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
-import { CircleUserRound, MapPin, Search, ShoppingBag, X } from "lucide-react";
+import { useState } from "react";
+import {
+  ArrowUpRight,
+  CircleUserRound,
+  Search,
+  ShoppingBag,
+  Sparkles,
+  X,
+} from "lucide-react";
 import { useCatalogCart } from "@/hooks/use-catalog-cart";
 
 const footerColumns = [
@@ -14,26 +21,20 @@ const footerColumns = [
       { label: "Build your scoop", href: "/build-your-own-scoop" },
       { label: "Hampers", href: "/hampers" },
       { label: "Products", href: "/products" },
-      { label: "Lucky capsules", href: "/products/lucky-capsules" },
-      { label: "Charm mixes", href: "/products/charm-mixes" },
     ],
   },
   {
     title: "Customer Care",
     links: [
       { label: "Track orders", href: "/tracking" },
-      { label: "Cart", href: "/cart" },
-      { label: "Checkout", href: "/checkout" },
       { label: "Contact", href: "/contact" },
     ],
   },
   {
-    title: "Inside Mystery Scoop",
+    title: "Khazana Scoop",
     links: [
       { label: "About", href: "/about" },
-      { label: "Profile", href: "/profile" },
       { label: "Orders", href: "/orders" },
-      { label: "Admin", href: "/admin" },
     ],
   },
 ];
@@ -81,10 +82,6 @@ export function StorefrontHeader({
     { href: "/hampers", label: "HAMPERS", matchPaths: ["/hampers"] },
     { href: "/about", label: "ABOUT US", matchPaths: ["/about"] },
   ];
-
-  useEffect(() => {
-    setMenuOpen(false);
-  }, [currentPath]);
 
   return (
     <>
@@ -199,42 +196,55 @@ export function StorefrontHeader({
 
 export function StorefrontFooter(): React.ReactElement {
   return (
-    <footer className="mt-16 border-t border-[#FFE2E2] bg-[#FBEFEF]">
-      <div className="shell py-12 px-4 md:px-8 max-w-[1600px] mx-auto">
-        <div className="grid gap-8 rounded-[34px] border border-[#FFE2E2] bg-white px-6 py-8 shadow-sm lg:grid-cols-[1.1fr_1.4fr] lg:px-10">
-          <div className="space-y-5">
-            <StorefrontLogo widthClassName="w-[220px] sm:w-[250px] lg:w-[300px]" />
-            <div className="space-y-3 font-poppins text-sm leading-7 text-[#1e293b]/70">
-              <p>
-                A collectible-first scoop shop with clear tracking, playful reveals, and customer-friendly add-ons.
-              </p>
-              <p>
-                Keep an eye on packing updates, build a brighter cart, and revisit your favorite surprise mix any time.
-              </p>
-            </div>
-            <div className="flex flex-wrap gap-3 text-sm font-poppins font-bold text-[#C5B3D3]">
-              <Link className="px-4 py-2 bg-[#FBEFEF] rounded-full hover:bg-[#C5B3D3] hover:text-white transition-colors" href="/mystery-scoops">
-                Start a scoop
-              </Link>
-              <Link className="px-4 py-2 bg-[#FBEFEF] rounded-full hover:bg-[#C5B3D3] hover:text-white transition-colors" href="/tracking">
-                Track orders
-              </Link>
-              <Link className="px-4 py-2 bg-[#FBEFEF] rounded-full hover:bg-[#C5B3D3] hover:text-white transition-colors" href="/contact">
-                Get support
-              </Link>
-            </div>
-          </div>
+    <footer className="mt-20 border-t border-[#f0dfe2] bg-[#fdf1f3] px-4 py-8 sm:px-6 sm:py-10">
+      <div className="mx-auto grid max-w-[1320px] overflow-hidden rounded-[36px] bg-[#173f3b] text-white shadow-[0_24px_60px_rgba(23,63,59,0.16)] lg:grid-cols-[minmax(0,1.15fr)_minmax(520px,0.85fr)]">
+        <div className="grid gap-7 border-b border-white/10 p-6 sm:grid-cols-[170px_1fr] sm:items-center sm:p-9 lg:border-b-0 lg:border-r lg:p-10">
+          <Link
+            aria-label="Khazana Scoop home"
+            className="relative mx-auto aspect-square w-[150px] overflow-hidden rounded-[30px] bg-[#fff8f8] shadow-[0_16px_34px_rgba(0,0,0,0.16)] transition-transform hover:-rotate-1 hover:scale-[1.02] sm:mx-0 sm:w-[170px]"
+            href="/"
+          >
+            <Image
+              alt="Khazana Scoop gift logo"
+              className="scale-[1.38] object-cover"
+              fill
+              sizes="170px"
+              src="/brand/khazana-scoop-gift-logo.png"
+            />
+          </Link>
 
-          <div className="grid gap-8 sm:grid-cols-3">
+          <div>
+            <p className="inline-flex items-center gap-2 text-[11px] font-black uppercase tracking-[0.16em] text-[#f7a4b7]">
+              <Sparkles aria-hidden="true" size={15} />
+              Packed with a little joy
+            </p>
+            <h2 className="mt-4 max-w-[10ch] font-baloo text-[32px] font-black leading-[0.98] tracking-[-0.04em] text-white sm:text-[40px]">
+              A surprise worth unwrapping.
+            </h2>
+            <p className="mt-4 max-w-[46ch] font-poppins text-sm leading-7 text-white/70">
+              Thoughtful scoops, cheerful hampers, careful packing, and clear order updates from our shelf to your door.
+            </p>
+            <Link
+              className="mt-6 inline-flex min-h-[46px] items-center gap-2 rounded-full bg-[#f7a4b7] px-5 font-poppins text-sm font-black text-[#173f3b] transition hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#173f3b]"
+              href="/mystery-scoop"
+            >
+              Start a scoop
+              <ArrowUpRight aria-hidden="true" size={17} />
+            </Link>
+          </div>
+        </div>
+
+        <div className="flex items-center p-6 sm:p-9 lg:p-10">
+          <div className="grid w-full gap-8 sm:grid-cols-3">
             {footerColumns.map((column) => (
               <section key={column.title}>
-                <h2 className="font-baloo text-lg font-bold text-[#1e293b]">
+                <h2 className="font-baloo text-base font-black uppercase tracking-[0.04em] text-white">
                   {column.title}
                 </h2>
-                <ul className="mt-4 space-y-3">
+                <ul className="mt-5 space-y-3.5">
                   {column.links.map((link) => (
                     <li key={link.href}>
-                      <Link className="font-poppins text-sm text-[#1e293b]/70 transition-colors hover:text-[#C5B3D3]" href={link.href}>
+                      <Link className="font-poppins text-sm text-white/65 transition-colors hover:text-[#f7a4b7]" href={link.href}>
                         {link.label}
                       </Link>
                     </li>
@@ -243,14 +253,6 @@ export function StorefrontFooter(): React.ReactElement {
               </section>
             ))}
           </div>
-        </div>
-
-        <div className="mt-8 flex flex-col gap-3 font-poppins text-sm text-[#1e293b]/50 sm:flex-row sm:items-center sm:justify-between px-4">
-          <p>© {new Date().getFullYear()} Khazana Scoop. Small surprises, packed with care.</p>
-          <Link className="inline-flex items-center gap-2 font-semibold text-[#C5B3D3] hover:text-[#1e293b] transition-colors" href="/contact">
-            <MapPin size={16} strokeWidth={2.2} />
-            Find Khazana Scoop support
-          </Link>
         </div>
       </div>
     </footer>
