@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { HomeBannerCarousel } from "@/components/banner-carousel";
 import { HomeCuratedProductsCarousel } from "@/components/home-curated-products-carousel";
 import { HomeReelCarousel } from "@/components/home-reel-carousel";
 import { ArrowRight, ChevronRight, Gift, Heart, PackageCheck, PenLine, Sparkles, Truck } from "lucide-react";
@@ -32,6 +33,8 @@ export function MarketingHome({ homeData }: MarketingHomeProps): React.ReactElem
   return (
     <main className="min-h-screen bg-[#fffdf9] text-[#173f3b]">
       <StorefrontHeader currentPath="/" />
+
+      <HomeBannerCarousel />
 
       {heroProduct ? (
         <section className="px-4 pt-4 md:px-8">
