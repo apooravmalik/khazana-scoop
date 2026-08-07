@@ -1,0 +1,169 @@
+.section {
+  padding: 1rem 1rem 0;
+}
+
+.carousel {
+  position: relative;
+  width: 100%;
+  margin-inline: auto;
+  overflow: hidden;
+  border: 1px solid #eddcd3;
+  border-radius: 36px;
+  background: #e9f7f5;
+  box-shadow: 0 12px 34px rgba(38, 78, 72, 0.08);
+  isolation: isolate;
+}
+
+.carousel.round {
+  border-radius: 50%;
+}
+
+.track {
+  display: flex;
+  width: 100%;
+  touch-action: pan-y;
+  cursor: grab;
+}
+
+.track:active {
+  cursor: grabbing;
+}
+
+.slide {
+  position: relative;
+  flex: 0 0 100%;
+  aspect-ratio: 16 / 7;
+  overflow: hidden;
+  background: #dff3f1;
+}
+
+.slideLink {
+  position: absolute;
+  inset: 0;
+  display: block;
+}
+
+.slideLink:focus-visible {
+  outline: 4px solid #18b8b2;
+  outline-offset: -6px;
+}
+
+.image {
+  object-fit: contain;
+}
+
+.arrow {
+  position: absolute;
+  z-index: 3;
+  top: 50%;
+  display: grid;
+  width: clamp(38px, 3.4vw, 50px);
+  height: clamp(38px, 3.4vw, 50px);
+  place-items: center;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.88);
+  color: #173f3b;
+  box-shadow: 0 8px 24px rgba(14, 49, 46, 0.18);
+  cursor: pointer;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-50%);
+  transition: background 160ms ease, color 160ms ease, opacity 160ms ease, transform 160ms ease;
+}
+
+.carousel:hover .arrow,
+.carousel:focus-within .arrow {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.arrow:hover {
+  background: #ffffff;
+  color: #18a59e;
+  transform: translateY(-50%) scale(1.04);
+}
+
+.arrow:focus-visible,
+.indicator:focus-visible {
+  outline: 3px solid #18b8b2;
+  outline-offset: 3px;
+}
+
+.previous {
+  left: clamp(10px, 2vw, 28px);
+}
+
+.next {
+  right: clamp(10px, 2vw, 28px);
+}
+
+.indicators {
+  position: absolute;
+  z-index: 3;
+  bottom: clamp(10px, 1.7vw, 22px);
+  left: 50%;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 8px 11px;
+  border: 1px solid rgba(255, 255, 255, 0.58);
+  border-radius: 999px;
+  background: rgba(13, 45, 42, 0.34);
+  backdrop-filter: blur(8px);
+  transform: translateX(-50%);
+}
+
+.indicator {
+  width: 9px;
+  height: 9px;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.62);
+  cursor: pointer;
+  transition: width 180ms ease, background 180ms ease;
+}
+
+.indicatorActive {
+  width: 26px;
+  background: #ffffff;
+}
+
+@media (min-width: 768px) {
+  .section {
+    padding-inline: 2rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .carousel {
+    border-radius: 20px;
+  }
+
+  .arrow {
+    display: none;
+  }
+
+  .indicators {
+    gap: 6px;
+    padding: 5px 7px;
+  }
+
+  .indicator {
+    width: 7px;
+    height: 7px;
+  }
+
+  .indicatorActive {
+    width: 18px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .arrow,
+  .indicator {
+    transition: none;
+  }
+}
