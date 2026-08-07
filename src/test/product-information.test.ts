@@ -58,5 +58,14 @@ describe("buildProductInformationSections", () => {
     });
 
     expect(second.slice(1)).toEqual(first.slice(1));
+    expect(first[1].paragraphs).toEqual([
+      "Free shipping on orders above ₹499. For orders of ₹499 or below, a flat ₹80 shipping charge will be added at checkout.",
+      "All orders are carefully packed to ensure your products reach you safely. Once your order has been dispatched, tracking details will be shared with you.",
+    ]);
+    expect(first[2].paragraphs).toEqual([
+      "We carefully check and pack every order before dispatch. Returns or exchanges are not accepted for change of mind or personal preference.",
+      "If you receive an incorrect, damaged or defective product, please contact us as soon as possible after delivery with clear photos/videos of the product and packaging. Once the issue is verified, we will assist you with an appropriate replacement or refund, depending on the case.",
+      "Refunds, where applicable, will be processed to the original payment method.",
+    ]);
   });
 });
