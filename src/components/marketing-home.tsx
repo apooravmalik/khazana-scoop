@@ -24,9 +24,9 @@ const buildSquiggle =
   "url(\"data:image/svg+xml,%3Csvg width='60' height='12' viewBox='0 0 60 12' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 6C5 1 9 1 13 6s8 5 12 0 8-5 12 0 8 5 12 0 8-5 10-1' fill='none' stroke='%23b58be8' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E\")";
 
 export function MarketingHome({ homeData }: MarketingHomeProps): React.ReactElement {
-  const heroProduct = homeData.products[0] ?? null;
   const featuredCards = homeData.products.slice(1, 3);
-  const categoryCards = homeData.categories.slice(0, 6);
+  const heroProduct = homeData.products[0] ?? null;
+  const categoryCards = homeData.categories;
   const hamperProducts = homeData.products.filter(isHamperProduct).slice(0, 4);
   const trendingProducts = homeData.products.filter((product) => !isHamperProduct(product)).slice(0, 8);
   const collectionSections = homeData.collectionSections.slice(0, 3);
@@ -42,66 +42,13 @@ export function MarketingHome({ homeData }: MarketingHomeProps): React.ReactElem
 
       <HomeBannerCarousel />
 
-      {heroProduct ? (
-        <section className="px-4 pt-4 md:px-8">
-          <div className="relative mx-auto max-w-[1440px] overflow-hidden rounded-[36px] border border-[#eddcd3] bg-[#fff8f2]">
-            <div className="grid gap-0 lg:grid-cols-[1.05fr_0.95fr]">
-              <div className="px-5 py-8 sm:px-8 sm:py-10 lg:px-12 lg:py-14">
-                <span className="inline-flex rounded-full bg-white px-4 py-2 text-[11px] font-extrabold uppercase tracking-[0.08em] text-[#245c57] shadow-sm">
-                  {heroProduct.eyebrow}
-                </span>
-                <h1 className="mt-5 max-w-[10ch] text-[34px] font-black leading-[0.95] tracking-[-0.04em] text-[#173f3b] sm:text-[54px] lg:text-[68px]">
-                  {heroProduct.name}
-                </h1>
-                <p className="mt-4 max-w-[56ch] text-[13px] leading-6 text-[#71827f] sm:text-[15px] sm:leading-7">
-                  {heroProduct.description || heroProduct.summary}
-                </p>
-                <div className="mt-6 flex flex-wrap gap-3">
-                  <span className="rounded-full border border-[#eadfd8] bg-white px-4 py-2 text-xs font-bold uppercase tracking-[0.08em] text-[#245c57]">
-                    {heroProduct.priceLabel}
-                  </span>
-                  <span className="rounded-full border border-[#eadfd8] bg-[#fff4ee] px-4 py-2 text-xs font-bold uppercase tracking-[0.08em] text-[#245c57]">
-                    Ready to shop
-                  </span>
-                </div>
-                <div className="mt-8 flex flex-wrap gap-3">
-                  <Link
-                    className="inline-flex min-h-[48px] items-center justify-center rounded-full bg-[#18b8b2] px-6 text-sm font-black uppercase tracking-[0.06em] text-white transition hover:bg-[#129f99]"
-                    href={heroProduct.route}
-                  >
-                    Shop now
-                  </Link>
-                  <Link
-                    className="inline-flex min-h-[48px] items-center justify-center rounded-full border border-[#eadfd8] bg-white px-6 text-sm font-black uppercase tracking-[0.06em] text-[#245c57] transition hover:border-[#18b8b2] hover:text-[#18b8b2]"
-                    href="/mystery-scoops"
-                  >
-                    Choose your scoop
-                  </Link>
-                </div>
-              </div>
-
-              <div className="relative min-h-[280px] bg-[#fff2ec] sm:min-h-[320px] lg:min-h-[560px]">
-                <Image
-                  alt={heroProduct.name}
-                  className="object-cover"
-                  fill
-                  priority
-                  sizes="(min-width: 1024px) 48vw, 100vw"
-                  src={heroProduct.image}
-                />
-              </div>
-            </div>
-          </div>
-        </section>
-      ) : null}
-
       {categoryCards.length > 0 ? (
         <section className="px-4 py-12 md:px-8">
           <div className="mx-auto max-w-[1160px]">
             <h2 className="mb-8 text-center text-[30px] font-black tracking-[-0.03em] text-[#173f3b] md:text-[34px]">
               Shop by Category
             </h2>
-            <div className="flex gap-5 overflow-x-auto pb-4 md:justify-center">
+            <div className="flex gap-5 overflow-x-auto pb-4 md:flex-wrap md:justify-center">
               {categoryCards.map((category) => (
                 <Link
                   className="group flex min-w-[104px] flex-col items-center text-center"
@@ -178,7 +125,7 @@ export function MarketingHome({ homeData }: MarketingHomeProps): React.ReactElem
                     ))}
                   </ul>
                   <Link
-                    className="mt-auto inline-flex min-h-[52px] w-full items-center justify-center gap-3 rounded-full bg-[#173f3b] px-5 text-center text-[15px] font-extrabold text-white transition hover:bg-[#0d5148] sm:w-fit sm:px-6"
+                    className="mt-auto inline-flex min-h-[56px] w-full items-center justify-center gap-3 rounded-full border border-[#F28FA7] bg-[#F28FA7] px-6 text-center font-poppins text-[15px] font-extrabold uppercase tracking-[0.08em] text-[#FFFFFF] shadow-[0_16px_30px_rgba(242,143,167,0.22)] transition hover:-translate-y-0.5 hover:border-[#E87995] hover:bg-[#E87995] hover:shadow-[0_20px_34px_rgba(232,121,149,0.28)] sm:w-fit"
                     href="/mystery-scoop"
                   >
                     Explore Mystery Scoop <ArrowRight aria-hidden="true" size={18} />
@@ -234,7 +181,7 @@ export function MarketingHome({ homeData }: MarketingHomeProps): React.ReactElem
                     ))}
                   </ul>
                   <Link
-                    className="mt-auto inline-flex min-h-[52px] w-full items-center justify-center gap-3 rounded-full bg-[#173f3b] px-5 text-center text-[15px] font-extrabold text-white transition hover:bg-[#0d5148] sm:w-fit sm:px-6"
+                    className="mt-auto inline-flex min-h-[56px] w-full items-center justify-center gap-3 rounded-full border border-[#A77BE8] bg-[#A77BE8] px-6 text-center font-poppins text-[15px] font-extrabold uppercase tracking-[0.08em] text-[#FFFFFF] shadow-[0_16px_30px_rgba(167,123,232,0.22)] transition hover:-translate-y-0.5 hover:border-[#9164D7] hover:bg-[#9164D7] hover:shadow-[0_20px_34px_rgba(145,100,215,0.28)] sm:w-fit"
                     href="/build-your-own-scoop"
                   >
                     Build My Box <ArrowRight aria-hidden="true" size={18} />
@@ -375,19 +322,16 @@ export function MarketingHome({ homeData }: MarketingHomeProps): React.ReactElem
 
       {curatedCarouselProducts.length > 0 ? (
         <section className="px-4 pb-10 md:px-8">
-          <div className="mx-auto max-w-[1160px] overflow-hidden rounded-[30px] border border-[#eadfd8] bg-[#fffaf6] px-5 py-6 shadow-[0_12px_30px_rgba(39,78,72,0.05)] sm:px-6">
+          <div className="mx-auto max-w-[1160px]">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
               <div>
-                <p className="text-[11px] font-extrabold uppercase tracking-[0.08em] text-[#19b8b2]">
-                  More to explore
-                </p>
                 <h2 className="mt-2 text-[28px] font-black tracking-[-0.03em] text-[#173f3b]">
-                  Best-loved picks
+                  Best sellers
                 </h2>
               </div>
-              <p className="max-w-[48ch] text-sm leading-6 text-[#71827f]">
-                Browse some of our most-loved finds, from tiny add-ons to giftable favourites that pair beautifully with a scoop.
-              </p>
+              <Link className="hidden items-center gap-1 text-sm font-bold text-[#245c57] md:inline-flex" href="/products">
+                View All <ChevronRight size={16} />
+              </Link>
             </div>
 
             <HomeCuratedProductsCarousel products={curatedCarouselProducts} />

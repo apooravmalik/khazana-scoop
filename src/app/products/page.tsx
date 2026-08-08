@@ -160,7 +160,7 @@ export default async function ProductsPage({
         </section>
 
         <section className="mt-[30px] overflow-x-auto overflow-y-hidden pb-2">
-          <div className="flex min-w-max gap-6 px-2 pb-3 md:justify-center">
+          <div className="flex min-w-max gap-6 px-2 pb-3 md:flex-wrap md:justify-center">
             <Link
               className="group w-[104px] text-center"
               href={buildProductsHref({
@@ -175,7 +175,7 @@ export default async function ProductsPage({
               <span className="block min-h-[34px] text-[12px] font-bold uppercase leading-[1.35] text-[#244f4b]">All Products</span>
             </Link>
 
-            {homeData.categories.slice(0, 5).map((category) => {
+            {homeData.categories.map((category) => {
               const href = buildProductsHref({
                 category: category.slug,
                 price: priceFilter || undefined,
