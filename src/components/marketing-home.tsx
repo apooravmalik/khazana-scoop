@@ -74,7 +74,7 @@ export function MarketingHome({ homeData }: MarketingHomeProps): React.ReactElem
             <div className="inline-flex items-center justify-center gap-2.5 sm:gap-4">
               <span aria-hidden="true" className="text-[20px] text-[#f69ab0] sm:text-[26px]">✦</span>
               <h2
-                className="font-baloo text-[2.2rem] leading-[0.95] tracking-[-0.05em] text-[#173f3b] sm:text-[3rem] lg:text-[3.8rem]"
+                className="text-[2.2rem] font-black leading-[0.95] tracking-[-0.05em] text-[#173f3b] sm:text-[3rem] lg:text-[3.8rem]"
                 id="scoop-choice-heading"
               >
                 Choose your scoop
@@ -89,25 +89,27 @@ export function MarketingHome({ homeData }: MarketingHomeProps): React.ReactElem
 
           <div className="grid gap-5 xl:grid-cols-2 xl:gap-7">
             <article className="overflow-hidden rounded-[30px] border border-[#f1d3da] bg-gradient-to-br from-[#fff8f8] to-[#fff2f4] shadow-[0_18px_50px_rgba(38,54,50,0.08)]">
-              <div className="grid xl:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
+              <div className="grid xl:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
                 <div className="flex flex-col p-6 sm:p-8 xl:p-10">
-                  <p className="mb-5 inline-flex self-start rounded-full border border-[#df526f] bg-white/70 px-4 py-2 text-[11px] font-extrabold uppercase tracking-[0.16em] text-[#df526f]">
-                    Surprise me
-                  </p>
-                  <h3 className="font-baloo text-[2.2rem] leading-[0.92] tracking-[-0.05em] text-[#173f3b] sm:text-[2.7rem]">
-                    Mystery
-                    <br />
-                    Scoop
-                  </h3>
-                  <div
-                    className="my-5 h-[10px] w-[54px] bg-contain bg-no-repeat"
-                    style={{ backgroundImage: mysterySquiggle }}
-                  />
-                  <p className="text-[15px] leading-7 text-[#71827f] sm:text-[16px]">
-                    Choose a size, share any three preferences, and let our team create a surprise mix
-                    especially for you.
-                  </p>
-                  <ul aria-label="Mystery Scoop benefits" className="my-6 grid gap-3">
+                  <div className="max-w-[320px]">
+                    <p className="mb-5 inline-flex self-start rounded-full border border-[#df526f] bg-white/70 px-4 py-2 text-[11px] font-extrabold uppercase tracking-[0.16em] text-[#df526f]">
+                      Surprise me
+                    </p>
+                    <h3 className="max-w-[8ch] text-[2.2rem] font-black leading-[0.92] tracking-[-0.05em] text-[#173f3b] sm:text-[2.7rem]">
+                      Mystery
+                      <br />
+                      Scoop
+                    </h3>
+                    <div
+                      className="my-5 h-[10px] w-[54px] bg-contain bg-no-repeat"
+                      style={{ backgroundImage: mysterySquiggle }}
+                    />
+                    <p className="max-w-[18ch] text-[15px] leading-7 text-[#71827f] sm:text-[16px]">
+                      Choose a size, share any three preferences, and let our team create a surprise mix
+                      especially for you.
+                    </p>
+                  </div>
+                  <ul aria-label="Mystery Scoop benefits" className="my-6 grid min-h-[132px] max-w-[320px] gap-3">
                     {[
                       "Any 3 preferences",
                       "Personalised reel option",
@@ -125,7 +127,7 @@ export function MarketingHome({ homeData }: MarketingHomeProps): React.ReactElem
                     ))}
                   </ul>
                   <Link
-                    className="mt-auto inline-flex min-h-[56px] w-full items-center justify-center gap-3 rounded-full border border-[#F28FA7] bg-[#F28FA7] px-6 text-center font-poppins text-[15px] font-extrabold uppercase tracking-[0.08em] text-[#FFFFFF] shadow-[0_16px_30px_rgba(242,143,167,0.22)] transition hover:-translate-y-0.5 hover:border-[#E87995] hover:bg-[#E87995] hover:shadow-[0_20px_34px_rgba(232,121,149,0.28)] sm:w-fit"
+                    className="mt-auto inline-flex min-h-[56px] w-full items-center justify-center gap-3 rounded-full border border-[#F28FA7] bg-[#F28FA7] px-6 text-center font-poppins text-[15px] font-extrabold uppercase tracking-[0.08em] text-[#FFFFFF] shadow-[0_16px_30px_rgba(242,143,167,0.22)] transition hover:-translate-y-0.5 hover:border-[#E87995] hover:bg-[#E87995] hover:shadow-[0_20px_34px_rgba(232,121,149,0.28)] sm:max-w-[320px]"
                     href="/mystery-scoop"
                   >
                     Explore Mystery Scoop <ArrowRight aria-hidden="true" size={18} />
@@ -145,25 +147,27 @@ export function MarketingHome({ homeData }: MarketingHomeProps): React.ReactElem
             </article>
 
             <article className="overflow-hidden rounded-[30px] border border-[#ded4f3] bg-gradient-to-br from-[#faf7ff] to-[#f5f0ff] shadow-[0_18px_50px_rgba(38,54,50,0.08)]">
-              <div className="grid xl:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
+              <div className="grid xl:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
                 <div className="flex flex-col p-6 sm:p-8 xl:p-10">
-                  <p className="mb-5 inline-flex self-start rounded-full border border-[#8b63d2] bg-white/70 px-4 py-2 text-[11px] font-extrabold uppercase tracking-[0.16em] text-[#8b63d2]">
-                    Choose everything
-                  </p>
-                  <h3 className="font-baloo text-[2.2rem] leading-[0.92] tracking-[-0.05em] text-[#173f3b] sm:text-[2.7rem]">
-                    Build Your
-                    <br />
-                    Own Box
-                  </h3>
-                  <div
-                    className="my-5 h-[10px] w-[54px] bg-contain bg-no-repeat"
-                    style={{ backgroundImage: buildSquiggle }}
-                  />
-                  <p className="text-[15px] leading-7 text-[#71827f] sm:text-[16px]">
-                    Pick your favourites from our collection and build a box that feels completely and
-                    uniquely yours.
-                  </p>
-                  <ul aria-label="Build Your Own Box benefits" className="my-6 grid gap-3">
+                  <div className="max-w-[320px]">
+                    <p className="mb-5 inline-flex self-start rounded-full border border-[#8b63d2] bg-white/70 px-4 py-2 text-[11px] font-extrabold uppercase tracking-[0.16em] text-[#8b63d2]">
+                      Choose everything
+                    </p>
+                    <h3 className="max-w-[8ch] text-[2.2rem] font-black leading-[0.92] tracking-[-0.05em] text-[#173f3b] sm:text-[2.7rem]">
+                      Build Your
+                      <br />
+                      Own Box
+                    </h3>
+                    <div
+                      className="my-5 h-[10px] w-[54px] bg-contain bg-no-repeat"
+                      style={{ backgroundImage: buildSquiggle }}
+                    />
+                    <p className="max-w-[18ch] text-[15px] leading-7 text-[#71827f] sm:text-[16px]">
+                      Pick your favourites from our collection and build a box that feels completely and
+                      uniquely yours.
+                    </p>
+                  </div>
+                  <ul aria-label="Build Your Own Box benefits" className="my-6 grid min-h-[132px] max-w-[320px] gap-3">
                     {[
                       "Size-based item limits",
                       "Gift note support",
@@ -181,7 +185,7 @@ export function MarketingHome({ homeData }: MarketingHomeProps): React.ReactElem
                     ))}
                   </ul>
                   <Link
-                    className="mt-auto inline-flex min-h-[56px] w-full items-center justify-center gap-3 rounded-full border border-[#A77BE8] bg-[#A77BE8] px-6 text-center font-poppins text-[15px] font-extrabold uppercase tracking-[0.08em] text-[#FFFFFF] shadow-[0_16px_30px_rgba(167,123,232,0.22)] transition hover:-translate-y-0.5 hover:border-[#9164D7] hover:bg-[#9164D7] hover:shadow-[0_20px_34px_rgba(145,100,215,0.28)] sm:w-fit"
+                    className="mt-auto inline-flex min-h-[56px] w-full items-center justify-center gap-3 rounded-full border border-[#A77BE8] bg-[#A77BE8] px-6 text-center font-poppins text-[15px] font-extrabold uppercase tracking-[0.08em] text-[#FFFFFF] shadow-[0_16px_30px_rgba(167,123,232,0.22)] transition hover:-translate-y-0.5 hover:border-[#9164D7] hover:bg-[#9164D7] hover:shadow-[0_20px_34px_rgba(145,100,215,0.28)] sm:max-w-[320px]"
                     href="/build-your-own-scoop"
                   >
                     Build My Box <ArrowRight aria-hidden="true" size={18} />
