@@ -32,9 +32,7 @@ export function CatalogProductOrderClient({
     () => Array.from(new Set([product.image, ...product.gallery.map((image) => image.url)])).slice(0, 6),
     [product.gallery, product.image],
   );
-  const productFeatures = product.highlights
-    .filter((feature) => !feature.toLowerCase().startsWith("category:"))
-    .slice(0, 3);
+  const productFeatures = product.highlights.slice(0, 3);
   const informationSections = buildProductInformationSections(product);
 
   function updateQuantity(nextQuantity: number): void {

@@ -1284,6 +1284,14 @@ textarea {
   line-height: 1.7;
 }
 
+.footer-brand-name {
+  color: var(--foreground);
+  font-size: 1.5rem;
+  font-weight: 950;
+  letter-spacing: -0.04em;
+  line-height: 1;
+}
+
 .footer-link-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1315,6 +1323,14 @@ textarea {
   color: var(--foreground);
 }
 
+.footer-business-info {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.7;
+}
+
 .footer-bottom-bar {
   display: grid;
   gap: 16px;
@@ -1322,6 +1338,13 @@ textarea {
   justify-items: center;
   border-top: 1px solid rgba(30, 41, 59, 0.18);
   padding: clamp(24px, 4vw, 32px) 0;
+}
+
+.footer-copyright {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 750;
 }
 
 .footer-status-cluster,
@@ -2044,7 +2067,7 @@ textarea {
   }
 
   .footer-link-grid {
-    grid-template-columns: repeat(5, minmax(0, 1fr));
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 
   .orders-layout {

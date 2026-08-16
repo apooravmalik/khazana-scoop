@@ -14,23 +14,13 @@ export function buildProductInformationSections(
     product.description.trim() ||
     product.summary.trim() ||
     `${product.name} is selected and packed with care by Khazana Scoop.`;
-  const categoryName = product.category?.name || product.eyebrow.trim();
-  const productFacts = [
-    categoryName ? `Category: ${categoryName}` : null,
-    product.availableColours.length > 0
-      ? `Available colours: ${product.availableColours.join(", ")}`
-      : null,
-    product.highlights.length > 0
-      ? `Highlights: ${product.highlights.join(", ")}`
-      : null,
-  ].filter((fact): fact is string => Boolean(fact));
 
   return [
     {
       id: "product-details",
       title: "Product Details",
       paragraphs: [productDetails],
-      items: productFacts,
+      items: [],
     },
     {
       id: "shipping-information",

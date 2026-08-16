@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { SlidersHorizontal } from "lucide-react";
 import { StorefrontFooter, StorefrontHeader } from "@/components/storefront-shell";
 import {
   filterStorefrontCatalogProducts,
@@ -18,6 +19,8 @@ type ProductsPageProps = {
     sort?: string;
   }>;
 };
+
+type ProductFilters = NonNullable<Awaited<ProductsPageProps["searchParams"]>>;
 
 function productTag(product: StorefrontCatalogProduct): string {
   return product.category?.name || product.collections[0]?.name || product.eyebrow || "Khazana Scoop";
@@ -100,6 +103,97 @@ function buildProductsHref(filters: {
   return query ? `/products?${query}` : "/products";
 }
 
+function ProductFilterForm({
+  categories,
+  className,
+  filters,
+  hasActiveFilters,
+  priceFilter,
+  sort,
+}: {
+  categories: Array<{ name: string; slug: string }>;
+  className: string;
+  filters: ProductFilters;
+  hasActiveFilters: boolean;
+  priceFilter: string;
+  sort: string;
+}): React.ReactElement {
+  return (
+    <form action="/products" className={className} method="get">
+      {filters.collection ? <input name="collection" type="hidden" value={filters.collection} /> : null}
+
+      <label className="flex flex-col gap-2">
+        <span className="text-[12px] font-extrabold uppercase tracking-[0.08em] text-[#244f4b]">Search</span>
+        <input
+          className="w-full rounded-full border border-[#eee5dc] bg-[#fffdfa] px-4 py-3 text-sm text-[#244f4b] outline-none transition focus:border-[#19b8b2]"
+          defaultValue={filters.q ?? ""}
+          name="q"
+          placeholder="Search products, categories, or collections"
+          type="search"
+        />
+      </label>
+
+      <label className="flex flex-col gap-2">
+        <span className="text-[12px] font-extrabold uppercase tracking-[0.08em] text-[#244f4b]">Category</span>
+        <select
+          className="w-full rounded-full border border-[#eee5dc] bg-[#fffdfa] px-4 py-3 text-sm text-[#244f4b] outline-none transition focus:border-[#19b8b2]"
+          defaultValue={filters.category ?? ""}
+          name="category"
+        >
+          <option value="">All categories</option>
+          {categories.map((category) => (
+            <option key={category.slug} value={category.slug}>
+              {category.name}
+            </option>
+          ))}
+        </select>
+      </label>
+
+      <label className="flex flex-col gap-2">
+        <span className="text-[12px] font-extrabold uppercase tracking-[0.08em] text-[#244f4b]">Price</span>
+        <select
+          className="w-full rounded-full border border-[#eee5dc] bg-[#fffdfa] px-4 py-3 text-sm text-[#244f4b] outline-none transition focus:border-[#19b8b2]"
+          defaultValue={priceFilter}
+          name="price"
+        >
+          <option value="">All prices</option>
+          <option value="under-100">Under ₹100</option>
+          <option value="100-500">₹100 to ₹500</option>
+          <option value="500-plus">Above ₹500</option>
+        </select>
+      </label>
+
+      <label className="flex flex-col gap-2">
+        <span className="text-[12px] font-extrabold uppercase tracking-[0.08em] text-[#244f4b]">Sort</span>
+        <select
+          className="w-full rounded-full border border-[#eee5dc] bg-[#fffdfa] px-4 py-3 text-sm text-[#244f4b] outline-none transition focus:border-[#19b8b2]"
+          defaultValue={sort}
+          name="sort"
+        >
+          <option value="popularity">Popularity</option>
+          <option value="newest">Newest</option>
+          <option value="price-asc">Price: Low to High</option>
+          <option value="price-desc">Price: High to Low</option>
+        </select>
+      </label>
+
+      <div className="flex items-end gap-3 sm:col-span-2 lg:col-span-1 lg:justify-end">
+        <button className="min-h-[48px] flex-1 rounded-full bg-[#19b8b2] px-5 py-3 text-sm font-bold text-white transition hover:bg-[#169f9a] lg:flex-none" type="submit">
+          Apply
+        </button>
+        {hasActiveFilters ? (
+          <Link
+            className="inline-flex min-h-[48px] flex-1 items-center justify-center rounded-full border border-[#eee5dc] px-5 py-3 text-sm font-bold text-[#244f4b] transition hover:border-[#19b8b2] hover:text-[#19b8b2] lg:flex-none"
+            href="/products"
+          >
+            Clear
+          </Link>
+        ) : null}
+      </div>
+    </form>
+  );
+}
+
 export default async function ProductsPage({
   searchParams,
 }: ProductsPageProps): Promise<React.ReactElement> {
@@ -142,6 +236,9 @@ export default async function ProductsPage({
           ? "Above ₹500"
           : null;
   const hasActiveFilters = Boolean(filters.category || filters.collection || searchQuery || priceFilter || sort !== "popularity");
+  const activeFilterCount = [filters.category, filters.collection, searchQuery, priceFilter, sort !== "popularity" ? sort : null]
+    .filter(Boolean)
+    .length;
 
   return (
     <main className="min-h-screen bg-[#fffdf9]">
@@ -198,80 +295,39 @@ export default async function ProductsPage({
           </div>
         </section>
 
-        <section className="mt-6 rounded-[26px] border border-[#eee5dc] bg-white px-4 py-4 shadow-[0_6px_18px_rgba(30,73,68,0.05)] sm:px-5">
-          <form action="/products" className="grid gap-3 sm:grid-cols-2 lg:grid-cols-[minmax(0,1.5fr)_repeat(3,minmax(0,0.8fr))_auto]" method="get">
-            {filters.collection ? <input name="collection" type="hidden" value={filters.collection} /> : null}
-
-            <label className="flex flex-col gap-2">
-              <span className="text-[12px] font-extrabold uppercase tracking-[0.08em] text-[#244f4b]">Search</span>
-              <input
-                className="w-full rounded-full border border-[#eee5dc] bg-[#fffdfa] px-4 py-3 text-sm text-[#244f4b] outline-none transition focus:border-[#19b8b2]"
-                defaultValue={filters.q ?? ""}
-                name="q"
-                placeholder="Search products, categories, or collections"
-                type="search"
-              />
-            </label>
-
-            <label className="flex flex-col gap-2">
-              <span className="text-[12px] font-extrabold uppercase tracking-[0.08em] text-[#244f4b]">Category</span>
-              <select
-                className="w-full rounded-full border border-[#eee5dc] bg-[#fffdfa] px-4 py-3 text-sm text-[#244f4b] outline-none transition focus:border-[#19b8b2]"
-                defaultValue={filters.category ?? ""}
-                name="category"
-              >
-                <option value="">All categories</option>
-                {homeData.categories.map((category) => (
-                  <option key={category.slug} value={category.slug}>
-                    {category.name}
-                  </option>
-                ))}
-              </select>
-            </label>
-
-            <label className="flex flex-col gap-2">
-              <span className="text-[12px] font-extrabold uppercase tracking-[0.08em] text-[#244f4b]">Price</span>
-              <select
-                className="w-full rounded-full border border-[#eee5dc] bg-[#fffdfa] px-4 py-3 text-sm text-[#244f4b] outline-none transition focus:border-[#19b8b2]"
-                defaultValue={priceFilter}
-                name="price"
-              >
-                <option value="">All prices</option>
-                <option value="under-100">Under ₹100</option>
-                <option value="100-500">₹100 to ₹500</option>
-                <option value="500-plus">Above ₹500</option>
-              </select>
-            </label>
-
-            <label className="flex flex-col gap-2">
-              <span className="text-[12px] font-extrabold uppercase tracking-[0.08em] text-[#244f4b]">Sort</span>
-              <select
-                className="w-full rounded-full border border-[#eee5dc] bg-[#fffdfa] px-4 py-3 text-sm text-[#244f4b] outline-none transition focus:border-[#19b8b2]"
-                defaultValue={sort}
-                id="sort"
-                name="sort"
-              >
-                <option value="popularity">Popularity</option>
-                <option value="newest">Newest</option>
-                <option value="price-asc">Price: Low to High</option>
-                <option value="price-desc">Price: High to Low</option>
-              </select>
-            </label>
-
-            <div className="flex items-end gap-3 sm:col-span-2 lg:col-span-1 lg:justify-end">
-              <button className="min-h-[48px] flex-1 rounded-full bg-[#19b8b2] px-5 py-3 text-sm font-bold text-white transition hover:bg-[#169f9a] lg:flex-none" type="submit">
-                Apply
-              </button>
-              {hasActiveFilters ? (
-                <Link
-                  className="inline-flex min-h-[48px] flex-1 items-center justify-center rounded-full border border-[#eee5dc] px-5 py-3 text-sm font-bold text-[#244f4b] transition hover:border-[#19b8b2] hover:text-[#19b8b2] lg:flex-none"
-                  href="/products"
-                >
-                  Clear
-                </Link>
-              ) : null}
-            </div>
-          </form>
+        <section className="mt-6 rounded-[26px] border border-[#eee5dc] bg-white px-4 py-3 shadow-[0_6px_18px_rgba(30,73,68,0.05)] sm:px-5 sm:py-4">
+          <details className="lg:hidden">
+            <summary className="flex min-h-[52px] cursor-pointer list-none items-center justify-between gap-4 rounded-[18px] px-2 text-[#244f4b] [&::-webkit-details-marker]:hidden lg:hidden">
+              <span className="flex items-center gap-3 font-bold">
+                <SlidersHorizontal aria-hidden="true" size={20} strokeWidth={2.4} />
+                Filters
+                {activeFilterCount > 0 ? (
+                  <span className="rounded-full bg-[#e4f7f5] px-2 py-0.5 text-[12px] text-[#168c87]">
+                    {activeFilterCount} active
+                  </span>
+                ) : null}
+              </span>
+              <span aria-hidden="true" className="text-lg">⌄</span>
+            </summary>
+            <ProductFilterForm
+              categories={homeData.categories}
+              className="mt-3 grid gap-3"
+              filters={filters}
+              hasActiveFilters={hasActiveFilters}
+              priceFilter={priceFilter}
+              sort={sort}
+            />
+          </details>
+          <div className="hidden lg:block">
+            <ProductFilterForm
+              categories={homeData.categories}
+              className="grid gap-3 sm:grid-cols-2 lg:grid-cols-[minmax(0,1.5fr)_repeat(3,minmax(0,0.8fr))_auto]"
+              filters={filters}
+              hasActiveFilters={hasActiveFilters}
+              priceFilter={priceFilter}
+              sort={sort}
+            />
+          </div>
         </section>
 
         <section className="mb-6 mt-6 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">

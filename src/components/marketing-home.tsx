@@ -17,15 +17,7 @@ type MarketingHomeProps = {
   homeData: StorefrontCatalogHomeData;
 };
 
-const mysterySquiggle =
-  "url(\"data:image/svg+xml,%3Csvg width='60' height='12' viewBox='0 0 60 12' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 6C5 1 9 1 13 6s8 5 12 0 8-5 12 0 8 5 12 0 8-5 10-1' fill='none' stroke='%23f49ab0' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E\")";
-
-const buildSquiggle =
-  "url(\"data:image/svg+xml,%3Csvg width='60' height='12' viewBox='0 0 60 12' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 6C5 1 9 1 13 6s8 5 12 0 8-5 12 0 8 5 12 0 8-5 10-1' fill='none' stroke='%23b58be8' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E\")";
-
 export function MarketingHome({ homeData }: MarketingHomeProps): React.ReactElement {
-  const featuredCards = homeData.products.slice(1, 3);
-  const heroProduct = homeData.products[0] ?? null;
   const categoryCards = homeData.categories;
   const hamperProducts = homeData.products.filter(isHamperProduct).slice(0, 4);
   const trendingProducts = homeData.products.filter((product) => !isHamperProduct(product)).slice(0, 8);
@@ -68,57 +60,53 @@ export function MarketingHome({ homeData }: MarketingHomeProps): React.ReactElem
         </section>
       ) : null}
 
-      <section aria-labelledby="scoop-choice-heading" className="bg-[#fcfaf7] px-4 py-14 md:px-8">
-        <div className="mx-auto max-w-[1160px]">
-          <header className="mx-auto mb-8 max-w-[760px] text-center md:mb-10">
-            <div className="inline-flex items-center justify-center gap-2.5 sm:gap-4">
-              <span aria-hidden="true" className="text-[20px] text-[#f69ab0] sm:text-[26px]">✦</span>
+      <section aria-labelledby="scoop-choice-heading" className="bg-white px-4 py-[30px] sm:px-6 sm:py-12">
+        <div className="mx-auto max-w-[1120px]">
+          <header className="mx-auto mb-[22px] max-w-[620px] text-center sm:mb-[30px]">
+            <div className="inline-flex items-center justify-center gap-2.5">
+              <span aria-hidden="true" className="text-sm text-[#f28ca6]">✦</span>
               <h2
-                className="text-[2.2rem] font-black leading-[0.95] tracking-[-0.05em] text-[#173f3b] sm:text-[3rem] lg:text-[3.8rem]"
+                className="text-[25px] font-black leading-[1.05] tracking-[-0.04em] text-[#073b3d] sm:text-[38px]"
                 id="scoop-choice-heading"
               >
                 Choose your scoop
               </h2>
-              <span aria-hidden="true" className="text-[20px] text-[#b48bea] sm:text-[26px]">✦</span>
+              <span aria-hidden="true" className="text-sm text-[#f28ca6]">✦</span>
             </div>
-            <p className="mt-4 text-[15px] leading-7 text-[#71827f] sm:text-[17px] sm:leading-8">
+            <p className="mt-[10px] text-[13px] leading-[1.62] text-[#6b7280] sm:text-sm">
               Choose a surprise-filled scoop or build a box your way. Both options are easy to order
               and made for gifting, collecting, and cute little treats.
             </p>
           </header>
 
-          <div className="grid gap-5 xl:grid-cols-2 xl:gap-7">
-            <article className="overflow-hidden rounded-[30px] border border-[#f1d3da] bg-gradient-to-br from-[#fff8f8] to-[#fff2f4] shadow-[0_18px_50px_rgba(38,54,50,0.08)]">
-              <div className="grid xl:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
-                <div className="flex flex-col p-6 sm:p-8 xl:p-10">
-                  <div className="max-w-[320px]">
-                    <p className="mb-5 inline-flex self-start rounded-full border border-[#df526f] bg-white/70 px-4 py-2 text-[11px] font-extrabold uppercase tracking-[0.16em] text-[#df526f]">
+          <div className="grid gap-[14px] md:grid-cols-2 md:gap-[18px]">
+            <article className="min-h-[238px] overflow-hidden rounded-[24px] border border-[#f6d9e1] bg-[#fff4f7] shadow-[0_8px_28px_rgba(68,44,54,0.07)] md:min-h-[340px]">
+              <div className="grid min-h-[238px] grid-cols-[minmax(0,1fr)_118px] md:min-h-[340px] md:grid-cols-[minmax(0,1fr)_42%]">
+                <div className="flex min-w-0 flex-col justify-center p-[17px_12px_17px_17px] md:p-[30px_26px]">
+                  <div>
+                    <p className="text-[9px] font-extrabold uppercase tracking-[0.16em] text-[#d96c8c] md:text-[10px]">
                       Surprise me
                     </p>
-                    <h3 className="max-w-[8ch] text-[2.2rem] font-black leading-[0.92] tracking-[-0.05em] text-[#173f3b] sm:text-[2.7rem]">
+                    <h3 className="mt-[5px] text-[22px] font-black leading-[0.98] tracking-[-0.045em] text-[#073b3d] md:text-[36px]">
                       Mystery
                       <br />
                       Scoop
                     </h3>
-                    <div
-                      className="my-5 h-[10px] w-[54px] bg-contain bg-no-repeat"
-                      style={{ backgroundImage: mysterySquiggle }}
-                    />
-                    <p className="max-w-[18ch] text-[15px] leading-7 text-[#71827f] sm:text-[16px]">
+                    <p className="mt-[9px] text-[10.5px] leading-[1.52] text-[#64748b] md:mt-[14px] md:text-[13px] md:leading-[1.6]">
                       Choose a size, share any three preferences, and let our team create a surprise mix
                       especially for you.
                     </p>
                   </div>
-                  <ul aria-label="Mystery Scoop benefits" className="my-6 grid min-h-[132px] max-w-[320px] gap-3">
+                  <ul aria-label="Mystery Scoop benefits" className="mt-[11px] grid gap-[6px] md:mt-[17px] md:gap-2">
                     {[
                       "Any 3 preferences",
                       "Personalised reel option",
                       "Quick dispatch",
                     ].map((benefit) => (
-                      <li className="flex items-center gap-3 text-[15px] font-bold text-[#173f3b]" key={benefit}>
+                      <li className="flex items-center gap-[7px] whitespace-nowrap text-[10px] font-bold text-[#073b3d] md:gap-2 md:text-[12px]" key={benefit}>
                         <span
                           aria-hidden="true"
-                          className="grid h-6 w-6 flex-none place-items-center rounded-full bg-[#f7a4b7] text-[13px] font-extrabold text-white"
+                          className="grid h-[17px] w-[17px] flex-none place-items-center rounded-full bg-[#f3a0b6] text-[9px] font-extrabold text-white md:h-5 md:w-5 md:text-[10px]"
                         >
                           ✓
                         </span>
@@ -127,56 +115,62 @@ export function MarketingHome({ homeData }: MarketingHomeProps): React.ReactElem
                     ))}
                   </ul>
                   <Link
-                    className="mt-auto inline-flex min-h-[56px] w-full items-center justify-center gap-3 rounded-full border border-[#F28FA7] bg-[#F28FA7] px-6 text-center font-poppins text-[15px] font-extrabold uppercase tracking-[0.08em] text-[#FFFFFF] shadow-[0_16px_30px_rgba(242,143,167,0.22)] transition hover:-translate-y-0.5 hover:border-[#E87995] hover:bg-[#E87995] hover:shadow-[0_20px_34px_rgba(232,121,149,0.28)] sm:max-w-[320px]"
+                    className="mt-[12px] inline-flex w-fit items-center gap-[7px] rounded-full border border-[#f28ba7] bg-[#f28ba7] px-[13px] py-[9px] text-[9px] font-extrabold uppercase tracking-[0.075em] text-[#073b3d] transition hover:-translate-y-0.5 md:mt-[19px] md:px-[18px] md:py-3 md:text-[10px]"
                     href="/mystery-scoop"
                   >
-                    Explore Mystery Scoop <ArrowRight aria-hidden="true" size={18} />
+                    Explore Mystery Scoop <ArrowRight aria-hidden="true" size={12} />
                   </Link>
                 </div>
-                <div className="relative min-h-[280px] overflow-hidden xl:min-h-full">
+                <div className="relative min-h-[238px] overflow-hidden bg-[linear-gradient(150deg,#fbdce6,#f2e3f7)] md:min-h-[340px]">
                   <Image
                     alt="Pink Khazana Scoop mystery box filled with cute accessories and self-care products"
-                    className="object-cover transition duration-500 xl:hover:scale-[1.03]"
+                    className="object-cover"
                     fill
-                    sizes="(min-width: 1280px) 28vw, (min-width: 768px) 50vw, 100vw"
-                    src={heroProduct?.image ?? "/mystery-scoop-hero.png"}
+                    sizes="(min-width: 720px) 22vw, 118px"
+                    src="https://kkvbkrohjnuvcojgejod.supabase.co/storage/v1/object/public/product-images/38/1785225735231-ChatGPT-Image-Jun-22-2026-05_04_29-PM-1-.webp"
                   />
-                  <div className="pointer-events-none absolute inset-x-0 top-0 h-[24%] bg-gradient-to-b from-[#fff2f4] to-transparent xl:inset-y-0 xl:left-0 xl:right-auto xl:h-auto xl:w-[26%] xl:bg-gradient-to-r" />
+                  <div className="pointer-events-none absolute inset-y-0 left-0 w-[26%] bg-gradient-to-r from-[#fff4f7]/75 to-transparent" />
                 </div>
               </div>
             </article>
 
-            <article className="overflow-hidden rounded-[30px] border border-[#ded4f3] bg-gradient-to-br from-[#faf7ff] to-[#f5f0ff] shadow-[0_18px_50px_rgba(38,54,50,0.08)]">
-              <div className="grid xl:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
-                <div className="flex flex-col p-6 sm:p-8 xl:p-10">
-                  <div className="max-w-[320px]">
-                    <p className="mb-5 inline-flex self-start rounded-full border border-[#8b63d2] bg-white/70 px-4 py-2 text-[11px] font-extrabold uppercase tracking-[0.16em] text-[#8b63d2]">
+            <article className="min-h-[238px] overflow-hidden rounded-[24px] border border-[#e4d8f7] bg-[#f8f4ff] shadow-[0_8px_28px_rgba(68,44,54,0.07)] md:min-h-[340px]">
+              <div className="grid min-h-[238px] grid-cols-[118px_minmax(0,1fr)] md:min-h-[340px] md:grid-cols-[42%_minmax(0,1fr)]">
+                <div className="relative min-h-[238px] overflow-hidden bg-[linear-gradient(150deg,#e7daf7,#f7e8f5)] md:min-h-[340px]">
+                  <Image
+                    alt="Lilac Khazana Scoop build-your-own gift box filled with hand-picked products"
+                    className="object-cover"
+                    fill
+                    sizes="(min-width: 720px) 22vw, 118px"
+                    src="https://kkvbkrohjnuvcojgejod.supabase.co/storage/v1/object/public/product-images/90/1785936739293-ChatGPT-Image-Aug-5-2026-06_22_29-PM-1-.webp"
+                  />
+                  <div className="pointer-events-none absolute inset-y-0 right-0 w-[26%] bg-gradient-to-l from-[#f8f4ff]/75 to-transparent" />
+                </div>
+                <div className="flex min-w-0 flex-col justify-center p-[17px_17px_17px_12px] md:p-[30px_26px]">
+                  <div>
+                    <p className="text-[9px] font-extrabold uppercase tracking-[0.16em] text-[#895acd] md:text-[10px]">
                       Choose everything
                     </p>
-                    <h3 className="max-w-[8ch] text-[2.2rem] font-black leading-[0.92] tracking-[-0.05em] text-[#173f3b] sm:text-[2.7rem]">
+                    <h3 className="mt-[5px] text-[22px] font-black leading-[0.98] tracking-[-0.045em] text-[#073b3d] md:text-[36px]">
                       Build Your
                       <br />
                       Own Box
                     </h3>
-                    <div
-                      className="my-5 h-[10px] w-[54px] bg-contain bg-no-repeat"
-                      style={{ backgroundImage: buildSquiggle }}
-                    />
-                    <p className="max-w-[18ch] text-[15px] leading-7 text-[#71827f] sm:text-[16px]">
+                    <p className="mt-[9px] text-[10.5px] leading-[1.52] text-[#64748b] md:mt-[14px] md:text-[13px] md:leading-[1.6]">
                       Pick your favourites from our collection and build a box that feels completely and
                       uniquely yours.
                     </p>
                   </div>
-                  <ul aria-label="Build Your Own Box benefits" className="my-6 grid min-h-[132px] max-w-[320px] gap-3">
+                  <ul aria-label="Build Your Own Box benefits" className="mt-[11px] grid gap-[6px] md:mt-[17px] md:gap-2">
                     {[
                       "Size-based item limits",
                       "Gift note support",
                       "Personalised reel option",
                     ].map((benefit) => (
-                      <li className="flex items-center gap-3 text-[15px] font-bold text-[#173f3b]" key={benefit}>
+                      <li className="flex items-center gap-[7px] whitespace-nowrap text-[10px] font-bold text-[#073b3d] md:gap-2 md:text-[12px]" key={benefit}>
                         <span
                           aria-hidden="true"
-                          className="grid h-6 w-6 flex-none place-items-center rounded-full bg-[#b894ec] text-[13px] font-extrabold text-white"
+                          className="grid h-[17px] w-[17px] flex-none place-items-center rounded-full bg-[#a77ae5] text-[9px] font-extrabold text-white md:h-5 md:w-5 md:text-[10px]"
                         >
                           ✓
                         </span>
@@ -185,21 +179,11 @@ export function MarketingHome({ homeData }: MarketingHomeProps): React.ReactElem
                     ))}
                   </ul>
                   <Link
-                    className="mt-auto inline-flex min-h-[56px] w-full items-center justify-center gap-3 rounded-full border border-[#A77BE8] bg-[#A77BE8] px-6 text-center font-poppins text-[15px] font-extrabold uppercase tracking-[0.08em] text-[#FFFFFF] shadow-[0_16px_30px_rgba(167,123,232,0.22)] transition hover:-translate-y-0.5 hover:border-[#9164D7] hover:bg-[#9164D7] hover:shadow-[0_20px_34px_rgba(145,100,215,0.28)] sm:max-w-[320px]"
+                    className="mt-[12px] inline-flex w-fit items-center gap-[7px] rounded-full border border-[#9e72dc] bg-white px-[13px] py-[9px] text-[9px] font-extrabold uppercase tracking-[0.075em] text-[#8054c5] transition hover:-translate-y-0.5 md:mt-[19px] md:px-[18px] md:py-3 md:text-[10px]"
                     href="/build-your-own-scoop"
                   >
-                    Build My Box <ArrowRight aria-hidden="true" size={18} />
+                    Build My Box <ArrowRight aria-hidden="true" size={12} />
                   </Link>
-                </div>
-                <div className="relative min-h-[280px] overflow-hidden xl:min-h-full">
-                  <Image
-                    alt="Lilac Khazana Scoop build-your-own gift box filled with hand-picked products"
-                    className="object-cover transition duration-500 xl:hover:scale-[1.03]"
-                    fill
-                    sizes="(min-width: 1280px) 28vw, (min-width: 768px) 50vw, 100vw"
-                    src={featuredCards[0]?.image ?? heroProduct?.image ?? "/mystery-scoop-hero.png"}
-                  />
-                  <div className="pointer-events-none absolute inset-x-0 top-0 h-[24%] bg-gradient-to-b from-[#f5f0ff] to-transparent xl:inset-y-0 xl:left-0 xl:right-auto xl:h-auto xl:w-[26%] xl:bg-gradient-to-r" />
                 </div>
               </div>
             </article>

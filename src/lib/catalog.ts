@@ -20,6 +20,7 @@ type ProductRow = {
   selling_price: number | string | null;
   primary_image_url: string | null;
   available_colours: string[] | null;
+  highlights: string[] | null;
   stock_quantity: number | string | null;
   active: boolean | null;
   website_visible: boolean | null;
@@ -299,20 +300,6 @@ function pickBestDiscount(
   }, null);
 }
 
-function buildHighlights(
-  category: CatalogCategory | null,
-  collections: CatalogCollection[],
-  colours: string[],
-): string[] {
-  const highlights = [
-    ...(category ? [`Category: ${category.name}`] : []),
-    ...collections.slice(0, 2).map((collection) => `${collection.name} collection`),
-    ...colours.slice(0, 2).map((colour) => `${colour} option`),
-  ];
-
-  return highlights.slice(0, 3);
-}
-
 function buildFacetMap(
   products: StorefrontCatalogProduct[],
   kind: "category" | "collection",
@@ -407,7 +394,7 @@ export async function getStorefrontCatalogProducts(): Promise<StorefrontCatalogP
     const [products, categories, collections, links, images, discounts] = await Promise.all([
       fetchTable<ProductRow>("products", {
         select:
-          "id,name,view_name,slug,description,base_price,selling_price,primary_image_url,available_colours,stock_quantity,active,website_visible,category_id",
+          "id,name,view_name,slug,description,base_price,selling_price,primary_image_url,available_colours,highlights,stock_quantity,active,website_visible,category_id",
         active: "eq.true",
         website_visible: "eq.true",
         order: "sort_order.asc,name.asc,id.asc",
@@ -472,6 +459,9 @@ export async function getStorefrontCatalogProducts(): Promise<StorefrontCatalogP
         const image = row.primary_image_url || gallery[0]?.url || "/mystery-scoop-hero.png";
         const description = row.description?.trim() || "";
         const colours = Array.isArray(row.available_colours) ? row.available_colours.filter(Boolean) : [];
+        const highlights = Array.isArray(row.highlights)
+          ? row.highlights.map((highlight) => highlight.trim()).filter(Boolean).slice(0, 3)
+          : [];
         return {
           id: productId,
           slug: row.slug?.trim() || slugify(row.name),
@@ -484,7 +474,7 @@ export async function getStorefrontCatalogProducts(): Promise<StorefrontCatalogP
           category,
           collections: productCollections,
           availableColours: colours,
-          highlights: buildHighlights(category, productCollections, colours),
+          highlights,
           basePrice,
           effectivePrice,
           priceLabel: formatCatalogPrice(effectivePrice),
