@@ -9,9 +9,11 @@ export default async function CartPage(): Promise<React.ReactElement> {
 
   return (
     <PageChrome
+      compactMobileHero
       currentPath="/products"
+      hideDefaultHeroAsideOnMobile
       title="Shopping cart"
-      subtitle="Review the catalog items you have added before continuing into guest Razorpay checkout."
+      subtitle="Review your items, then continue to secure Cashfree checkout."
     >
       <CatalogCartClient mode="cart" products={products} />
     </PageChrome>

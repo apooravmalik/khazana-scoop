@@ -1,6 +1,6 @@
 # Mystery Scoop
 
-A Next.js App Router MVP for Mystery Scoop with Prisma, Supabase Postgres, Stripe checkout plumbing, customer order views, and admin fulfillment screens.
+A Next.js App Router MVP for Mystery Scoop with Prisma, Supabase Postgres, Cashfree Payments, customer order views, and admin fulfillment screens.
 
 ## Getting Started
 
@@ -27,6 +27,23 @@ pnpm db:studio
 See `docs/supabase.md` for Supabase setup and GitHub secret names.
 
 Supabase Storage buckets are defined in `supabase/storage-buckets.sql` for product images, profile avatars, inventory images, scoop photos, and packing videos.
+
+## Cashfree checkout
+
+The catalog checkout creates a Cashfree Order on the server, opens Cashfree Hosted Checkout in the browser, and confirms the final order status from the server. Add the following secrets locally and in the deployment environment:
+
+```bash
+CASHFREE_APP_ID="..."
+CASHFREE_SECRET_KEY="..."
+CASHFREE_ENVIRONMENT="sandbox"
+CASHFREE_API_VERSION="2025-01-01"
+```
+
+`CASHFREE_APP_ID` is the App/Project (Client) ID from Cashfree; `CASHFREE_SECRET_KEY` is the API secret. Never expose the secret in browser code or commit it. Use `sandbox` with test credentials and set `production` only with live credentials.
+
+In Cashfree Dashboard, whitelist the deployed website domain, then add `https://YOUR_DOMAIN/api/cashfree/webhook` under **Payment Gateway → Developers → Webhooks**. Subscribe to payment success, failed, and user-dropped events. The endpoint verifies Cashfree's Base64 HMAC signature over the raw body and timestamp, and independently checks the Cashfree order before marking an order paid.
+
+For the Supabase REST checkout-session table, run `supabase/catalog-checkout-cashfree.sql` once in the Supabase SQL editor. Run `pnpm db:deploy` to apply the matching Prisma migration.
 
 ## Automation
 

@@ -3,38 +3,55 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { CircleUserRound, Search, ShoppingBag, X } from "lucide-react";
+import { CircleUserRound, Phone, Search, ShoppingBag, X } from "lucide-react";
 import { useCatalogCart } from "@/hooks/use-catalog-cart";
 
-const footerColumns = [
+const footerColumns: Array<{
+  title: string;
+  links: Array<{ label: string; href: string }>;
+  description?: string;
+}> = [
   {
     title: "Shop",
     links: [
-      { label: "Mystery Scoop", href: "/mystery-scoop" },
-      { label: "Build your scoop", href: "/build-your-own-scoop" },
-      { label: "Hampers", href: "/hampers" },
+      { label: "Mystery Scoop", href: "/mystery-scoops" },
+      { label: "Build Your Box", href: "/build-your-own-scoop" },
       { label: "Products", href: "/products" },
+      { label: "Gift Hampers", href: "/hampers" },
     ],
   },
   {
     title: "Customer Care",
     links: [
-      { label: "Track orders", href: "/tracking" },
-      { label: "Cart", href: "/cart" },
-      { label: "Checkout", href: "/checkout" },
-      { label: "Contact", href: "/contact" },
+      { label: "Track Order", href: "/tracking" },
+      { label: "Contact Us", href: "/contact" },
+      { label: "Shipping & Delivery", href: "/shipping-delivery-policy" },
+      { label: "Cancellation & Refunds", href: "/cancellation-return-refund-policy" },
     ],
   },
   {
-    title: "About Khazana Scoop",
+    title: "Legal",
     links: [
-      { label: "About", href: "/about" },
-      { label: "Homepage", href: "/" },
-      { label: "Collections", href: "/products" },
-      { label: "Gift Hampers", href: "/hampers" },
+      { label: "Terms & Conditions", href: "/terms-of-service" },
+      { label: "Privacy Policy", href: "/privacy-policy" },
     ],
   },
+  {
+    title: "Business Information",
+    links: [],
+    description: "Khazana Scoop is owned and operated by Pari Rajput.",
+  },
 ];
+
+function InstagramIcon(): React.ReactElement {
+  return (
+    <svg aria-hidden="true" fill="none" height="19" viewBox="0 0 24 24" width="19">
+      <rect height="16" rx="4" stroke="currentColor" strokeWidth="2.2" width="16" x="4" y="4" />
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" strokeWidth="2.2" />
+      <circle cx="17.25" cy="6.9" fill="currentColor" r="1.2" />
+    </svg>
+  );
+}
 
 export function StorefrontLogo({
   priority = false,
@@ -203,77 +220,58 @@ export function StorefrontFooter(): React.ReactElement {
           <div className="grid gap-8 border-b border-[#f6e5e8] px-6 py-8 lg:grid-cols-[1.05fr_1.45fr] lg:px-10 lg:py-10">
             <div className="space-y-5">
               <StorefrontLogo widthClassName="w-[220px] sm:w-[250px] lg:w-[300px]" />
-              <div className="space-y-3 font-poppins text-sm leading-7 text-[#30433f]/72">
-                <p>
-                  Cute collectibles, thoughtful gifting, and satisfying little surprises packed into one playful store.
-                </p>
-                <p>
-                  Shop scoops, browse best sellers, and pick a hamper that already feels ready to gift the moment it arrives.
-                </p>
+              <div className="flex items-center gap-3" aria-label="Follow or contact Khazana Scoop">
+                <a
+                  aria-label="Follow Khazana Scoop on Instagram"
+                  className="grid h-10 w-10 place-items-center rounded-full border border-[#f0d9dc] bg-[#fff8f8] text-[#d95f87] transition-colors hover:border-[#e6b8c6] hover:bg-[#fbe8ee]"
+                  href="https://www.instagram.com/khazanascoop/"
+                  rel="noreferrer"
+                  target="_blank"
+                >
+                  <InstagramIcon />
+                </a>
+                <a
+                  aria-label="Chat with Khazana Scoop on WhatsApp"
+                  className="grid h-10 w-10 place-items-center rounded-full border border-[#b6e4d0] bg-[#ecfaf3] text-[#25a56a] transition-colors hover:border-[#91d5b8] hover:bg-[#dff6e9]"
+                  href="https://wa.me/919871254544"
+                  rel="noreferrer"
+                  target="_blank"
+                >
+                  <Phone aria-hidden="true" size={18} strokeWidth={2.5} />
+                </a>
               </div>
-              <div className="flex flex-wrap gap-3">
-                <Link
-                  className="rounded-full border border-[#d9d2ef] bg-[#efe7ff] px-5 py-2.5 font-poppins text-sm font-bold text-[#6f58a8] transition-colors hover:border-[#cbbce8] hover:bg-[#e5d9ff] hover:text-[#563e93]"
-                  href="/mystery-scoops"
-                >
-                  Start a scoop
-                </Link>
-                <Link
-                  className="rounded-full border border-[#d9d2ef] bg-[#efe7ff] px-5 py-2.5 font-poppins text-sm font-bold text-[#6f58a8] transition-colors hover:border-[#cbbce8] hover:bg-[#e5d9ff] hover:text-[#563e93]"
-                  href="/tracking"
-                >
-                  Track orders
-                </Link>
-                <Link
-                  className="rounded-full border border-[#d9d2ef] bg-[#efe7ff] px-5 py-2.5 font-poppins text-sm font-bold text-[#6f58a8] transition-colors hover:border-[#cbbce8] hover:bg-[#e5d9ff] hover:text-[#563e93]"
-                  href="/contact"
-                >
-                  Get support
-                </Link>
-              </div>
+              <p className="font-poppins text-sm leading-7 text-[#30433f]/72">
+                Cute finds, thoughtful gifts & little surprises.
+              </p>
             </div>
 
-            <div className="grid gap-6 sm:grid-cols-3">
+            <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-4">
               {footerColumns.map((column) => (
                 <section key={column.title}>
                   <h2 className="font-baloo text-lg font-bold text-[#173f3b]">
                     {column.title}
                   </h2>
-                  <ul className="mt-4 space-y-3">
-                    {column.links.map((link) => (
-                      <li key={link.href}>
-                        <Link className="font-poppins text-sm text-[#30433f]/72 transition-colors hover:text-[#6f58a8]" href={link.href}>
-                          {link.label}
-                        </Link>
-                      </li>
-                    ))}
-                  </ul>
+                  {column.description ? (
+                    <p className="mt-4 font-poppins text-sm leading-7 text-[#30433f]/72">{column.description}</p>
+                  ) : null}
+                  {column.links.length > 0 ? (
+                    <ul className="mt-4 space-y-3">
+                      {column.links.map((link) => (
+                        <li key={link.href}>
+                          <Link className="font-poppins text-sm text-[#30433f]/72 transition-colors hover:text-[#6f58a8]" href={link.href}>
+                            {link.label}
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : null}
                 </section>
               ))}
             </div>
           </div>
 
-          <div className="grid gap-5 px-6 py-6 lg:grid-cols-[1fr_auto] lg:items-center lg:px-10">
-            <div className="grid gap-3 sm:grid-cols-3">
-              <div className="rounded-[22px] border border-[#f4e6e7] bg-[#fff8f8] px-4 py-3">
-                <p className="text-[11px] font-extrabold uppercase tracking-[0.08em] text-[#19b8b2]">Shipping</p>
-                <p className="mt-1 font-poppins text-sm font-semibold text-[#173f3b]">PAN India delivery in 5-6 days</p>
-              </div>
-              <div className="rounded-[22px] border border-[#f4e6e7] bg-[#fff8f8] px-4 py-3">
-                <p className="text-[11px] font-extrabold uppercase tracking-[0.08em] text-[#19b8b2]">Gifting</p>
-                <p className="mt-1 font-poppins text-sm font-semibold text-[#173f3b]">Scoops and hampers packed to impress</p>
-              </div>
-              <div className="rounded-[22px] border border-[#f4e6e7] bg-[#fff8f8] px-4 py-3">
-                <p className="text-[11px] font-extrabold uppercase tracking-[0.08em] text-[#19b8b2]">Help</p>
-                <p className="mt-1 font-poppins text-sm font-semibold text-[#173f3b]">Support available from order to delivery</p>
-              </div>
-            </div>
-
-            <div className="flex flex-wrap items-center gap-4 text-sm font-poppins text-[#30433f]/58">
-              <span>© {new Date().getFullYear()} Khazana Scoop</span>
-              <span className="hidden h-1.5 w-1.5 rounded-full bg-[#d8c6cf] sm:inline-block" />
-              <span>Small surprises, packed with care.</span>
-            </div>
+          <div className="px-6 py-6 lg:px-10">
+            <p className="font-poppins text-sm text-[#30433f]/58">© 2026 Khazana Scoop. All rights reserved.</p>
           </div>
         </div>
       </div>
@@ -283,30 +281,34 @@ export function StorefrontFooter(): React.ReactElement {
 
 export function StorefrontPageHero({
   children,
+  compactOnMobile = false,
   currentPath,
+  hideChildrenOnMobile = false,
   subtitle,
   title,
 }: {
   children?: React.ReactNode;
+  compactOnMobile?: boolean;
   currentPath?: string;
+  hideChildrenOnMobile?: boolean;
   subtitle: string;
   title: string;
 }): React.ReactElement {
   return (
     <>
       <StorefrontHeader currentPath={currentPath} />
-      <section className="shell pt-8">
+      <section className={`shell ${compactOnMobile ? "pt-4 sm:pt-8" : "pt-8"}`}>
         <div className="overflow-hidden rounded-[34px] border border-[#FFE2E2] bg-[#FBEFEF] shadow-sm">
-          <div className="grid gap-6 px-5 py-8 sm:px-6 sm:py-10 lg:grid-cols-[1fr_0.78fr] lg:px-10 lg:py-12">
-            <div className="space-y-5">
+          <div className={`grid gap-6 px-5 sm:px-6 sm:py-10 lg:grid-cols-[1fr_0.78fr] lg:px-10 lg:py-12 ${compactOnMobile ? "py-6" : "py-8"}`}>
+            <div className={compactOnMobile ? "space-y-3 sm:space-y-5" : "space-y-5"}>
               <h1
-                className="max-w-[12ch] text-[2.75rem] leading-[0.95] font-baloo tracking-[-0.05em] text-[#1e293b] sm:text-6xl lg:text-7xl"
+                className={`max-w-[12ch] leading-[0.95] font-baloo tracking-[-0.05em] text-[#1e293b] sm:text-6xl lg:text-7xl ${compactOnMobile ? "text-[2.25rem]" : "text-[2.75rem]"}`}
               >
                 {title}
               </h1>
-              <p className="max-w-2xl text-base leading-8 font-poppins text-[#1e293b]/70 sm:text-lg">{subtitle}</p>
+              <p className={`max-w-2xl font-poppins text-[#1e293b]/70 sm:text-lg ${compactOnMobile ? "text-sm leading-7" : "text-base leading-8"}`}>{subtitle}</p>
             </div>
-            <div className="flex items-end justify-start lg:justify-end">{children}</div>
+            <div className={`${hideChildrenOnMobile ? "hidden lg:flex" : "flex"} items-end justify-start lg:justify-end`}>{children}</div>
           </div>
         </div>
       </section>

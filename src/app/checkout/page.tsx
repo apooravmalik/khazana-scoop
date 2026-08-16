@@ -9,9 +9,11 @@ export default async function CheckoutPage(): Promise<React.ReactElement> {
 
   return (
     <PageChrome
+      compactMobileHero
       currentPath="/products"
+      hideDefaultHeroAsideOnMobile
       title="Checkout"
-      subtitle="Complete guest checkout with your delivery details and pay securely through Razorpay."
+      subtitle="Add your delivery details, review your order, and pay securely with Cashfree."
     >
       <CatalogCartClient mode="checkout" products={products} />
     </PageChrome>

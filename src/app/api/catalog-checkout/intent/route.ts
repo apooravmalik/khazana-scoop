@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import {
+  createCashfreeOrder,
   createCatalogCheckoutSession,
-  createRazorpayOrder,
   createSupabaseCatalogOrder,
   summarizeCatalogCheckout,
   validateCatalogCheckoutItems,
@@ -12,10 +12,14 @@ import { jsonError } from "@/lib/api-utils";
 import { requireDatabase } from "@/lib/production-store";
 
 const catalogCheckoutIntentSchema = z.object({
-  customerAddress: z.string().trim().min(10),
+  customerAddressLine: z.string().trim().min(5),
+  customerCity: z.string().trim().min(2),
   customerEmail: z.email(),
+  customerLandmark: z.string().trim().max(160).optional().default(""),
   customerName: z.string().trim().min(2),
   customerPhone: z.string().trim().min(6),
+  customerPincode: z.string().trim().regex(/^\d{6}$/),
+  customerState: z.string().trim().min(2),
   items: z
     .array(
       z.object({
@@ -38,19 +42,26 @@ export async function POST(request: Request): Promise<NextResponse> {
     requireDatabase();
 
     const contact: CatalogCheckoutContact = {
-      customerAddress: parsed.data.customerAddress,
+      customerAddressLine: parsed.data.customerAddressLine,
+      customerCity: parsed.data.customerCity,
       customerEmail: parsed.data.customerEmail,
+      customerLandmark: parsed.data.customerLandmark,
       customerName: parsed.data.customerName,
       customerPhone: parsed.data.customerPhone,
+      customerPincode: parsed.data.customerPincode,
+      customerState: parsed.data.customerState,
     };
     const validatedItems = await validateCatalogCheckoutItems(parsed.data.items);
     const summary = summarizeCatalogCheckout(validatedItems);
     const supabaseOrderId = await createSupabaseCatalogOrder(validatedItems, contact);
-    const razorpayOrder = await createRazorpayOrder({
+    const cashfreeOrderId = `ks-${supabaseOrderId}-${Date.now()}`;
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
+    const cashfreeOrder = await createCashfreeOrder({
       amountPaise: summary.totalPaise,
+      cashfreeOrderId,
       contact,
-      receipt: `ks-${supabaseOrderId}-${Date.now()}`,
       supabaseOrderId,
+      returnUrl: `${appUrl}/checkout?cashfree_order_id=${encodeURIComponent(cashfreeOrderId)}`,
     });
 
     const checkout = await createCatalogCheckoutSession({
@@ -61,13 +72,10 @@ export async function POST(request: Request): Promise<NextResponse> {
         quantity: item.quantity,
         slug: item.product.slug,
       })),
-      currency: razorpayOrder.currency,
-      customerAddress: contact.customerAddress,
-      customerEmail: contact.customerEmail,
-      customerName: contact.customerName,
-      customerPhone: contact.customerPhone,
+      currency: cashfreeOrder.order_currency,
+      contact,
       paymentStatus: "created",
-      razorpayOrderId: razorpayOrder.id,
+      cashfreeOrderId: cashfreeOrder.order_id,
       shippingPaise: summary.shippingPaise,
       subtotalPaise: summary.subtotalPaise,
       supabaseOrderId,
@@ -75,11 +83,10 @@ export async function POST(request: Request): Promise<NextResponse> {
     });
 
     return NextResponse.json({
-      amountPaise: summary.totalPaise,
+      cashfreeOrderId: cashfreeOrder.order_id,
       checkoutId: checkout.id,
-      currency: razorpayOrder.currency,
-      keyId: process.env.RAZORPAY_KEY_ID,
-      razorpayOrderId: razorpayOrder.id,
+      environment: process.env.CASHFREE_ENVIRONMENT ?? "sandbox",
+      paymentSessionId: cashfreeOrder.payment_session_id,
       supabaseOrderId,
     });
   } catch (error) {

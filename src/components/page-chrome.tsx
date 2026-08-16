@@ -2,20 +2,24 @@ import { StorefrontFooter, StorefrontPageHero } from "@/components/storefront-sh
 
 export function PageChrome({
   children,
+  compactMobileHero = false,
   currentPath,
   heroAside,
+  hideDefaultHeroAsideOnMobile = false,
   title,
   subtitle,
 }: {
   children: React.ReactNode;
+  compactMobileHero?: boolean;
   currentPath?: string;
   heroAside?: React.ReactNode;
+  hideDefaultHeroAsideOnMobile?: boolean;
   title: string;
   subtitle: string;
 }): React.ReactElement {
   return (
     <main className="min-h-screen pb-10">
-      <StorefrontPageHero currentPath={currentPath} subtitle={subtitle} title={title}>
+      <StorefrontPageHero compactOnMobile={compactMobileHero} currentPath={currentPath} hideChildrenOnMobile={hideDefaultHeroAsideOnMobile} subtitle={subtitle} title={title}>
         {heroAside ?? (
           <div className="grid w-full max-w-[340px] gap-4 sm:grid-cols-2">
             {[

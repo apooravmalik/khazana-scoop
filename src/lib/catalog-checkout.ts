@@ -20,14 +20,17 @@ export type CatalogCheckoutSessionRow = {
   customer_email: string;
   customer_phone: string;
   customer_address: string;
+  customer_city: string;
+  customer_state: string;
+  customer_pincode: string;
+  customer_landmark: string | null;
   cart_snapshot: unknown;
   subtotal_paise: number;
   shipping_paise: number;
   total_paise: number;
   currency: string;
-  razorpay_order_id: string | null;
-  razorpay_payment_id: string | null;
-  razorpay_signature: string | null;
+  cashfree_order_id: string | null;
+  cashfree_payment_id: string | null;
   payment_status: string;
   provider_payload: unknown;
   created_at: string;
@@ -35,10 +38,14 @@ export type CatalogCheckoutSessionRow = {
 };
 
 export type CatalogCheckoutContact = {
-  customerAddress: string;
+  customerAddressLine: string;
+  customerCity: string;
   customerEmail: string;
+  customerLandmark?: string;
   customerName: string;
   customerPhone: string;
+  customerPincode: string;
+  customerState: string;
 };
 
 export type ValidatedCatalogCheckoutItem = {
@@ -55,6 +62,25 @@ export type CatalogCheckoutSummary = {
   subtotalPaise: number;
   totalPaise: number;
 };
+
+export type CashfreeOrder = {
+  cf_order_id: string;
+  order_amount: number;
+  order_currency: string;
+  order_id: string;
+  order_status: string;
+  payment_session_id: string;
+};
+
+export function formatCatalogDeliveryAddress(contact: CatalogCheckoutContact): string {
+  return [
+    contact.customerAddressLine,
+    contact.customerLandmark ? `Landmark: ${contact.customerLandmark}` : null,
+    `${contact.customerCity}, ${contact.customerState} - ${contact.customerPincode}`,
+  ]
+    .filter((part): part is string => Boolean(part))
+    .join(", ");
+}
 
 type InsertedSupabaseOrder = {
   id: number;
@@ -181,7 +207,7 @@ async function insertSupabaseOrder(payload: Record<string, unknown>): Promise<In
   try {
     const rows = await restRequest<InsertedSupabaseOrder[]>("orders", {
       method: "POST",
-      body: JSON.stringify([{ ...payload, order_source: "website_razorpay" }]),
+      body: JSON.stringify([{ ...payload, order_source: "website_cashfree" }]),
     });
 
     if (!rows[0]) {
@@ -214,12 +240,9 @@ async function deleteWhere(table: string, filter: string): Promise<void> {
 export async function createCatalogCheckoutSession(payload: {
   cartSnapshot: unknown;
   currency: string;
-  customerAddress: string;
-  customerEmail: string;
-  customerName: string;
-  customerPhone: string;
+  contact: CatalogCheckoutContact;
   paymentStatus: string;
-  razorpayOrderId: string | null;
+  cashfreeOrderId: string | null;
   shippingPaise: number;
   subtotalPaise: number;
   supabaseOrderId: number | null;
@@ -231,12 +254,16 @@ export async function createCatalogCheckoutSession(payload: {
       {
         cart_snapshot: payload.cartSnapshot,
         currency: payload.currency,
-        customer_address: payload.customerAddress,
-        customer_email: payload.customerEmail,
-        customer_name: payload.customerName,
-        customer_phone: payload.customerPhone,
+        customer_address: formatCatalogDeliveryAddress(payload.contact),
+        customer_city: payload.contact.customerCity,
+        customer_email: payload.contact.customerEmail,
+        customer_landmark: payload.contact.customerLandmark?.trim() || null,
+        customer_name: payload.contact.customerName,
+        customer_phone: payload.contact.customerPhone,
+        customer_pincode: payload.contact.customerPincode,
+        customer_state: payload.contact.customerState,
         payment_status: payload.paymentStatus,
-        razorpay_order_id: payload.razorpayOrderId,
+        cashfree_order_id: payload.cashfreeOrderId,
         shipping_paise: payload.shippingPaise,
         subtotal_paise: payload.subtotalPaise,
         supabase_order_id: payload.supabaseOrderId,
@@ -270,6 +297,17 @@ export async function getCatalogCheckoutSession(checkoutId: string): Promise<Cat
 
     throw error;
   }
+}
+
+export async function getCatalogCheckoutSessionByCashfreeOrderId(
+  cashfreeOrderId: string,
+): Promise<CatalogCheckoutSessionRow | null> {
+  const rows = await restRequest<CatalogCheckoutSessionRow[]>(
+    `catalog_checkout_sessions?select=*&cashfree_order_id=eq.${encodeURIComponent(cashfreeOrderId)}&limit=1`,
+    { method: "GET" },
+  );
+
+  return rows[0] ?? null;
 }
 
 export async function updateCatalogCheckoutSession(
@@ -308,7 +346,7 @@ export async function createSupabaseCatalogOrder(
   const createdOrder = await insertSupabaseOrder({
     customer_name: contact.customerName,
     customer_phone: contact.customerPhone,
-    customer_address: contact.customerAddress,
+    customer_address: formatCatalogDeliveryAddress(contact),
     scoop_type_id: null,
     scoop_name_snapshot: lineLabel,
     scoop_price: totalPriceRupees,
@@ -398,79 +436,131 @@ export async function markSupabaseCatalogOrderPaid(orderId: number): Promise<voi
   });
 }
 
-export function getRazorpayConfig(): { keyId: string; keySecret: string } {
-  const keyId = process.env.RAZORPAY_KEY_ID;
-  const keySecret = process.env.RAZORPAY_KEY_SECRET;
+export function getCashfreeConfig(): {
+  apiVersion: string;
+  appId: string;
+  environment: "production" | "sandbox";
+  secretKey: string;
+} {
+  const appId = process.env.CASHFREE_APP_ID;
+  const secretKey = process.env.CASHFREE_SECRET_KEY;
+  const configuredEnvironment = process.env.CASHFREE_ENVIRONMENT ?? "sandbox";
 
-  if (!keyId || !keySecret) {
+  if (!appId || !secretKey) {
     throw new ServiceError(
-      "Razorpay is not configured. Set RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET before accepting payments.",
+      "Cashfree is not configured. Set CASHFREE_APP_ID and CASHFREE_SECRET_KEY before accepting payments.",
       503,
     );
   }
 
-  return { keyId, keySecret };
+  if (configuredEnvironment !== "sandbox" && configuredEnvironment !== "production") {
+    throw new ServiceError("CASHFREE_ENVIRONMENT must be either sandbox or production.", 503);
+  }
+
+  return {
+    apiVersion: process.env.CASHFREE_API_VERSION ?? "2025-01-01",
+    appId,
+    environment: configuredEnvironment,
+    secretKey,
+  };
 }
 
-export async function createRazorpayOrder(params: {
+function getCashfreeBaseUrl(environment: "production" | "sandbox"): string {
+  return environment === "production" ? "https://api.cashfree.com" : "https://sandbox.cashfree.com";
+}
+
+function getCashfreeHeaders(config: ReturnType<typeof getCashfreeConfig>): HeadersInit {
+  return {
+    "Content-Type": "application/json",
+    "x-api-version": config.apiVersion,
+    "x-client-id": config.appId,
+    "x-client-secret": config.secretKey,
+  };
+}
+
+export async function createCashfreeOrder(params: {
   amountPaise: number;
+  cashfreeOrderId: string;
   contact: CatalogCheckoutContact;
-  receipt: string;
   supabaseOrderId: number;
-}): Promise<{ amount: number; currency: string; id: string }> {
-  const { keyId, keySecret } = getRazorpayConfig();
-  const authorization = Buffer.from(`${keyId}:${keySecret}`).toString("base64");
-  const response = await fetch("https://api.razorpay.com/v1/orders", {
+  returnUrl: string;
+}): Promise<CashfreeOrder> {
+  const config = getCashfreeConfig();
+  const response = await fetch(`${getCashfreeBaseUrl(config.environment)}/pg/orders`, {
     method: "POST",
     headers: {
-      Authorization: `Basic ${authorization}`,
-      "Content-Type": "application/json",
+      ...getCashfreeHeaders(config),
+      "x-idempotency-key": crypto.randomUUID(),
     },
     body: JSON.stringify({
-      amount: params.amountPaise,
-      currency: "INR",
-      receipt: params.receipt,
-      notes: {
-        customer_name: params.contact.customerName,
+      customer_details: {
         customer_email: params.contact.customerEmail,
-        customer_phone: params.contact.customerPhone,
-        customer_address: params.contact.customerAddress,
-        website_order_id: String(params.supabaseOrderId),
+        customer_id: `ks-customer-${params.supabaseOrderId}`,
+        customer_name: params.contact.customerName,
+        customer_phone: params.contact.customerPhone.replace(/\D/g, ""),
       },
+      order_amount: Number((params.amountPaise / 100).toFixed(2)),
+      order_currency: "INR",
+      order_id: params.cashfreeOrderId,
+      order_meta: { return_url: params.returnUrl },
+      order_note: `Khazana Scoop order #${params.supabaseOrderId}`,
+      order_tags: { website_order_id: String(params.supabaseOrderId) },
     }),
   });
 
   if (!response.ok) {
     const message = await response.text();
-    throw new ServiceError(`Razorpay order creation failed: ${response.status} ${message}`, 502);
+    throw new ServiceError(`Cashfree order creation failed: ${response.status} ${message}`, 502);
   }
 
-  const payload = (await response.json()) as { amount: number; currency: string; id: string };
+  const payload = (await response.json()) as CashfreeOrder;
 
-  if (!payload.id) {
-    throw new ServiceError("Razorpay did not return an order id.", 502);
+  if (!payload.order_id || !payload.payment_session_id) {
+    throw new ServiceError("Cashfree did not return an order and payment session id.", 502);
   }
 
   return payload;
 }
 
-export function verifyRazorpaySignature(params: {
-  razorpayOrderId: string;
-  razorpayPaymentId: string;
-  razorpaySignature: string;
-}): boolean {
-  const { keySecret } = getRazorpayConfig();
-  const expectedSignature = crypto
-    .createHmac("sha256", keySecret)
-    .update(`${params.razorpayOrderId}|${params.razorpayPaymentId}`)
-    .digest("hex");
+export async function fetchCashfreeOrder(cashfreeOrderId: string): Promise<CashfreeOrder> {
+  const config = getCashfreeConfig();
+  const response = await fetch(
+    `${getCashfreeBaseUrl(config.environment)}/pg/orders/${encodeURIComponent(cashfreeOrderId)}`,
+    { headers: getCashfreeHeaders(config) },
+  );
 
-  if (expectedSignature.length !== params.razorpaySignature.length) {
+  if (!response.ok) {
+    const message = await response.text();
+    throw new ServiceError(`Cashfree order lookup failed: ${response.status} ${message}`, 502);
+  }
+
+  const payload = (await response.json()) as CashfreeOrder;
+
+  if (!payload.order_id || !payload.order_status) {
+    throw new ServiceError("Cashfree did not return an order record.", 502);
+  }
+
+  return payload;
+}
+
+function constantTimeEquals(expected: string, received: string): boolean {
+  if (expected.length !== received.length) {
     return false;
   }
 
-  return crypto.timingSafeEqual(
-    Buffer.from(expectedSignature),
-    Buffer.from(params.razorpaySignature),
-  );
+  return crypto.timingSafeEqual(Buffer.from(expected), Buffer.from(received));
+}
+
+export function verifyCashfreeWebhookSignature(params: {
+  payload: string;
+  signature: string;
+  timestamp: string;
+}): boolean {
+  const { secretKey } = getCashfreeConfig();
+  const expectedSignature = crypto
+    .createHmac("sha256", secretKey)
+    .update(`${params.timestamp}${params.payload}`)
+    .digest("base64");
+
+  return constantTimeEquals(expectedSignature, params.signature);
 }

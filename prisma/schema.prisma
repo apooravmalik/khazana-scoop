@@ -154,14 +154,17 @@ model CatalogCheckout {
   customerEmail     String
   customerPhone     String
   customerAddress   String
+  customerCity      String
+  customerState     String
+  customerPincode   String
+  customerLandmark  String?
   cartSnapshot      Json
   subtotalPaise     Int
   shippingPaise     Int      @default(0)
   totalPaise        Int
   currency          String   @default("INR")
-  razorpayOrderId   String?  @unique
-  razorpayPaymentId String?
-  razorpaySignature String?
+  cashfreeOrderId   String?  @unique
+  cashfreePaymentId String?
   paymentStatus     String   @default("created")
   providerPayload   Json?
   createdAt         DateTime @default(now())
