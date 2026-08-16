@@ -33,7 +33,7 @@ export default function ContactPage(): React.ReactElement {
             title="WhatsApp / Customer Support"
             body={<a className="hover:underline" href="https://wa.me/919871254544" rel="noreferrer" target="_blank">+91 9871254544</a>}
           />
-          <ContactCard icon={<PackageCheck size={20} />} title="Alternate Support Number" body="+91 9873078479" />
+          <ContactCard icon={<PackageCheck size={20} />} title="Alternate Support Number" body="+91 98730 79479" />
         </div>
 
         <section className="mt-8 rounded-[24px] bg-[#fff8f8] p-5">
@@ -70,7 +70,7 @@ export default function ContactPage(): React.ReactElement {
             <p className="mt-4 text-sm leading-7 text-[#627771]">
               Email: <a className="hover:underline" href="mailto:khazanascoop@gmail.com">khazanascoop@gmail.com</a><br />
               WhatsApp / Customer Support: <a className="hover:underline" href="https://wa.me/919871254544" rel="noreferrer" target="_blank">+91 9871254544</a><br />
-              Alternate Support Number: +91 9873078479
+              Alternate Support Number: +91 98730 79479
             </p>
             <p className="mt-4 text-sm leading-7 text-[#627771]">We will make reasonable efforts to review and respond to customer concerns promptly.</p>
           </section>

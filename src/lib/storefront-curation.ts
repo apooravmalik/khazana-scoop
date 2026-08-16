@@ -1,11 +1,25 @@
 import type { StorefrontCatalogProduct } from "@/lib/catalog-types";
 
-export const HOME_CURATED_CAROUSEL_SLUGS = [
-  "mystery-scoops",
-  "lucky-capsules",
-  "charm-mixes",
-  "crystal-scoops",
-  "stationery-packs",
+export const HOME_BEST_SELLER_SLUGS = [
+  "pearl-bloom-rin",
+  "aurora-shell-hair-clip-set",
+  "chai-biscuit-candle",
+  "blush-crystal-phone-charm",
+  "pink-daisy-hair-clip-set",
+  "forever-rose-medallion",
+  "tulip-scrunchie",
+  "teddy-pens",
+] as const;
+
+export const HOME_TRENDING_PRODUCT_SLUGS = [
+  "pastel-butterfly-phone-charm",
+  "pink-teddy-garden-phone-charm",
+  "pearl-blossom-hair-clip-set",
+  "swan-hair-claw",
+  "strawberry-polka-bow-headband",
+  "orange-glow-grape-soap",
+  "blush-bunny-charm-nails",
+  "wildflower-leopard-french-nails",
 ] as const;
 
 export const HOME_REEL_PLACEHOLDERS = [

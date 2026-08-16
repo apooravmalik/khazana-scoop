@@ -7,7 +7,8 @@ import { ArrowRight, ChevronRight } from "lucide-react";
 import type { StorefrontCatalogHomeData } from "@/lib/catalog-types";
 import {
   getPrimaryTag,
-  HOME_CURATED_CAROUSEL_SLUGS,
+  HOME_BEST_SELLER_SLUGS,
+  HOME_TRENDING_PRODUCT_SLUGS,
   isHamperProduct,
   pickProductsBySlugPreference,
 } from "@/lib/storefront-curation";
@@ -20,11 +21,16 @@ type MarketingHomeProps = {
 export function MarketingHome({ homeData }: MarketingHomeProps): React.ReactElement {
   const categoryCards = homeData.categories;
   const hamperProducts = homeData.products.filter(isHamperProduct).slice(0, 4);
-  const trendingProducts = homeData.products.filter((product) => !isHamperProduct(product)).slice(0, 8);
+  const nonHamperProducts = homeData.products.filter((product) => !isHamperProduct(product));
+  const trendingProducts = pickProductsBySlugPreference(
+    nonHamperProducts,
+    HOME_TRENDING_PRODUCT_SLUGS,
+    8,
+  );
   const collectionSections = homeData.collectionSections.slice(0, 3);
   const curatedCarouselProducts = pickProductsBySlugPreference(
-    homeData.products.filter((product) => !isHamperProduct(product)),
-    HOME_CURATED_CAROUSEL_SLUGS,
+    nonHamperProducts,
+    HOME_BEST_SELLER_SLUGS,
     8,
   );
 

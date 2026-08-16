@@ -121,7 +121,7 @@ export default function TermsOfServicePage(): React.ReactElement {
           <section>
             <h2 className="text-2xl font-black tracking-[-0.04em] text-[#35534d]">17. Contact</h2>
             <div className="mt-4 text-sm leading-7 text-[#627771]">
-              <p>For questions regarding these Terms:</p><p className="mt-4">Khazana Scoop<br />Owned and operated by Pari Rajput</p><p className="mt-4">Email: khazanascoop@gmail.com<br />WhatsApp / Customer Support: +91 9871254544<br />Alternate Support Number: +91 9873078479<br />Address: Main Sagarpur, New Delhi : 110046</p>
+              <p>For questions regarding these Terms:</p><p className="mt-4">Khazana Scoop<br />Owned and operated by Pari Rajput</p><p className="mt-4">Email: khazanascoop@gmail.com<br />WhatsApp / Customer Support: +91 9871254544<br />Alternate Support Number: +91 98730 79479<br />Address: Main Sagarpur, New Delhi : 110046</p>
             </div>
           </section>
         </div>

@@ -31,7 +31,7 @@ export default function ShippingDeliveryPolicyPage(): React.ReactElement {
           ))}
           <section>
             <h2 className="text-2xl font-black tracking-[-0.04em] text-[#35534d]">11. Contact</h2>
-            <div className="mt-4 text-sm leading-7 text-[#627771]"><p>For shipping assistance:</p><p className="mt-4">Email: khazanascoop@gmail.com<br />WhatsApp / Customer Support: +91 9871254544<br />Alternate Support Number: +91 9873078479</p><p className="mt-4">Please provide your Order ID when contacting us.</p></div>
+            <div className="mt-4 text-sm leading-7 text-[#627771]"><p>For shipping assistance:</p><p className="mt-4">Email: khazanascoop@gmail.com<br />WhatsApp / Customer Support: +91 9871254544<br />Alternate Support Number: +91 98730 79479</p><p className="mt-4">Please provide your Order ID when contacting us.</p></div>
           </section>
         </div>
       </article>

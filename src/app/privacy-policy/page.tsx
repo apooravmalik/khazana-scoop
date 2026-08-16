@@ -36,7 +36,7 @@ export default function PrivacyPolicyPage(): React.ReactElement {
           ))}
           <section>
             <h2 className="text-2xl font-black tracking-[-0.04em] text-[#35534d]">14. Privacy Contact</h2>
-            <div className="mt-4 text-sm leading-7 text-[#627771]"><p>For privacy-related requests or questions:</p><p className="mt-4">Khazana Scoop<br />Owned and operated by Pari Rajput</p><p className="mt-4">Email: khazanascoop@gmail.com<br />WhatsApp / Customer Support: +91 9871254544<br />Alternate Support Number: +91 9873078479</p></div>
+            <div className="mt-4 text-sm leading-7 text-[#627771]"><p>For privacy-related requests or questions:</p><p className="mt-4">Khazana Scoop<br />Owned and operated by Pari Rajput</p><p className="mt-4">Email: khazanascoop@gmail.com<br />WhatsApp / Customer Support: +91 9871254544<br />Alternate Support Number: +91 98730 79479</p></div>
           </section>
         </div>
       </article>
