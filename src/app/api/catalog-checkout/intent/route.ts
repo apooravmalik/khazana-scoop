@@ -4,6 +4,7 @@ import {
   createCashfreeOrder,
   createCatalogCheckoutSession,
   createSupabaseCatalogOrder,
+  rollbackSupabaseCatalogOrder,
   summarizeCatalogCheckout,
   validateCatalogCheckoutItems,
   type CatalogCheckoutContact,
@@ -38,6 +39,10 @@ export async function POST(request: Request): Promise<NextResponse> {
     return NextResponse.json({ error: "Invalid checkout payload." }, { status: 400 });
   }
 
+  let validatedItems: Awaited<ReturnType<typeof validateCatalogCheckoutItems>> | null = null;
+  let supabaseOrderId: number | null = null;
+  let cashfreeOrderCreated = false;
+
   try {
     requireDatabase();
 
@@ -51,11 +56,11 @@ export async function POST(request: Request): Promise<NextResponse> {
       customerPincode: parsed.data.customerPincode,
       customerState: parsed.data.customerState,
     };
-    const validatedItems = await validateCatalogCheckoutItems(parsed.data.items);
+    validatedItems = await validateCatalogCheckoutItems(parsed.data.items);
     const summary = summarizeCatalogCheckout(validatedItems);
-    const supabaseOrderId = await createSupabaseCatalogOrder(validatedItems, contact);
+    supabaseOrderId = await createSupabaseCatalogOrder(validatedItems, contact);
     const cashfreeOrderId = `ks-${supabaseOrderId}-${Date.now()}`;
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? new URL(request.url).origin;
     const cashfreeOrder = await createCashfreeOrder({
       amountPaise: summary.totalPaise,
       cashfreeOrderId,
@@ -63,6 +68,7 @@ export async function POST(request: Request): Promise<NextResponse> {
       supabaseOrderId,
       returnUrl: `${appUrl}/checkout?cashfree_order_id=${encodeURIComponent(cashfreeOrderId)}`,
     });
+    cashfreeOrderCreated = true;
 
     const checkout = await createCatalogCheckoutSession({
       cartSnapshot: validatedItems.map((item) => ({
@@ -90,6 +96,16 @@ export async function POST(request: Request): Promise<NextResponse> {
       supabaseOrderId,
     });
   } catch (error) {
+    console.error("Cashfree checkout intent failed", error);
+
+    if (supabaseOrderId && validatedItems && !cashfreeOrderCreated) {
+      try {
+        await rollbackSupabaseCatalogOrder(supabaseOrderId, validatedItems);
+      } catch (rollbackError) {
+        console.error("Cashfree checkout rollback failed", rollbackError);
+      }
+    }
+
     return jsonError(error);
   }
 }

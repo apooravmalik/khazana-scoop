@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import {
   fetchCashfreeOrder,
+  fetchCashfreePayments,
   getCatalogCheckoutSessionByCashfreeOrderId,
   markSupabaseCatalogOrderPaid,
   updateCatalogCheckoutSession,
@@ -42,12 +43,18 @@ export async function GET(request: Request): Promise<NextResponse> {
     }
 
     const paid = cashfreeOrder.order_status === "PAID";
+    const successfulPayment = paid
+      ? (await fetchCashfreePayments(parsed.data.cashfreeOrderId)).find(
+          (payment) => payment.payment_status === "SUCCESS",
+        )
+      : undefined;
 
     if (paid && checkout.supabase_order_id) {
       await markSupabaseCatalogOrderPaid(checkout.supabase_order_id);
     }
 
     const savedCheckout = await updateCatalogCheckoutSession(checkout.id, {
+      cashfree_payment_id: successfulPayment?.cf_payment_id ?? checkout.cashfree_payment_id,
       payment_status: paid ? "paid" : cashfreeOrder.order_status.toLowerCase(),
       provider_payload: { cashfreeOrder },
     });

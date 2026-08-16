@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "dev2": "next dev > out.log 2>&1",
     "prebuild": "prisma generate",
     "build": "next build",
     "start": "next start",

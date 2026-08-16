@@ -72,6 +72,11 @@ export type CashfreeOrder = {
   payment_session_id: string;
 };
 
+export type CashfreePayment = {
+  cf_payment_id: string;
+  payment_status: string;
+};
+
 export function formatCatalogDeliveryAddress(contact: CatalogCheckoutContact): string {
   return [
     contact.customerAddressLine,
@@ -427,6 +432,32 @@ export async function createSupabaseCatalogOrder(
   return createdOrder.id;
 }
 
+export async function rollbackSupabaseCatalogOrder(
+  orderId: number,
+  items: ValidatedCatalogCheckoutItem[],
+): Promise<void> {
+  await Promise.all(
+    items.map((item) =>
+      restRequest<SupabaseCatalogProductRow[]>(
+        `products?id=eq.${item.productRow.id}`,
+        {
+          method: "PATCH",
+          body: JSON.stringify({
+            stock_quantity: item.productRow.stock_quantity,
+            updated_at: new Date().toISOString(),
+          }),
+        },
+      ),
+    ),
+  );
+
+  await Promise.all([
+    deleteWhere("order_items", `order_id=eq.${orderId}`),
+    deleteWhere("stock_movements", `reason=eq.${encodeURIComponent(`Order #${orderId}`)}`),
+  ]);
+  await deleteWhere("orders", `id=eq.${orderId}`);
+}
+
 export async function markSupabaseCatalogOrderPaid(orderId: number): Promise<void> {
   await restRequest<unknown>(`orders?id=eq.${orderId}`, {
     method: "PATCH",
@@ -486,31 +517,39 @@ export async function createCashfreeOrder(params: {
   returnUrl: string;
 }): Promise<CashfreeOrder> {
   const config = getCashfreeConfig();
-  const response = await fetch(`${getCashfreeBaseUrl(config.environment)}/pg/orders`, {
-    method: "POST",
-    headers: {
-      ...getCashfreeHeaders(config),
-      "x-idempotency-key": crypto.randomUUID(),
-    },
-    body: JSON.stringify({
-      customer_details: {
-        customer_email: params.contact.customerEmail,
-        customer_id: `ks-customer-${params.supabaseOrderId}`,
-        customer_name: params.contact.customerName,
-        customer_phone: params.contact.customerPhone.replace(/\D/g, ""),
+  let response: Response;
+
+  try {
+    response = await fetch(`${getCashfreeBaseUrl(config.environment)}/pg/orders`, {
+      method: "POST",
+      headers: {
+        ...getCashfreeHeaders(config),
+        "x-idempotency-key": crypto.randomUUID(),
       },
-      order_amount: Number((params.amountPaise / 100).toFixed(2)),
-      order_currency: "INR",
-      order_id: params.cashfreeOrderId,
-      order_meta: { return_url: params.returnUrl },
-      order_note: `Khazana Scoop order #${params.supabaseOrderId}`,
-      order_tags: { website_order_id: String(params.supabaseOrderId) },
-    }),
-  });
+      body: JSON.stringify({
+        customer_details: {
+          customer_email: params.contact.customerEmail,
+          customer_id: `ks-customer-${params.supabaseOrderId}`,
+          customer_name: params.contact.customerName,
+          customer_phone: params.contact.customerPhone.replace(/\D/g, ""),
+        },
+        order_amount: Number((params.amountPaise / 100).toFixed(2)),
+        order_currency: "INR",
+        order_id: params.cashfreeOrderId,
+        order_meta: { return_url: params.returnUrl },
+        order_note: `Khazana Scoop order #${params.supabaseOrderId}`,
+        order_tags: { website_order_id: String(params.supabaseOrderId) },
+      }),
+    });
+  } catch (error) {
+    console.error("Cashfree order request could not be completed", error);
+    throw new ServiceError("We could not reach Cashfree to start your payment. Please try again.", 502);
+  }
 
   if (!response.ok) {
     const message = await response.text();
-    throw new ServiceError(`Cashfree order creation failed: ${response.status} ${message}`, 502);
+    console.error("Cashfree order creation failed", { body: message, status: response.status });
+    throw new ServiceError("We could not start your secure payment. Please try again.", 502);
   }
 
   const payload = (await response.json()) as CashfreeOrder;
@@ -541,6 +580,21 @@ export async function fetchCashfreeOrder(cashfreeOrderId: string): Promise<Cashf
   }
 
   return payload;
+}
+
+export async function fetchCashfreePayments(cashfreeOrderId: string): Promise<CashfreePayment[]> {
+  const config = getCashfreeConfig();
+  const response = await fetch(
+    `${getCashfreeBaseUrl(config.environment)}/pg/orders/${encodeURIComponent(cashfreeOrderId)}/payments`,
+    { headers: getCashfreeHeaders(config) },
+  );
+
+  if (!response.ok) {
+    const message = await response.text();
+    throw new ServiceError(`Cashfree payment lookup failed: ${response.status} ${message}`, 502);
+  }
+
+  return (await response.json()) as CashfreePayment[];
 }
 
 function constantTimeEquals(expected: string, received: string): boolean {

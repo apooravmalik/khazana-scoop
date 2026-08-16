@@ -26,6 +26,7 @@
 *.pem
 
 # debug
+out.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
@@ -45,4 +46,3 @@ next-env.d.ts
 # Temporary dependencies & tools
 .pnpm-store/
 .tools/
-
