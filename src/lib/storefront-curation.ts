@@ -26,18 +26,6 @@ const HOMEPAGE_REELS_BASE_URL = "https://kkvbkrohjnuvcojgejod.supabase.co/storag
 
 export const HOME_REELS = [
   {
-    id: "dhurandhar-perfume",
-    label: "Khazana moment",
-    src: `${HOMEPAGE_REELS_BASE_URL}/dhurandhar-reel-perfume.mov`,
-    title: "A little something special",
-  },
-  {
-    id: "fire-writing",
-    label: "Khazana moment",
-    src: `${HOMEPAGE_REELS_BASE_URL}/fire-writing.mp4`,
-    title: "A little bit of magic",
-  },
-  {
     id: "reel-0609",
     label: "Khazana moment",
     src: `${HOMEPAGE_REELS_BASE_URL}/reel-0609.m4v`,
