@@ -1,6 +1,7 @@
 export const supabaseBuckets = {
   productImages: "product-images",
   inventoryImages: "inventory-images",
+  homepageReels: "homepage-reels",
   scoopPhotos: "scoop-photos",
   packingVideos: "packing-videos",
   profileAvatars: "profile-avatars",

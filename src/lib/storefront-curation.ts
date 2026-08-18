@@ -22,30 +22,44 @@ export const HOME_TRENDING_PRODUCT_SLUGS = [
   "wildflower-leopard-french-nails",
 ] as const;
 
-export const HOME_REEL_PLACEHOLDERS = [
+const HOMEPAGE_REELS_BASE_URL = "https://kkvbkrohjnuvcojgejod.supabase.co/storage/v1/object/public/homepage-reels";
+
+export const HOME_REELS = [
   {
-    description: "See how each order is packed with care, from scoop picks to the final finishing touches.",
-    id: "team-packing",
-    label: "Behind the scenes",
-    title: "Packed with care",
+    id: "dhurandhar-perfume",
+    label: "Khazana moment",
+    src: `${HOMEPAGE_REELS_BASE_URL}/dhurandhar-reel-perfume.mov`,
+    title: "A little something special",
   },
   {
-    description: "Watch real reactions, favourite finds, and the little details customers loved most.",
-    id: "customer-unboxing",
-    label: "Customer love",
-    title: "Real unboxings",
+    id: "fire-writing",
+    label: "Khazana moment",
+    src: `${HOMEPAGE_REELS_BASE_URL}/fire-writing.mp4`,
+    title: "A little bit of magic",
   },
   {
-    description: "A quick look at the kinds of charms, stationery, beauty picks, and extras you might find inside.",
-    id: "product-highlight",
-    label: "Scoop preview",
-    title: "What is inside",
+    id: "reel-0609",
+    label: "Khazana moment",
+    src: `${HOMEPAGE_REELS_BASE_URL}/reel-0609.m4v`,
+    title: "Cute finds, all around",
   },
   {
-    description: "Perfect for gifting inspiration, festive edits, and thoughtful surprise ideas for someone special.",
-    id: "community-moment",
-    label: "Gift ideas",
-    title: "Moments worth sharing",
+    id: "reel-204710",
+    label: "Khazana moment",
+    src: `${HOMEPAGE_REELS_BASE_URL}/reel-20260804-204710.mp4`,
+    title: "Pick your favourite",
+  },
+  {
+    id: "reel-204724",
+    label: "Khazana moment",
+    src: `${HOMEPAGE_REELS_BASE_URL}/reel-20260804-204724.mp4`,
+    title: "Tiny treasures",
+  },
+  {
+    id: "reel-0612",
+    label: "Khazana moment",
+    src: `${HOMEPAGE_REELS_BASE_URL}/reel-0612.m4v`,
+    title: "A scoop of joy",
   },
 ] as const;
 
