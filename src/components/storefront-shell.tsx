@@ -9,7 +9,6 @@ import { useCatalogCart } from "@/hooks/use-catalog-cart";
 const footerColumns: Array<{
   title: string;
   links: Array<{ label: string; href: string }>;
-  description?: string;
 }> = [
   {
     title: "Shop",
@@ -35,11 +34,6 @@ const footerColumns: Array<{
       { label: "Terms & Conditions", href: "/terms-of-service" },
       { label: "Privacy Policy", href: "/privacy-policy" },
     ],
-  },
-  {
-    title: "Business Information",
-    links: [],
-    description: "Khazana Scoop is owned and operated by Pari Rajput.",
   },
 ];
 
@@ -245,15 +239,12 @@ export function StorefrontFooter(): React.ReactElement {
               </p>
             </div>
 
-            <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-4">
+            <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
               {footerColumns.map((column) => (
                 <section key={column.title}>
                   <h2 className="font-baloo text-lg font-bold text-[#173f3b]">
                     {column.title}
                   </h2>
-                  {column.description ? (
-                    <p className="mt-4 font-poppins text-sm leading-7 text-[#30433f]/72">{column.description}</p>
-                  ) : null}
                   {column.links.length > 0 ? (
                     <ul className="mt-4 space-y-3">
                       {column.links.map((link) => (
