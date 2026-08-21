@@ -19,7 +19,6 @@ export default function ShippingDeliveryPolicyPage(): React.ReactElement {
       <article className="rounded-[32px] border border-[#ece3d9] bg-white p-6 shadow-[0_24px_58px_rgba(118,140,134,0.12)] sm:p-8 lg:p-10">
         <p className="text-sm font-black uppercase tracking-[0.18em] text-[#708680]">Last Updated: 16 August 2026</p>
         <p className="mt-5 text-base leading-8 text-[#627771]">This Shipping &amp; Delivery Policy applies to orders placed through the Khazana Scoop website.</p>
-        <p className="mt-4 text-base leading-8 text-[#627771]">Khazana Scoop is owned and operated by Pari Rajput.</p>
         <div className="mt-10 space-y-10">
           {sections.map((section) => (
             <section key={section.title}>

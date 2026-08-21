@@ -105,7 +105,7 @@ export default function TermsOfServicePage(): React.ReactElement {
       <article className="rounded-[32px] border border-[#ece3d9] bg-white p-6 shadow-[0_24px_58px_rgba(118,140,134,0.12)] sm:p-8 lg:p-10">
         <p className="text-sm font-black uppercase tracking-[0.18em] text-[#708680]">Last Updated: 16 August 2026</p>
         <p className="mt-5 text-base leading-8 text-[#627771]">Welcome to Khazana Scoop. These Terms and Conditions govern your access to and use of our website, products, services, and purchases.</p>
-        <p className="mt-4 text-base leading-8 text-[#627771]">Khazana Scoop is owned and operated by Pari Rajput. By accessing our website or placing an order with us, you agree to these Terms and Conditions.</p>
+        <p className="mt-4 text-base leading-8 text-[#627771]">By accessing our website or placing an order with us, you agree to these Terms and Conditions.</p>
         <div className="mt-10 space-y-10">
           {sections.map((section) => (
             <section id={section.id} key={section.title} className="scroll-mt-28">
@@ -121,7 +121,7 @@ export default function TermsOfServicePage(): React.ReactElement {
           <section>
             <h2 className="text-2xl font-black tracking-[-0.04em] text-[#35534d]">17. Contact</h2>
             <div className="mt-4 text-sm leading-7 text-[#627771]">
-              <p>For questions regarding these Terms:</p><p className="mt-4">Khazana Scoop<br />Owned and operated by Pari Rajput</p><p className="mt-4">Email: khazanascoop@gmail.com<br />WhatsApp / Customer Support: +91 9871254544<br />Alternate Support Number: +91 98730 79479<br />Address: Main Sagarpur, New Delhi : 110046</p>
+              <p>For questions regarding these Terms:</p><p className="mt-4">Khazana Scoop</p><p className="mt-4">Email: khazanascoop@gmail.com<br />WhatsApp / Customer Support: +91 9871254544<br />Alternate Support Number: +91 98730 79479<br />Address: Main Sagarpur, New Delhi : 110046</p>
             </div>
           </section>
         </div>

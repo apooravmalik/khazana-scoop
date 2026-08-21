@@ -23,7 +23,6 @@ export default function CancellationReturnRefundPolicyPage(): React.ReactElement
         <p className="text-sm font-black uppercase tracking-[0.18em] text-[#708680]">Last Updated: 16 August 2026</p>
         <p className="mt-5 text-base leading-8 text-[#627771]">We want customers to receive their Khazana Scoop orders in good condition and as described.</p>
         <p className="mt-4 text-base leading-8 text-[#627771]">This policy explains when cancellations, replacements, returns and refunds may be available.</p>
-        <p className="mt-4 text-base leading-8 text-[#627771]">Khazana Scoop is owned and operated by Pari Rajput.</p>
         <div className="mt-10 space-y-10">
           {sections.map((section) => (
             <section key={section.title}>
@@ -35,7 +34,7 @@ export default function CancellationReturnRefundPolicyPage(): React.ReactElement
           ))}
           <section>
             <h2 className="text-2xl font-black tracking-[-0.04em] text-[#35534d]">14. Contact for Cancellation or Refund</h2>
-            <div className="mt-4 text-sm leading-7 text-[#627771]"><p>Contact:</p><p className="mt-4">Khazana Scoop<br />Owned and operated by Pari Rajput</p><p className="mt-4">Email: khazanascoop@gmail.com<br />WhatsApp / Customer Support: +91 9871254544<br />Alternate Support Number: +91 98730 79479</p><p className="mt-4">Please mention your Order ID and registered phone number.</p></div>
+            <div className="mt-4 text-sm leading-7 text-[#627771]"><p>Contact:</p><p className="mt-4">Khazana Scoop</p><p className="mt-4">Email: khazanascoop@gmail.com<br />WhatsApp / Customer Support: +91 9871254544<br />Alternate Support Number: +91 98730 79479</p><p className="mt-4">Please mention your Order ID and registered phone number.</p></div>
           </section>
         </div>
       </article>

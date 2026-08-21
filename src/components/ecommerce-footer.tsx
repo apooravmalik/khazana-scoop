@@ -26,11 +26,6 @@ const footerGroups = [
       { label: "Privacy Policy", href: "/privacy-policy" },
     ],
   },
-  {
-    title: "Business Information",
-    links: [],
-    description: "Khazana Scoop is owned and operated by Pari Rajput.",
-  },
 ];
 
 export function EcommerceFooter(): React.ReactElement {
@@ -49,7 +44,6 @@ export function EcommerceFooter(): React.ReactElement {
             {footerGroups.map((group) => (
               <div className="footer-link-group" key={group.title}>
                 <h3>{group.title}</h3>
-                {group.description ? <p className="footer-business-info">{group.description}</p> : null}
                 {group.links.length > 0 ? (
                   <ul>
                     {group.links.map((link) => (

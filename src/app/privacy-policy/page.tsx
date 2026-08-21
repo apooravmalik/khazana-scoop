@@ -22,7 +22,6 @@ export default function PrivacyPolicyPage(): React.ReactElement {
       <article className="rounded-[32px] border border-[#ece3d9] bg-white p-6 shadow-[0_24px_58px_rgba(118,140,134,0.12)] sm:p-8 lg:p-10">
         <p className="text-sm font-black uppercase tracking-[0.18em] text-[#708680]">Last Updated: 16 August 2026</p>
         <p className="mt-5 text-base leading-8 text-[#627771]">Khazana Scoop respects your privacy and is committed to handling personal information responsibly.</p>
-        <p className="mt-4 text-base leading-8 text-[#627771]">Khazana Scoop is owned and operated by Pari Rajput.</p>
         <p className="mt-4 text-base leading-8 text-[#627771]">This Privacy Policy explains what information we may collect when you use our website, why we collect it and how it may be used or shared.</p>
         <p className="mt-4 text-base leading-8 text-[#627771]">India&apos;s digital-data framework provides for purposes-based processing, clear notices, reasonable security safeguards, correction/erasure rights and grievance mechanisms as applicable.</p>
         <div className="mt-10 space-y-10">
@@ -36,7 +35,7 @@ export default function PrivacyPolicyPage(): React.ReactElement {
           ))}
           <section>
             <h2 className="text-2xl font-black tracking-[-0.04em] text-[#35534d]">14. Privacy Contact</h2>
-            <div className="mt-4 text-sm leading-7 text-[#627771]"><p>For privacy-related requests or questions:</p><p className="mt-4">Khazana Scoop<br />Owned and operated by Pari Rajput</p><p className="mt-4">Email: khazanascoop@gmail.com<br />WhatsApp / Customer Support: +91 9871254544<br />Alternate Support Number: +91 98730 79479</p></div>
+            <div className="mt-4 text-sm leading-7 text-[#627771]"><p>For privacy-related requests or questions:</p><p className="mt-4">Khazana Scoop</p><p className="mt-4">Email: khazanascoop@gmail.com<br />WhatsApp / Customer Support: +91 9871254544<br />Alternate Support Number: +91 98730 79479</p></div>
           </section>
         </div>
       </article>

@@ -17,12 +17,7 @@ export default function ContactPage(): React.ReactElement {
       subtitle="We'd love to help with your order, delivery, payment or product-related questions."
     >
       <article className="rounded-[32px] border border-[#ece3d9] bg-white p-6 shadow-[0_24px_58px_rgba(118,140,134,0.12)] sm:p-8 lg:p-10">
-        <section>
-          <h2 className="text-2xl font-black tracking-[-0.04em] text-[#35534d]">Khazana Scoop</h2>
-          <p className="mt-3 text-sm leading-7 text-[#627771]">Owned and operated by Pari Rajput</p>
-        </section>
-
-        <div className="mt-8 grid gap-4 md:grid-cols-3">
+        <div className="grid gap-4 md:grid-cols-3">
           <ContactCard
             icon={<Mail size={20} />}
             title="Email"
