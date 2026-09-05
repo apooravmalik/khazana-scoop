@@ -1,9 +1,10 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import {
-  createCashfreeOrder,
   createCatalogCheckoutSession,
+  createRazorpayOrder,
   createSupabaseCatalogOrder,
+  getRazorpayConfig,
   rollbackSupabaseCatalogOrder,
   summarizeCatalogCheckout,
   validateCatalogCheckoutItems,
@@ -41,7 +42,7 @@ export async function POST(request: Request): Promise<NextResponse> {
 
   let validatedItems: Awaited<ReturnType<typeof validateCatalogCheckoutItems>> | null = null;
   let supabaseOrderId: number | null = null;
-  let cashfreeOrderCreated = false;
+  let checkoutSessionCreated = false;
 
   try {
     requireDatabase();
@@ -59,16 +60,11 @@ export async function POST(request: Request): Promise<NextResponse> {
     validatedItems = await validateCatalogCheckoutItems(parsed.data.items);
     const summary = summarizeCatalogCheckout(validatedItems);
     supabaseOrderId = await createSupabaseCatalogOrder(validatedItems, contact);
-    const cashfreeOrderId = `ks-${supabaseOrderId}-${Date.now()}`;
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? new URL(request.url).origin;
-    const cashfreeOrder = await createCashfreeOrder({
+    const razorpayOrder = await createRazorpayOrder({
       amountPaise: summary.totalPaise,
-      cashfreeOrderId,
-      contact,
+      receipt: `ks_${supabaseOrderId}_${Date.now()}`,
       supabaseOrderId,
-      returnUrl: `${appUrl}/checkout?cashfree_order_id=${encodeURIComponent(cashfreeOrderId)}`,
     });
-    cashfreeOrderCreated = true;
 
     const checkout = await createCatalogCheckoutSession({
       cartSnapshot: validatedItems.map((item) => ({
@@ -78,31 +74,31 @@ export async function POST(request: Request): Promise<NextResponse> {
         quantity: item.quantity,
         slug: item.product.slug,
       })),
-      currency: cashfreeOrder.order_currency,
+      currency: razorpayOrder.currency,
       contact,
       paymentStatus: "created",
-      cashfreeOrderId: cashfreeOrder.order_id,
+      razorpayOrderId: razorpayOrder.id,
       shippingPaise: summary.shippingPaise,
       subtotalPaise: summary.subtotalPaise,
       supabaseOrderId,
       totalPaise: summary.totalPaise,
     });
+    checkoutSessionCreated = true;
 
     return NextResponse.json({
-      cashfreeOrderId: cashfreeOrder.order_id,
       checkoutId: checkout.id,
-      environment: process.env.CASHFREE_ENVIRONMENT ?? "sandbox",
-      paymentSessionId: cashfreeOrder.payment_session_id,
+      razorpayKeyId: getRazorpayConfig().keyId,
+      razorpayOrderId: razorpayOrder.id,
       supabaseOrderId,
     });
   } catch (error) {
-    console.error("Cashfree checkout intent failed", error);
+    console.error("Razorpay checkout intent failed", error);
 
-    if (supabaseOrderId && validatedItems && !cashfreeOrderCreated) {
+    if (supabaseOrderId && validatedItems && !checkoutSessionCreated) {
       try {
         await rollbackSupabaseCatalogOrder(supabaseOrderId, validatedItems);
       } catch (rollbackError) {
-        console.error("Cashfree checkout rollback failed", rollbackError);
+        console.error("Razorpay checkout rollback failed", rollbackError);
       }
     }
 

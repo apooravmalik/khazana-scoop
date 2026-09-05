@@ -2,10 +2,8 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import Script from "next/script";
 import { CheckCircle2, Minus, Plus, ShieldCheck, ShoppingBag, Trash2 } from "lucide-react";
-import { useSearchParams } from "next/navigation";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { useCatalogCart } from "@/hooks/use-catalog-cart";
 import { clearCatalogCartStorage } from "@/lib/catalog-cart";
 import { calculateCatalogShippingPaise } from "@/lib/catalog-pricing";
@@ -16,15 +14,14 @@ type CatalogCartClientProps = {
   products: StorefrontCatalogProduct[];
 };
 
-type CashfreeIntentResponse = {
-  cashfreeOrderId: string;
+type RazorpayIntentResponse = {
   checkoutId: string;
-  environment: "production" | "sandbox";
-  paymentSessionId: string;
+  razorpayKeyId: string;
+  razorpayOrderId: string;
   supabaseOrderId: number;
 };
 
-type CashfreeVerifyResponse = {
+type RazorpayVerifyResponse = {
   orderId?: number | null;
   paymentStatus?: string;
   success?: boolean;
@@ -37,15 +34,34 @@ type CartDisplayItem = {
   unitPricePaise: number;
 };
 
-type CashfreeCheckout = {
-  checkout: (options: { paymentSessionId: string; redirectTarget: "_self" }) => void | Promise<unknown>;
+type RazorpayPaymentResponse = {
+  razorpay_order_id: string;
+  razorpay_payment_id: string;
+  razorpay_signature: string;
 };
 
-type CashfreeConstructor = (options: { mode: "production" | "sandbox" }) => CashfreeCheckout;
+type RazorpayCheckout = {
+  on: (event: "payment.failed", handler: () => void) => void;
+  open: () => void;
+};
+
+type RazorpayConstructor = new (options: {
+  amount: number;
+  currency: string;
+  description: string;
+  handler: (payment: RazorpayPaymentResponse) => void;
+  key: string;
+  modal: { ondismiss: () => void };
+  name: string;
+  notes: Record<string, string>;
+  order_id: string;
+  prefill: { contact: string; email: string; name: string };
+  theme: { color: string };
+}) => RazorpayCheckout;
 
 declare global {
   interface Window {
-    Cashfree?: CashfreeConstructor;
+    Razorpay?: RazorpayConstructor;
   }
 }
 
@@ -88,9 +104,6 @@ export function CatalogCartClient({
   products,
 }: CatalogCartClientProps): React.ReactElement {
   const { items, removeItem, setQuantity } = useCatalogCart();
-  const searchParams = useSearchParams();
-  const returnedCashfreeOrderId = searchParams.get("cashfree_order_id");
-  const verifiedCashfreeOrderId = useRef<string | null>(null);
   const checkoutFormRef = useRef<HTMLFormElement>(null);
   const [customerName, setCustomerName] = useState("");
   const [customerEmail, setCustomerEmail] = useState("");
@@ -103,7 +116,6 @@ export function CatalogCartClient({
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
   const [successOrderId, setSuccessOrderId] = useState<number | null>(null);
-  const [cashfreeReady, setCashfreeReady] = useState(false);
   const [checkoutStep, setCheckoutStep] = useState<"details" | "review" | "confirmed">("details");
   const [policyAccepted, setPolicyAccepted] = useState(false);
   const [policyMessage, setPolicyMessage] = useState("");
@@ -116,47 +128,6 @@ export function CatalogCartClient({
   const shippingPaise = calculateCatalogShippingPaise(subtotalPaise);
   const totalPaise = subtotalPaise + shippingPaise;
   const activeCheckoutStep = successOrderId ? "confirmed" : checkoutStep;
-
-  useEffect(() => {
-    if (mode !== "checkout" || !returnedCashfreeOrderId || verifiedCashfreeOrderId.current === returnedCashfreeOrderId) {
-      return;
-    }
-
-    verifiedCashfreeOrderId.current = returnedCashfreeOrderId;
-
-    void Promise.resolve().then(async () => {
-      try {
-        setLoading(true);
-        setMessage("");
-        const response = await fetch(
-          `/api/catalog-checkout/verify?cashfreeOrderId=${encodeURIComponent(returnedCashfreeOrderId)}`,
-        );
-        const result = (await response.json().catch(() => null)) as
-          | ({ error?: string } & CashfreeVerifyResponse)
-          | null;
-
-        if (!response.ok) {
-          setMessage(result?.error ?? "We could not verify the Cashfree payment yet.");
-          return;
-        }
-
-        if (!result?.success) {
-          setMessage("Your Cashfree payment is not confirmed yet. You can safely wait a moment and refresh this page.");
-          return;
-        }
-
-        const orderId = result.orderId;
-        clearCatalogCartStorage();
-        setSuccessOrderId(orderId ?? null);
-        setCheckoutStep("confirmed");
-        setMessage(`Payment successful. Your order #${orderId ?? ""} has been confirmed.`);
-      } catch {
-        setMessage("We could not verify the Cashfree payment yet. Please refresh this page shortly.");
-      } finally {
-        setLoading(false);
-      }
-    });
-  }, [mode, returnedCashfreeOrderId]);
 
   function continueToReview(): void {
     if (!checkoutFormRef.current?.reportValidity()) {
@@ -172,15 +143,52 @@ export function CatalogCartClient({
     setCheckoutStep("review");
   }
 
-  async function startCashfreeCheckout(event: React.FormEvent<HTMLFormElement>): Promise<void> {
+  async function verifyRazorpayPayment(payment: RazorpayPaymentResponse): Promise<void> {
+    try {
+      const response = await fetch("/api/catalog-checkout/verify", {
+        body: JSON.stringify({
+          razorpayOrderId: payment.razorpay_order_id,
+          razorpayPaymentId: payment.razorpay_payment_id,
+          razorpaySignature: payment.razorpay_signature,
+        }),
+        headers: { "Content-Type": "application/json" },
+        method: "POST",
+      });
+      const result = (await response.json().catch(() => null)) as
+        | ({ error?: string } & RazorpayVerifyResponse)
+        | null;
+
+      if (!response.ok) {
+        setMessage(result?.error ?? "We could not verify the Razorpay payment yet.");
+        return;
+      }
+
+      if (!result?.success) {
+        setMessage("Your payment is authorised and awaiting capture. Please wait a moment before checking your order.");
+        return;
+      }
+
+      const orderId = result.orderId;
+      clearCatalogCartStorage();
+      setSuccessOrderId(orderId ?? null);
+      setCheckoutStep("confirmed");
+      setMessage(`Payment successful. Your order #${orderId ?? ""} has been confirmed.`);
+    } catch {
+      setMessage("We could not verify the Razorpay payment yet. Please refresh this page shortly.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function startRazorpayCheckout(event: React.FormEvent<HTMLFormElement>): Promise<void> {
     event.preventDefault();
     setLoading(true);
     setMessage("");
     setSuccessOrderId(null);
 
-    if (!window.Cashfree || !cashfreeReady) {
+    if (!window.Razorpay) {
       setLoading(false);
-      setMessage("Cashfree is still loading. Please try again in a moment.");
+      setMessage("Razorpay is still loading. Please try again in a moment.");
       return;
     }
 
@@ -207,37 +215,47 @@ export function CatalogCartClient({
     });
 
     const result = (await response.json().catch(() => null)) as
-      | (CashfreeIntentResponse & { error?: string })
+      | (RazorpayIntentResponse & { error?: string })
       | null;
 
-    if (!response.ok || !result?.checkoutId || !result.paymentSessionId) {
+    if (!response.ok || !result?.checkoutId || !result.razorpayKeyId || !result.razorpayOrderId) {
       setLoading(false);
       setMessage(result?.error ?? "Checkout could not be started right now.");
       return;
     }
 
     try {
-      const cashfree = window.Cashfree({ mode: result.environment });
-      await cashfree.checkout({
-        paymentSessionId: result.paymentSessionId,
-        redirectTarget: "_self",
+      const razorpay = new window.Razorpay({
+        amount: totalPaise,
+        currency: "INR",
+        description: "Khazana Scoop order",
+        handler: (payment) => void verifyRazorpayPayment(payment),
+        key: result.razorpayKeyId,
+        modal: { ondismiss: () => setLoading(false) },
+        name: "Khazana Scoop",
+        notes: { checkout_id: result.checkoutId },
+        order_id: result.razorpayOrderId,
+        prefill: {
+          contact: customerPhone,
+          email: customerEmail,
+          name: customerName,
+        },
+        theme: { color: "#18a59e" },
       });
+      razorpay.on("payment.failed", () => {
+        setLoading(false);
+        setMessage("Your payment was not completed. You can try again.");
+      });
+      razorpay.open();
     } catch {
       setLoading(false);
-      setMessage("Cashfree checkout could not open. Please try again.");
+      setMessage("Razorpay checkout could not open. Please try again.");
     }
   }
 
   return (
     <>
-      {mode === "checkout" ? (
-        <Script
-          src="https://sdk.cashfree.com/js/v3/cashfree.js"
-          strategy="afterInteractive"
-          onLoad={() => setCashfreeReady(true)}
-        />
-      ) : null}
-
+      {mode === "checkout" ? <script async src="https://checkout.razorpay.com/v1/checkout.js" /> : null}
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_420px]">
         <section className={`rounded-[32px] border border-[#ece3d9] bg-white p-5 shadow-[0_24px_58px_rgba(118,140,134,0.12)] sm:p-8 ${mode === "checkout" ? "hidden lg:block lg:order-1" : ""}`}>
           <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
@@ -388,7 +406,7 @@ export function CatalogCartClient({
           {mode === "cart" ? (
             <>
               <p className="mt-5 text-sm leading-7 text-[#5f756f]">
-                Checkout will be completed as a guest through Cashfree, so shoppers can pay without creating an account first.
+                Checkout will be completed as a guest through Razorpay, so shoppers can pay without creating an account first.
               </p>
               <Link
                 className={`button-primary mt-6 w-full ${cartProducts.length === 0 ? "pointer-events-none opacity-50" : ""}`}
@@ -450,7 +468,7 @@ export function CatalogCartClient({
               ) : null}
 
               {activeCheckoutStep === "review" ? (
-                <form className="mt-5 grid gap-4" onSubmit={startCashfreeCheckout}>
+                <form className="mt-5 grid gap-4" onSubmit={startRazorpayCheckout}>
                   <div className="rounded-[22px] bg-white/82 p-4 text-sm text-[#35534d] shadow-[0_14px_34px_rgba(118,140,134,0.10)]">
                     <div className="flex items-center justify-between gap-3">
                       <p className="font-black">Deliver to</p>
@@ -460,10 +478,10 @@ export function CatalogCartClient({
                   </div>
                   <div className="rounded-[22px] bg-white/82 p-4 text-sm text-[#35534d] shadow-[0_14px_34px_rgba(118,140,134,0.10)]">
                     <p className="inline-flex items-center gap-2 font-black text-[#2d7d76]"><ShieldCheck size={16} /> Secure payment</p>
-                    <p className="mt-2 leading-6 text-[#627771]">Cashfree will securely show the available payment methods after you continue.</p>
+                    <p className="mt-2 leading-6 text-[#627771]">Razorpay will securely show the available payment methods after you continue.</p>
                   </div>
-                  <button className="button-primary w-full" disabled={loading || cartProducts.length === 0} type="submit">{loading ? "Opening Cashfree..." : `Pay ${formatPaise(totalPaise)} securely`}</button>
-                  <p className="px-1 text-center text-xs leading-5 text-[#71827f]">Your amount is confirmed by our server before Cashfree Checkout opens.</p>
+                  <button className="button-primary w-full" disabled={loading || cartProducts.length === 0} type="submit">{loading ? "Opening Razorpay..." : `Pay ${formatPaise(totalPaise)} securely`}</button>
+                  <p className="px-1 text-center text-xs leading-5 text-[#71827f]">Your amount is confirmed by our server before Razorpay Checkout opens.</p>
                 </form>
               ) : null}
 

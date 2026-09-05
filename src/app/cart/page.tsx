@@ -13,7 +13,7 @@ export default async function CartPage(): Promise<React.ReactElement> {
       currentPath="/products"
       hideDefaultHeroAsideOnMobile
       title="Shopping cart"
-      subtitle="Review your items, then continue to secure Cashfree checkout."
+      subtitle="Review your items, then continue to secure Razorpay checkout."
     >
       <CatalogCartClient mode="cart" products={products} />
     </PageChrome>

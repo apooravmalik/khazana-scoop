@@ -1,6 +1,6 @@
 # Mystery Scoop
 
-A Next.js App Router MVP for Mystery Scoop with Prisma, Supabase Postgres, Cashfree Payments, customer order views, and admin fulfillment screens.
+A Next.js App Router MVP for Mystery Scoop with Prisma, Supabase Postgres, Razorpay, customer order views, and admin fulfillment screens.
 
 ## Getting Started
 
@@ -28,22 +28,21 @@ See `docs/supabase.md` for Supabase setup and GitHub secret names.
 
 Supabase Storage buckets are defined in `supabase/storage-buckets.sql` for product images, profile avatars, inventory images, scoop photos, and packing videos.
 
-## Cashfree checkout
+## Razorpay checkout
 
-The catalog checkout creates a Cashfree Order on the server, opens Cashfree Hosted Checkout in the browser, and confirms the final order status from the server. Add the following secrets locally and in the deployment environment:
+The catalog checkout creates a Razorpay Order on the server, opens Razorpay Standard Checkout in the browser, verifies the returned payment signature on the server, and confirms the payment status through Razorpay. Add the following secrets locally and in the deployment environment:
 
 ```bash
-CASHFREE_APP_ID="..."
-CASHFREE_SECRET_KEY="..."
-CASHFREE_ENVIRONMENT="sandbox"
-CASHFREE_API_VERSION="2025-01-01"
+RAZORPAY_KEY_ID="..."
+RAZORPAY_KEY_SECRET="..."
+RAZORPAY_WEBHOOK_SECRET="..."
 ```
 
-`CASHFREE_APP_ID` is the App/Project (Client) ID from Cashfree; `CASHFREE_SECRET_KEY` is the API secret. Never expose the secret in browser code or commit it. Use `sandbox` with test credentials and set `production` only with live credentials.
+`RAZORPAY_KEY_ID` is safe to return to Razorpay Checkout; `RAZORPAY_KEY_SECRET` and `RAZORPAY_WEBHOOK_SECRET` must remain server-only. Use Test Mode keys to test, then replace them with Live Mode keys before accepting real payments.
 
-In Cashfree Dashboard, whitelist the deployed website domain, then add `https://YOUR_DOMAIN/api/cashfree/webhook` under **Payment Gateway → Developers → Webhooks**. Subscribe to payment success, failed, and user-dropped events. The endpoint verifies Cashfree's Base64 HMAC signature over the raw body and timestamp, and independently checks the Cashfree order before marking an order paid.
+In Razorpay Dashboard, add `https://YOUR_DOMAIN/api/razorpay/webhook` under **Account & Settings → Webhooks**, set the same `RAZORPAY_WEBHOOK_SECRET`, and subscribe to `payment.captured`, `payment.failed` and `order.paid`. Enable automatic payment capture in Razorpay Dashboard; orders are marked paid only after Razorpay reports a `captured` payment.
 
-For the Supabase REST checkout-session table, run `supabase/catalog-checkout-cashfree.sql` once in the Supabase SQL editor. Run `pnpm db:deploy` to apply the matching Prisma migration.
+For the Supabase REST checkout-session table, run `supabase/catalog-checkout-razorpay.sql` once in the Supabase SQL editor. Run `pnpm db:deploy` to apply the matching Prisma migration.
 
 ## Automation
 
