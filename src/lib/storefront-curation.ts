@@ -52,19 +52,7 @@ export const HOME_REELS = [
 ] as const;
 
 export function isHamperProduct(product: StorefrontCatalogProduct): boolean {
-  const haystack = [
-    product.name,
-    product.slug,
-    product.eyebrow,
-    product.summary,
-    product.category?.name ?? "",
-    product.category?.slug ?? "",
-    ...product.collections.map((collection) => `${collection.name} ${collection.slug}`),
-  ]
-    .join(" ")
-    .toLowerCase();
-
-  return haystack.includes("hamper") || haystack.includes("gift");
+  return product.category?.slug === "gift-hampers";
 }
 
 export function getPrimaryTag(product: StorefrontCatalogProduct): string {
