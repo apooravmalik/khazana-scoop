@@ -49,7 +49,7 @@ const sections = [
   {
     title: "6. Payments",
     paragraphs: [
-      "Khazana Scoop accepts online payments through authorised third-party payment gateway providers, including Cashfree Payments, once enabled on the website.",
+      "Khazana Scoop accepts online payments through authorised third-party payment gateway providers, including Razorpay, once enabled on the website.",
       "Available payment methods may include UPI, cards, net banking and other payment options supported by the payment gateway.",
       "We do not require customers to provide their UPI PIN, banking password or other banking authentication credentials directly to Khazana Scoop.",
       "An order will be treated as successfully paid only after the payment has been confirmed through our payment system.",

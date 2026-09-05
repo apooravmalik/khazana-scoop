@@ -13,7 +13,7 @@ export default async function CheckoutPage(): Promise<React.ReactElement> {
       currentPath="/products"
       hideDefaultHeroAsideOnMobile
       title="Checkout"
-      subtitle="Add your delivery details, review your order, and pay securely with Cashfree."
+      subtitle="Add your delivery details, review your order, and pay securely with Razorpay."
     >
       <CatalogCartClient mode="checkout" products={products} />
     </PageChrome>

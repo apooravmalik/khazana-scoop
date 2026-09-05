@@ -163,8 +163,8 @@ model CatalogCheckout {
   shippingPaise     Int      @default(0)
   totalPaise        Int
   currency          String   @default("INR")
-  cashfreeOrderId   String?  @unique
-  cashfreePaymentId String?
+  razorpayOrderId   String?  @unique
+  razorpayPaymentId String?
   paymentStatus     String   @default("created")
   providerPayload   Json?
   createdAt         DateTime @default(now())
